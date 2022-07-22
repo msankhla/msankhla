@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+  ~ Shipper HQ
+  ~
+  ~ @category ShipperHQ
+  ~ @package ShipperHQ_Option
+  ~ @copyright Copyright (c) 2020 Zowta LTD and Zowta LLC (http://www.ShipperHQ.com)
+  ~ @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+  ~ @author ShipperHQ Team sales@shipperhq.com
+  -->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="shipperhq_carrier_rate_response_received">
+        <observer name="shipperhq_option_rate_response_process" instance="ShipperHQ\Option\Observer\SaveDetailFromRateResponse" />
+    </event>
+    <event name="shipperhq_carrier_set_request">
+        <observer name="shipperhq_option_set_selections" instance="ShipperHQ\Option\Observer\SetSelectionsOnRateRequest"/>
+    </event>
+    <event name="shipperhq_additional_detail_checkout">
+        <observer name="shipperhq_option_additional_detail_checkout_process" instance="ShipperHQ\Option\Observer\ProcessDetailFromCheckout" />
+    </event>
+</config>

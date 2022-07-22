@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!--
+
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="sales_order_save_commit_after">
+        <observer name="onPurchase" instance="Signifyd\Connect\Observer\Purchase" />
+        <observer name="signifydDebugLogs" instance="Signifyd\Connect\Observer\Debug\Order" />
+        <observer name="signifydApiTransaction" instance="Signifyd\Connect\Observer\Api\Transaction" />
+    </event>
+
+    <event name="sales_order_save_before">
+        <observer name="orderSaveBefore" instance="Signifyd\Connect\Observer\Order\Save\Before" />
+    </event>
+
+    <event name="checkout_submit_all_after">
+        <observer name="onCheckout" instance="Signifyd\Connect\Observer\Purchase" />
+    </event>
+
+    <event name="checkout_submit_before">
+        <observer name="preAuthOnCheckout" instance="Signifyd\Connect\Observer\PreAuth" />
+    </event>
+
+    <event name="paypal_express_place_order_success">
+        <observer name="onPurchasePaypalExpress" instance="Signifyd\Connect\Observer\Purchase\PaypalExpress" />
+    </event>
+
+    <event name="controller_action_postdispatch_authorizenet_directpost_payment_response">
+        <observer name="onPurchaseAuthorizenetDirectpost" instance="Signifyd\Connect\Observer\Purchase\AuthorizenetDirectpost" />
+    </event>
+
+    <event name="controller_action_postdispatch_authorizenet_directpost_payment_backendresponse">
+        <observer name="onPurchaseAuthorizenetDirectpost" instance="Signifyd\Connect\Observer\Purchase\AuthorizenetDirectpost" />
+    </event>
+
+    <event name="order_cancel_after">
+        <observer name="onCancel" instance="Signifyd\Connect\Observer\Cancel" />
+    </event>
+
+    <event name="sales_order_payment_cancel">
+        <observer name="onCancel" instance="Signifyd\Connect\Observer\Cancel" />
+    </event>
+
+    <event name="sales_order_creditmemo_refund">
+        <observer name="onCancel" instance="Signifyd\Connect\Observer\Cancel" />
+    </event>
+
+    <event name="sales_order_shipment_track_save_before">
+        <observer name="onSaveShipmentTrack" instance="Signifyd\Connect\Observer\Fulfillment" />
+    </event>
+
+    <event name="cron_job_run">
+        <observer name="onCronJobRun" instance="Signifyd\Connect\Observer\CronJob" />
+    </event>
+
+    <event name="sales_order_address_save_commit_after">
+        <observer name="onSalesOrderAddressSave" instance="Signifyd\Connect\Observer\Order\SalesOrderAddressSave" />
+    </event>
+</config>

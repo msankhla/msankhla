@@ -1,0 +1,25 @@
+{
+  "name": "dynamic-yield/integration",
+  "description": "Dynamic Yield Integration",
+  "license": "proprietary",
+  "version": "0.8.0",
+  "minimum-stability": "dev",
+  "type": "magento2-module",
+  "authors": [
+    {
+      "name": "dynamicyield",
+      "email": "support@dynamicyield.com"
+    }
+  ],
+  "require": {
+    "aws/aws-sdk-php": "^3.0"
+  },
+  "autoload": {
+    "files": [
+      "registration.php"
+    ],
+    "psr-4": {
+      "DynamicYield\\Integration\\": ""
+    }
+  }
+}

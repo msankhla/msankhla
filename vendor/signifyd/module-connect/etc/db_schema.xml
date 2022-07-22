@@ -1,0 +1,56 @@
+<?xml version="1.0" ?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+	<table comment="signifyd_connect_case Table" engine="innodb" name="signifyd_connect_case" resource="default">
+        <constraint referenceId="PRIMARY" disabled="true" xsi:type="primary"/>
+        <column xsi:type="int" name="entity_id" padding="10" unsigned="true" nullable="false" identity="true"
+                comment="Entity ID"/>
+        <constraint referenceId="PRIMARY_CODE" xsi:type="primary">
+            <column name="entity_id"/>
+        </constraint>
+        <column length="255" name="code" nullable="false" xsi:type="varchar"/>
+        <column length="255" name="order_increment" nullable="false" xsi:type="varchar"/>
+        <column length="255" name="signifyd_status" default="PENDING" nullable="false" xsi:type="varchar"/>
+        <column length="32" name="origin_store_code" default="NULL" nullable="true" xsi:type="varchar"/>
+        <column name="score" nullable="true" precision="10" scale="0" xsi:type="float"/>
+        <column length="64" name="guarantee" nullable="false" default="N/A" xsi:type="varchar"/>
+        <column name="entries_text" nullable="false" xsi:type="text"/>
+        <column name="checkpoint_action_reason" nullable="false" xsi:type="text"/>
+        <column name="created" nullable="true" xsi:type="timestamp"/>
+        <column name="updated" nullable="true" xsi:type="timestamp"/>
+        <column length="255" name="magento_status" default="waiting_submission" nullable="false" xsi:type="varchar"/>
+        <column identity="false" name="retries" padding="11" nullable="false" default="0" xsi:type="int"/>
+        <column identity="false" name="order_id" padding="10" nullable="true" unsigned="true" xsi:type="int"/>
+        <column identity="false" name="quote_id" padding="10" nullable="true" unsigned="true" xsi:type="int"/>
+        <column length="255" name="checkout_token" nullable="false" xsi:type="varchar"/>
+        <column length="255" name="policy_name" nullable="false" xsi:type="varchar"/>
+        <column identity="false" name="lock_start" padding="10" nullable="true" xsi:type="int"/>
+        <index referenceId="INDEX_MAGENTO_STATUS" indexType="btree">
+            <column name="magento_status"/>
+        </index>
+        <index referenceId="INDEX_ORDER_ID" indexType="btree">
+            <column name="order_id"/>
+        </index>
+        <index referenceId="INDEX_CODE" indexType="btree">
+            <column name="code"/>
+        </index>
+	</table>
+    <table comment="signifyd_connect_fulfillment Table" engine="innodb" name="signifyd_connect_fulfillment" resource="default">
+        <column length="50" name="id" nullable="false" xsi:type="varchar"/>
+        <constraint referenceId="PRIMARY" xsi:type="primary">
+            <column name="id"/>
+        </constraint>
+        <column length="32" name="order_id" nullable="false" xsi:type="varchar"/>
+        <column length="30" name="shipped_at" nullable="false" xsi:type="varchar"/>
+        <column length="30" name="fulfillment_status" nullable="false" xsi:type="varchar"/>
+        <column name="products" nullable="true" xsi:type="text"/>
+        <column length="30" name="shipment_status" nullable="true" xsi:type="varchar"/>
+        <column name="tracking_urls" nullable="true" xsi:type="text"/>
+        <column length="255" name="tracking_numbers" nullable="true" xsi:type="varchar"/>
+        <column name="destination" nullable="true" xsi:type="text"/>
+        <column name="origin" nullable="true" xsi:type="text"/>
+        <column length="255" name="carrier" nullable="true" xsi:type="varchar"/>
+        <column length="50" name="magento_status" default="waiting_submission" nullable="false" xsi:type="varchar"/>
+        <column identity="false" name="retries" padding="11" nullable="false" default="0" xsi:type="int"/>
+        <column name="inserted_at" nullable="true" default="CURRENT_TIMESTAMP" xsi:type="datetime"/>
+    </table>
+</schema>

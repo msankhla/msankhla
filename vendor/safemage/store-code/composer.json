@@ -1,0 +1,19 @@
+{
+  "name": "safemage/store-code",
+  "description": "Store Code module by SafeMage",
+  "type": "magento2-module",
+  "version": "2.1.10",
+  "license": [
+    "Commercial"
+  ],
+  "require": {
+    "php": ">=7.0.0",
+    "safemage/extensions": "*"
+  },
+  "autoload": {
+    "files": [ "registration.php" ],
+    "psr-4": {
+      "SafeMage\\StoreCode\\": ""
+    }
+  }
+}

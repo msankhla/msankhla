@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <preference for="Emartech\Emarsys\Api\ConfigApiInterface" type="Emartech\Emarsys\Model\Api\ConfigApi" />
+    <preference for="Emartech\Emarsys\Api\Data\StoreConfigInterface" type="Emartech\Emarsys\Model\Data\StoreConfig" />
+    <preference for="Emartech\Emarsys\Api\Data\ConfigInterface" type="Emartech\Emarsys\Model\Data\Config" />
+
+    <preference for="Emartech\Emarsys\Api\CustomersApiInterface" type="Emartech\Emarsys\Model\Api\CustomersApi" />
+    <preference for="Emartech\Emarsys\Api\Data\CustomersApiResponseInterface" type="Emartech\Emarsys\Model\Data\CustomersApiResponse" />
+    <preference for="Emartech\Emarsys\Api\Data\CustomerInterface" type="Emartech\Emarsys\Model\Data\Customer" />
+    <preference for="Emartech\Emarsys\Api\Data\CustomerAddressInterface" type="Emartech\Emarsys\Model\Data\CustomerAddress" />
+
+    <preference for="Emartech\Emarsys\Api\SubscriptionsApiInterface" type="Emartech\Emarsys\Model\Api\SubscriptionsApi" />
+    <preference for="Emartech\Emarsys\Api\Data\SubscriptionsApiResponseInterface" type="Emartech\Emarsys\Model\Data\SubscriptionsApiResponse" />
+    <preference for="Emartech\Emarsys\Api\Data\SubscriptionInterface" type="Emartech\Emarsys\Model\Data\Subscription" />
+    <preference for="Emartech\Emarsys\Api\Data\StatusResponseInterface" type="Emartech\Emarsys\Model\Data\StatusResponse" />
+
+    <preference for="Emartech\Emarsys\Api\Data\ErrorResponseInterface" type="Emartech\Emarsys\Model\Data\ErrorResponse" />
+    <preference for="Emartech\Emarsys\Api\Data\ErrorResponseItemInterface" type="Emartech\Emarsys\Model\Data\ErrorResponseItem" />
+
+    <preference for="Emartech\Emarsys\Api\EventsApiInterface" type="Emartech\Emarsys\Model\Api\EventsApi" />
+    <preference for="Emartech\Emarsys\Api\Data\EventsApiResponseInterface" type="Emartech\Emarsys\Model\Data\EventsApiResponse" />
+
+    <preference for="Emartech\Emarsys\Api\ProductsApiInterface" type="Emartech\Emarsys\Model\Api\ProductsApi" />
+    <preference for="Emartech\Emarsys\Api\Data\ImagesInterface" type="Emartech\Emarsys\Model\Data\Images" />
+    <preference for="Emartech\Emarsys\Api\Data\ProductStoreDataInterface" type="Emartech\Emarsys\Model\Data\ProductStoreData" />
+    <preference for="Emartech\Emarsys\Api\Data\ProductInterface" type="Emartech\Emarsys\Model\Data\Product" />
+    <preference for="Emartech\Emarsys\Api\Data\ProductsApiResponseInterface" type="Emartech\Emarsys\Model\Data\ProductsApiResponse" />
+
+    <preference for="Emartech\Emarsys\Api\CategoriesApiInterface" type="Emartech\Emarsys\Model\Api\CategoriesApi" />
+    <preference for="Emartech\Emarsys\Api\Data\CategoryStoreDataInterface" type="Emartech\Emarsys\Model\Data\CategoryStoreData" />
+    <preference for="Emartech\Emarsys\Api\Data\CategoryInterface" type="Emartech\Emarsys\Model\Data\Category" />
+    <preference for="Emartech\Emarsys\Api\Data\CategoriesApiResponseInterface" type="Emartech\Emarsys\Model\Data\CategoriesApiResponse" />
+
+    <preference for="Emartech\Emarsys\Api\SystemApiInterface" type="Emartech\Emarsys\Model\Api\SystemApi" />
+    <preference for="Emartech\Emarsys\Api\Data\SystemApiResponseInterface" type="Emartech\Emarsys\Model\Data\SystemApiResponse" />
+
+    <preference for="Emartech\Emarsys\Api\OrdersApiInterface" type="Emartech\Emarsys\Model\Api\OrdersApi" />
+    <preference for="Emartech\Emarsys\Api\Data\OrdersApiResponseInterface" type="Emartech\Emarsys\Model\Data\OrdersApiResponse" />
+
+    <preference for="Emartech\Emarsys\Api\RefundsApiInterface" type="Emartech\Emarsys\Model\Api\RefundsApi" />
+    <preference for="Emartech\Emarsys\Api\Data\RefundsApiResponseInterface" type="Emartech\Emarsys\Model\Data\RefundsApiResponse" />
+
+    <preference for="Emartech\Emarsys\Api\Data\AttributeInterface" type="Emartech\Emarsys\Model\Data\Attribute" />
+    <preference for="Emartech\Emarsys\Api\AttributesApiInterface" type="Emartech\Emarsys\Model\Api\AttributesApi" />
+    <preference for="Emartech\Emarsys\Api\Data\AttributesApiResponseInterface" type="Emartech\Emarsys\Model\Data\AttributesApiResponse" />
+
+    <preference for="Emartech\Emarsys\Api\Data\InventoryItemInterface" type="Emartech\Emarsys\Model\Data\InventoryItem" />
+    <preference for="Emartech\Emarsys\Api\Data\InventoryItemItemInterface" type="Emartech\Emarsys\Model\Data\InventoryItemItem" />
+    <preference for="Emartech\Emarsys\Api\InventoryApiInterface" type="Emartech\Emarsys\Model\Api\InventoryApi" />
+    <preference for="Emartech\Emarsys\Api\Data\InventoryApiResponseInterface" type="Emartech\Emarsys\Model\Data\InventoryApiResponse" />
+
+    <preference for="Emartech\Emarsys\Api\EventRepositoryInterface" type="Emartech\Emarsys\Model\EventRepository" />
+
+    <preference for="Emartech\Emarsys\Api\Data\ExtraFieldsInterface" type="Emartech\Emarsys\Model\Data\ExtraFields" />
+
+    <type name="Magento\Customer\CustomerData\Customer">
+        <plugin name="emartech_customerplugin" type="Emartech\Emarsys\CustomerData\Customer" />
+    </type>
+    <type name="Magento\Newsletter\Model\Subscriber">
+        <plugin name="emarsys_newsletter" type="\Emartech\Emarsys\Events\CustomerPlugin" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Magento\Customer\Model\EmailNotificationInterface">
+        <plugin name="emarsys_customer_email" type="\Emartech\Emarsys\Events\CustomerPlugin" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Magento\Sales\Model\Order\Email\SenderBuilder">
+        <plugin name="emarsys_order_email_sender_builder" type="\Emartech\Emarsys\Events\SenderBuilderPlugin" sortOrder="1" disabled="false"/>
+    </type>
+    <type name="Magento\Sales\Model\OrderRepository">
+        <plugin name="emarsys_order_repository" type="Emartech\Emarsys\Model\OrderRepositoryPlugin"/>
+    </type>
+</config>

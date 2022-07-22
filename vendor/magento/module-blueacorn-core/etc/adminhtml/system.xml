@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<!--
+/**
+  * @package     BlueAcorn/Core
+  * @author      Blue Acorn iCi <code@blueacorn.com>
+  * @copyright   Copyright © 2020. All rights reserved.
+  */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="blueacorn" translate="label" sortOrder="1">
+            <label>BlueAcorn</label>
+        </tab>
+    </system>
+</config>

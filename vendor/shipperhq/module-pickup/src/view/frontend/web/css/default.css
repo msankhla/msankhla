@@ -1,0 +1,124 @@
+/*
+ * Shipper HQ
+ *
+ * @category ShipperHQ
+ * @package ShipperHQ_Pickup
+ * @copyright Copyright (c) 2020 Zowta LTD and Zowta LLC (http://www.ShipperHQ.com)
+ * @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @author ShipperHQ Team sales@shipperhq.com
+ */
+
+.shq-location-selected {
+    border: 1px solid #E2F1FC;
+    background: #F3FAFF url(../imgs/ico-map.svg) no-repeat;
+    background-size: 18px;
+    border-radius: 3px;
+    background-position: 5px 10px;
+    padding: 10px 25px;
+    margin-bottom: 10px;
+}
+
+.shq-location-selected-info {
+    margin-bottom: 15px;
+}
+.shq-location-selected-name {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+.shq-location-selected-distance {
+    font-size: 12px;
+    color: #94A5B4;
+}
+.shq-location-selected-address-hours {
+    width: 100%;
+}
+.shq-location-selected-address,
+.shq-location-hours {
+    width: 100%;
+    line-height: 20px;
+    margin-bottom: 10px;
+}
+.shq-location-selected-hours div {
+    margin-bottom: 4px;
+}
+.shq-location-selected-map {
+    margin: 10px 0 5px 0;
+    clear: both;
+}
+a.shq-tog-link {
+    font-size: 12px;
+}
+.shq-locations-listed {
+    margin-bottom: 20px;
+}
+.shq-location {
+    border-bottom: 1px solid #ddd;
+    box-sizing: border-box;
+    padding: 10px 0 10px 30px;
+    display: table;
+    width: 100%;
+    background: url(../imgs/ico-map.svg) no-repeat;
+    background-size: 15px;
+    border-radius: 3px;
+    background-position: 10px 14px;
+}
+.shq-location-info,
+.shq-location-select {
+    display: table-cell;
+}
+.shq-location-select {
+    text-align: right;
+}
+.shq-location-name {
+    font-size: 14px;
+    font-weight: bold;
+}
+.shq-location-distance {
+    color: #94A5B4;
+    margin-right: 10px;
+}
+button.shq-location-btn {
+    font-size: 12px;
+    padding: 6px 12px;
+    transition: all 0.4s ease;
+    color: #4A90E2;
+    font-weight: bold;
+    border: 1px solid #4A90E2;
+    background: white;
+}
+button:hover.shq-location-btn {
+    background: #F3FAFF;
+}
+
+.shq-map-inline  {
+    margin-top: 4px;
+    margin-bottom: 10px;
+    border: 1px solid #E2F1FC;
+}
+.shq-map-inline iframe {
+    margin-bottom: -4px;
+}
+
+@media (min-width: 640px) {
+    .shq-location-selected {
+        background-position: 10px 10px;
+        padding: 10px 36px 20px 36px;
+    }
+    .shq-location-selected-address-hours:after {
+        content: ".";
+        visibility: hidden;
+        display: block;
+        height: 0;
+        clear: both;
+    }
+    .shq-location-selected-address,
+    .shq-location-selected-hours {
+        width: 50%;
+        float: left;
+        padding-right: 12px;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+}

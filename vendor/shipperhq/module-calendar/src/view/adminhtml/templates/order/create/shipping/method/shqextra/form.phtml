@@ -1,0 +1,197 @@
+<?php
+/**
+ *
+ * ShipperHQ Calendar Module
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * Shipper HQ Shipping
+ *
+ * @category  ShipperHQ
+ * @package   ShipperHQ_Calendar
+ * @copyright Copyright (c) 2017 Zowta LLC (http://www.ShipperHQ.com)
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @author    ShipperHQ Team sales@shipperhq.com
+ */
+
+/* @var $block Shipperhq\Calendar\Block\Adminhtml\Calendarpicker */
+$config = $block->getConfig();
+$adminRequestRatesUrl = $block->getAdminRequestRatesUrl();
+if (!isset($config['default_date'])) {
+    $config['default_date'] = '';
+}
+?>
+<script>
+    var calendar_config = <?php echo json_encode($config); ?>;
+    var request_rates_url = "<?php echo $adminRequestRatesUrl;?>";
+    require([
+        'jquery',
+        'jquery/ui'
+    ], function ($) {
+
+        var calendar = $('#shipperhq_calendar');
+        var calendar_div = $('#shq_datepicker');
+        calendar.on('calendar_update', function (event, passed_calendar_config) {
+            //update the global carrier config
+            calendar_config = passed_calendar_config;
+            if (passed_calendar_config.show_calendar !== true) {
+                calendar_div.hide();
+                return;
+            }
+            calendar_div.show();
+            updateCalendar(passed_calendar_config);
+        });
+
+        if (typeof calendar_config !== 'undefined' && calendar_config.show_calendar === true) {
+            calendar.trigger('calendar_update', calendar_config);
+        }
+
+        function updateCalendar(passed_calendar_config) {
+            if (passed_calendar_config['show_calendar']) {
+                $('#shq_datepicker').show();
+            }
+            var $el = $('#shipperhq_calendar');
+
+            //load config
+            var dateselected = passed_calendar_config['date_selected'];
+            if (dateselected === undefined || dateselected === null) {
+                dateselected = '';
+            }
+            if (passed_calendar_config['show_timeslots']) {
+                $('#shq_timeslots').show();
+                $('#shipperhq_timeslots').empty();
+                $.each(passed_calendar_config['timeslots'][dateselected], function (i, item) {
+                    $('#shipperhq_timeslots').append($('<option>', {
+                        value: i,
+                        text: item
+                    }));
+                });
+            }
+            if (passed_calendar_config['show_timeslots'] === false) {
+                $('#shq_timeslots').hide();
+            }
+            var options = {
+                showOn: "button",
+                buttonText: "",
+                beforeShowDay: function (date) {
+                    //ideally move to a function
+                    var dmy = $.datepicker.formatDate(calendar_config['datepickerFormat'], date);
+                    var alloweddates = calendar_config['allowed_dates'];
+                    var found = [false, "", "unAvailable"];
+                    for (var key in alloweddates) {
+                        if (dmy === alloweddates[key]) {
+                            found = [true, "", "Available"];
+                            break;
+                        }
+                    }
+                    return found;
+                },
+                onSelect: function(dateText, inst){
+                    handleChangeDate(dateText);
+                }
+            };
+
+            $el.datepicker(options);
+            $el.datepicker('option', 'dateFormat', calendar_config['datepickerFormat']);
+            $el.datepicker('option', 'minDate', calendar_config['min_date']);
+            $el.datepicker('option', 'maxDate', calendar_config['max_date']);
+            var dateText = dateselected;
+
+            if (passed_calendar_config['datepickerFormat'] === 'dd-mm-yy') {
+                var dateArr = dateText.split("-");
+                var day = parseInt(dateArr[0], 10);
+                var month = parseInt(dateArr[1], 10);
+                var year = dateArr[2];
+
+                dateText = new Date(year, month - 1, day);
+            }
+
+            $el.datepicker('setDate', dateText);
+        }
+
+        //adding
+        function handleChangeDate(dateText) {
+            //note this is using the global scope for calendar_config
+            var dateText = $('#shipperhq_calendar').val();
+
+            var ccode = calendar_config['carrier_code'];
+            var isPickup = ccode.indexOf("pickup") !== -1;
+            var carrierId = calendar_config['carrier_id'];
+            if(isPickup) {
+                //raise event and then ignore if it's pickup
+                $('#shipperhq_calendar').trigger('pickup_date_selected',
+                    {'date_selected' : dateText, 'carrier_code' : ccode, 'carrier_id': carrierId});
+                return;
+            }
+
+            //do we need this?
+            var isInitialize = false;
+            var dateselect_url =  request_rates_url;
+
+            request = new Ajax.Request(dateselect_url, {
+                parameters: {carriergroup_id: '', carrier_code: ccode,
+                    date_selected: dateText , load_only: isInitialize, carrier_id: carrierId},
+                showLoader: true,
+                onComplete: updateDates
+            });
+
+        }
+
+        function updateDates(transport) {
+            var response = transport.responseText.evalJSON();
+
+            //update rates
+            //var rates = response.rates;
+
+            this.calendar_config = response.calendar_config;
+            updateCalendar(this.calendar_config);
+            updateShippingMethods();
+        }
+
+        function updateShippingMethods() {
+            order.loadSHQShippingRates(); // MNB-824 Reload section incl methods on date change
+        }
+    });
+
+    // MNB-824 Borrowed from order/create/scripts.js. Only difference is we've changed to not collect rates as
+    // we've already done that
+    require(["Magento_Sales/order/create/form"], function () {
+        AdminOrder.prototype.loadSHQShippingRates = function () {
+            var addressContainer = this.shippingAsBilling ?
+                'billingAddressContainer' :
+                'shippingAddressContainer',
+                data = this.serializeData(this[addressContainer]).toObject();
+
+            data['collect_shipping_rates'] = 0;
+            this.isShippingMethodReseted = false;
+            this.loadArea(['shipping_method', 'totals'], true, data);
+
+            return false;
+        }
+    });
+</script>
+<div id="shq_calendar">
+    <div class="shq_datepicker shq-optn-50l" id="shq_datepicker" style="display:none">
+        <label for="shipperhq_calendar" class="shq-title">Delivery Date:</label>
+        <input id="shipperhq_calendar" name="order[delivery_date]" class="shq-input" readonly/>
+    </div>
+    <div id="shq_timeslots" class="shq-optn-50l" style="display:none">
+        <label for="shipperhq_timeslots" class="shq-title">Time Slot:</label>
+        <select class="shq-input" id="shipperhq_timeslots" name="order[timeslot]"></select>
+    </div>
+</div>
+

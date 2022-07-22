@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--
+  ~ Shipper HQ
+  ~
+  ~ @category ShipperHQ
+  ~ @package ShipperHQ_Client
+  ~ @copyright Copyright (c) 2019 Zowta LTD and Zowta LLC (http://www.ShipperHQ.com)
+  ~ @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+  ~ @author ShipperHQ Team sales@shipperhq.com
+  -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <carriers>
+            <shqserver>
+                <orderview_url>https://ovs.shipperhq.com</orderview_url>
+                <orderview_bundle_url>https://assets.shipperhq.com/shq-order-view_0.1.99.js</orderview_bundle_url>
+            </shqserver>
+        </carriers>
+    </default>
+</config>
+

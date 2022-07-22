@@ -1,0 +1,56 @@
+{
+    "name": "shipperhq/module-option",
+    "description": "ShipperHQ Option functionality",
+    "type": "magento2-module",
+    "version": "20.6.1",
+    "license": [
+        "OSL-3.0",
+        "AFL-3.0"
+    ],
+    "authors": [
+        {
+            "name": "ShipperHQ",
+            "email": "sales@shipperhq.com",
+            "homepage": "http://www.Shipperhq.com"
+        },
+        {
+            "name": "Zowta LLC"
+        }
+    ],
+    "support": {
+        "documentation": "http://docs.shipperhq.com"
+    },
+    "require": {
+        "shipperhq/module-common": "^20.8",
+        "shipperhq/library-shipper": "^20.12",
+        "shipperhq/module-shipper": "^20.34"
+    },
+    "require-dev": {
+        "magento-ecg/coding-standard": "^2.0",
+        "phpunit/phpunit": "^4.1",
+        "squizlabs/php_codesniffer": "^1.5",
+        "phpmd/phpmd": "@stable",
+        "pdepend/pdepend": "^2.2",
+        "fabpot/php-cs-fixer": "~1.2",
+        "sebastian/phpcpd": "^2.0"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": ""
+        }
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "ShipperHQ\\Option\\": ""
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ShipperHQ\\Option\\Test\\": "tests/"
+        }
+    }
+}

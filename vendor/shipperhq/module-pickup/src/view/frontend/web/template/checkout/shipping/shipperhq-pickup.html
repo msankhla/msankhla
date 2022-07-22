@@ -1,0 +1,81 @@
+<!--
+/**
+ *
+ * ShipperHQ
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * Shipper HQ Shipping
+ *
+ * @category ShipperHQ
+ * @package ShipperHQ_Pickup
+ * @copyright Copyright (c) 2016 Zowta LLC (http://www.ShipperHQ.com)
+ * @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @author ShipperHQ Team sales@shipperhq.com
+ */
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<div data-bind="attr: {id: 'shipperhq_pickup_' + $parent.carrier_code + '_' + $parent.method_code}, fadeVisible: shouldShow" class="shq-optn-100">
+    <!-- ko ifnot: (locations) -->
+    <div data-bind="i18n: 'Sorry no locations available'" class="shq-title"></div>
+    <!--/ko-->
+    <input class="shq-input shipperhq_location" name="shipperhq_location" type="hidden" data-bind="shq_pickup: myLocation"/>
+    <!-- ko with: myLocation -->
+    <div class="shq-location-selected">
+        <div class="shq-location-selected-info">
+            <div data-bind="text: pickupName" class="shq-location-selected-name"></div>
+            <div data-bind="text: distance" class="shq-location-selected-distance"></div>
+        </div>
+        <div class="shq-location-selected-address-hours" data-bind="visible: $parent.showAddress">
+            <div class="shq-location-selected-address">
+                <span data-bind="html: address" class="shq-location-selected-address-info"></span>
+            </div>
+            <div class="shq-location-selected-hours" data-bind="visible: showOpeningHours">
+                <div data-bind="text: standardHours" class="shq-location-selected-standard-hours"></div>
+            </div>
+        </div>
+        <div class="shq-location-selected-map">
+            <a data-bind="visible: showMap === 'popup', attr: { href: $parent.getMapUrl() }"
+               data-featherlight-iframe-width="640"
+               data-featherlight-iframe-height="480"
+               data-featherlight="iframe"
+               class="shq-map-popup">Show Map</a>
+            <a data-bind="visible: showMap === 'toggle', click: $parent.toggleMap, html: $parent.mapLinkLabel" target="_blank" class="shq-tog-link"></a>
+            <div class="shq-map-inline" data-bind="visible: $parent.showMapInline && $parent.mapShowing(), html: $parent.getMap()"></div>
+        </div>
+    </div>
+    <!-- /ko -->
+
+    <div class="shq-locations-listed" data-bind="visible: locations().length > 1">
+    <!-- ko foreach: locations -->
+        <!-- ko ifnot: ($parent.isSelectedLocation(key)) -->
+        <div class="shq-location">
+            <div class="shq-location-info">
+                <span data-bind="text: pickupName" class="shq-location-name"></span>
+            </div>
+            <div class="shq-location-select">
+                <span data-bind="text: distance" class="shq-location-distance"></span>
+                <button class="shq-location-btn" data-bind="value: key, click: $parent.selectLocation" title="Select">Select</button><br/>
+            </div>
+        </div>
+        <!-- /ko -->
+    <!--/ko-->
+    </div>
+</div>

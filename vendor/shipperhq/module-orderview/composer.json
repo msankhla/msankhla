@@ -1,0 +1,39 @@
+{
+    "name": "shipperhq/module-orderview",
+    "description": "View detailed order information from ShipperHQ",
+    "type": "magento2-module",
+    "version": "20.2.5",
+	"license": [
+        "OSL-3.0",
+        "AFL-3.0"
+    ],
+    "authors": [
+        {
+            "name": "ShipperHQ",
+            "email": "sales@shipperhq.com",
+            "homepage": "http://www.Shipperhq.com"
+        },
+        {
+            "name": "Zowta LLC"
+        }
+    ],
+    "support": {
+        "documentation": "http://docs.shipperhq.com"
+    },
+    "autoload": {
+        "files": [
+            "src/registration.php"
+        ],
+        "psr-4": {
+	        "ShipperHQ\\Orderview\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ShipperHQ\\Orderview\\Test\\": "tests/unit/"
+        }
+    },
+    "archive": {
+        "exclude": ["/ZIP/"]
+    }
+}

@@ -1,0 +1,122 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * @package     BlueAcorn/Core
+ * @version     2.0.0
+ * @author      Blue Acorn iCi. <code@blueacorn.com>
+ * @copyright   Copyright © Blue Acorn iCi. All Rights Reserved.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <virtualType name="ContentDataReader" type="Magento\Framework\Config\Reader\Filesystem">
+        <arguments>
+            <argument name="converter" xsi:type="object">BlueAcorn\Core\Model\Config\Converter</argument>
+            <argument name="schemaLocator" xsi:type="object">BlueAcorn\Core\Model\Config\SchemaLocator</argument>
+            <argument name="fileName" xsi:type="string">blueacorn_content.xml</argument>
+            <argument name="idAttributes" xsi:type="array">
+                <item name="/config/pages/page" xsi:type="string">identifier</item>
+                <item name="/config/blocks/block" xsi:type="string">identifier</item>
+                <item name="/config/assets/asset" xsi:type="string">identifier</item>
+                <item name="/config/templates/template" xsi:type="string">identifier</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="baContentVersionsPageConverter" type="BlueAcorn\Core\Model\Config\Converter\DefaultConverter">
+        <arguments>
+            <argument name="typeName" xsi:type="string">pages</argument>
+            <argument name="entryXPath" xsi:type="string">/config/pages/page</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="baContentVersionsBlockConverter" type="BlueAcorn\Core\Model\Config\Converter\DefaultConverter">
+        <arguments>
+            <argument name="typeName" xsi:type="string">blocks</argument>
+            <argument name="entryXPath" xsi:type="string">/config/blocks/block</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="baContentVersionsAssetConverter" type="BlueAcorn\Core\Model\Config\Converter\DefaultConverter">
+        <arguments>
+            <argument name="typeName" xsi:type="string">assets</argument>
+            <argument name="entryXPath" xsi:type="string">/config/assets/asset</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="baContentVersionsTemplateConverter" type="BlueAcorn\Core\Model\Config\Converter\DefaultConverter">
+        <arguments>
+            <argument name="typeName" xsi:type="string">templates</argument>
+            <argument name="entryXPath" xsi:type="string">/config/templates/template</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="BlueAcorn\Core\Model\Config\Converter">
+        <arguments>
+            <argument name="converters" xsi:type="array">
+                <item name="pageConverter" xsi:type="object">baContentVersionsPageConverter</item>
+                <item name="blockConverter" xsi:type="object">baContentVersionsBlockConverter</item>
+                <item name="assetConverter" xsi:type="object">baContentVersionsAssetConverter</item>
+                <item name="widgetConverter" xsi:type="object">BlueAcorn\Core\Model\Config\Converter\WidgetConverter</item>
+                <item name="templateConverter" xsi:type="object">baContentVersionsTemplateConverter</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="BlueAcorn\Core\Model\Config\Data">
+        <arguments>
+            <argument name="reader" xsi:type="object">ContentDataReader</argument>
+            <argument name="cacheId" xsi:type="string">blueacorn_content_install_cache</argument>
+        </arguments>
+    </type>
+
+    <virtualType name="BlueAcorn\Core\Model\PageBuilder\Template\Repository"
+                 type="Magento\PageBuilder\Model\TemplateRepository">
+        <arguments>
+            <argument name="searchResultsFactory" xsi:type="object">BlueAcorn\Core\Model\ContentVersion\SearchResultsFactory</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="BlueAcorn\Core\Model\ContentVersion\Action\Save\Template">
+        <arguments>
+            <argument name="templateRepository" xsi:type="object">BlueAcorn\Core\Model\PageBuilder\Template\Repository</argument>
+        </arguments>
+    </type>
+
+    <virtualType name="BlueAcorn\Core\Model\ContentVersion\Action\Save"
+                 type="BlueAcorn\Core\Model\ContentVersion\Action\ActionPool">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="page" xsi:type="object">BlueAcorn\Core\Model\ContentVersion\Action\Save\Page</item>
+                <item name="block" xsi:type="object">BlueAcorn\Core\Model\ContentVersion\Action\Save\Block</item>
+                <item name="assets" xsi:type="object">BlueAcorn\Core\Model\ContentVersion\Action\Save\Asset</item>
+                <item name="widgets" xsi:type="object">BlueAcorn\Core\Model\ContentVersion\Action\Save\Widget</item>
+                <item name="templates" xsi:type="object">BlueAcorn\Core\Model\ContentVersion\Action\Save\Template</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BlueAcorn\Core\Model\ContentVersion\Action\PostProcess"
+                 type="BlueAcorn\Core\Model\ContentVersion\Action\ActionPool">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="page" xsi:type="object">BlueAcorn\Core\Model\ContentVersion\Action\PostProcess\Page</item>
+                <item name="block" xsi:type="object">BlueAcorn\Core\Model\ContentVersion\Action\PostProcess\Block</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="BlueAcorn\Core\Model\ContentVersion\Action\ProcessContent">
+        <arguments>
+            <argument name="saveAction" xsi:type="object">BlueAcorn\Core\Model\ContentVersion\Action\Save</argument>
+            <argument name="postProcessAction" xsi:type="object">BlueAcorn\Core\Model\ContentVersion\Action\PostProcess</argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="baCoreInstallContent" xsi:type="object">BlueAcorn\Core\Console\Command\InstallContent</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

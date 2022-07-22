@@ -1,0 +1,88 @@
+/*
+ * Shipper HQ
+ *
+ * @category ShipperHQ
+ * @package ShipperHQ_Calendar
+ * @copyright Copyright (c) 2020 Zowta LTD and Zowta LLC (http://www.ShipperHQ.com)
+ * @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @author ShipperHQ Team sales@shipperhq.com
+ */
+
+@shq-cal-color-main: #4A90E2;
+@shq-cal-color-main-hover: #3074C4;
+@shq-cal-color-lt: white;
+@shq-cal-color-dk: #333;
+@shq-cal-font-size: 13px;
+@shq-cal-border-radius: 3px;
+@shq-cal-cal-img-drop: url('@{baseDir}ShipperHQ_Calendar/images/ico-cal.svg'), url('@{baseDir}ShipperHQ_Calendar/images/ico-dn.svg');
+@shq-cal-time-img-drop: url('@{baseDir}ShipperHQ_Calendar/images/ico-time.svg'), url('@{baseDir}ShipperHQ_Calendar/images/ico-dn.svg');
+
+.shq-calendar-box,
+.form.methods-shipping select.shq-timeslot-drop {
+  background-position: 10px 12px, right 16px;
+  background-repeat: no-repeat;
+  background-size: 18px, 22px 12px;
+  padding: 10px 28px 10px 36px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width:100%;
+  background-color: @shq-cal-color-main;
+  color: @shq-cal-color-lt;
+  border-radius: @shq-cal-border-radius;
+  min-height: 42px;
+  line-height: 22px;
+  font-size: @shq-cal-font-size;
+  transition: all 0.4s ease;
+
+  &:hover {
+    background-color: @shq-cal-color-main-hover;
+    cursor: pointer;
+  }
+}
+
+.form.methods-shipping select.shq-timeslot-drop option{
+  background-color: @shq-cal-color-lt;
+  color: @shq-cal-color-dk;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.shq-calendar-box {
+  position: relative;
+  background-image: @shq-cal-cal-img-drop;
+}
+
+.form.methods-shipping select.shq-timeslot-drop {
+  border:none;
+  margin-top: 0;
+  background-image: @shq-cal-time-img-drop;
+}
+.shq-calendar-change {
+  position: absolute;
+  top: 14px;
+  left: 10px;
+
+  .ui-datepicker-trigger:before {
+    color: @shq-cal-color-lt;
+    font-size: 20px;
+  }
+}
+
+.shq_datepicker_inline {
+  position: relative;
+
+  .ui-datepicker-inline {
+    position: absolute;
+    display: block;
+    top: 44px;
+    width: 49%;
+    margin-bottom: 20px;
+  }
+}
+
+@media only screen and (max-width: @screen__xs) {
+  .shq_datepicker_inline .ui-datepicker-inline {
+    width: 100%;
+  }
+}

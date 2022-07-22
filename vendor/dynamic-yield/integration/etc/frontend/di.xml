@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Framework\App\Response\Http">
+        <plugin name="DynamicYield_Integration::responseHttpBefore" type="DynamicYield\Integration\Plugin\ResponseHttpPlugin" sortOrder="1" disabled="false" />
+    </type>
+
+    <type name="Magento\Checkout\Model\Cart">
+        <plugin name="DynamicYield_Integration::beforeRemoveFromCart" type="DynamicYield\Integration\Plugin\RemoveFromCartPlugin" sortOrder="4" disabled="false" />
+        <plugin sortOrder="1" name="dynamicYieldIntegrationCart" type="DynamicYield\Integration\Plugin\UpdateCartPlugin" disabled="false"/>
+    </type>
+
+    <type name="Magento\Checkout\Model\Cart">
+        <plugin name="DynamicYield_Integration::aroundEmptyCartPlugin" type="DynamicYield\Integration\Plugin\EmptyCartPlugin" sortOrder="5" disabled="false" />
+    </type>
+
+    <type name="Magento\Checkout\Controller\Cart\CouponPost">
+        <plugin name="DynamicYield_Integration::afterCartSetCouponCode" type="DynamicYield\Integration\Plugin\CartSetCouponCodePlugin" sortOrder="6" disabled="false" />
+    </type>
+
+    <type name="Magento\Checkout\Model\Cart">
+        <plugin name="DynamicYield_Integration::addToCartPlugin" type="DynamicYield\Integration\Plugin\AddToCartPlugin" sortOrder="7" disabled="false" />
+    </type>
+</config>

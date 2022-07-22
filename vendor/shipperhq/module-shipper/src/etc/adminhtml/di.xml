@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!--
+  ~ Shipper HQ
+  ~
+  ~ @category ShipperHQ
+  ~ @package ShipperHQ_Shipper
+  ~ @copyright Copyright (c) 2020 Zowta LTD and Zowta LLC (http://www.ShipperHQ.com)
+  ~ @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+  ~ @author ShipperHQ Team sales@shipperhq.com
+  -->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Framework\Notification\MessageList">
+        <arguments>
+            <argument name="messages" xsi:type="array">
+                <item name="shipperhq_credentials_invalid" xsi:type="string">ShipperHQ\Shipper\Model\System\Message\Credentials</item>
+                <item name="shipperhq_feature_module_alert" xsi:type="string">ShipperHQ\Shipper\Model\System\Message\ModuleAlert</item>
+                <item name="shipperhq_index_alert" xsi:type="string">ShipperHQ\Shipper\Model\System\Message\IndexAlert</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <plugin name="sales_order_shipperhq_columns"
+                type="ShipperHQ\Shipper\Plugin\Order\CollectionFactory"
+                sortOrder="100"
+                disabled="false" />
+    </type>
+
+    <virtualType name="Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Pool">
+        <arguments>
+            <argument name="modifiers" xsi:type="array">
+                <item name="Hidable" xsi:type="array">
+                    <item name="class" xsi:type="string">ShipperHQ\Shipper\Ui\DataProvider\Product\Form\Modifier\Hidable</item>
+                    <item name="sortOrder" xsi:type="number">10</item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+</config>

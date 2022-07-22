@@ -1,0 +1,36 @@
+{
+    "name": "shipperhq/module-pickup",
+    "description": "ShipperHQ Store Pickup functionality",
+    "type": "magento2-module",
+    "version": "22.5.1",
+    "license": [
+        "OSL-3.0",
+        "AFL-3.0"
+    ],
+    "authors": [
+        {
+            "name": "ShipperHQ",
+            "email": "sales@shipperhq.com",
+            "homepage": "http://www.Shipperhq.com"
+        },
+        {
+            "name": "Zowta LLC"
+        }
+    ],
+    "support": {
+        "documentation": "http://docs.shipperhq.com"
+    },
+    "require": {
+        "shipperhq/module-shipper": "^20.34",
+        "shipperhq/library-shipper": "^20.12",
+        "shipperhq/module-calendar": "^22.5"
+    },
+    "autoload": {
+        "files": [
+            "src/registration.php"
+        ],
+        "psr-4": {
+            "ShipperHQ\\Pickup\\": "src/"
+        }
+    }
+}

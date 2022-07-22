@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="customer_save_commit_after">
+        <observer name="customerAccountObserver" instance="Emartech\Emarsys\Observers\CustomerAccountObserver" />
+    </event>
+    <event name="customer_address_save_commit_after">
+        <observer name="customerAddressObserver" instance="Emartech\Emarsys\Observers\CustomerAddressObserver" />
+    </event>
+    <event name="newsletter_subscriber_save_after">
+        <observer name="subscriptionObserver" instance="Emartech\Emarsys\Observers\SubscriptionObserver" />
+    </event>
+    <event name="newsletter_subscriber_delete_after">
+        <observer name="subscriptionObserver" instance="Emartech\Emarsys\Observers\SubscriptionObserver" />
+    </event>
+    <event name="sales_order_save_after">
+        <observer name="orderObserver" instance="Emartech\Emarsys\Observers\SalesOrderObserver" />
+    </event>
+    <event name="sales_order_creditmemo_save_after">
+        <observer name="creditmemoObserver" instance="Emartech\Emarsys\Observers\CreditmemoObserver" />
+    </event>
+    <event name="customer_delete_after">
+        <observer name="customerDeleteObserver" instance="Emartech\Emarsys\Observers\CustomerDeleteObserver" />
+    </event>
+
+    <!-- CUSTOM EVENT MANAGER -->
+    <event name="emarsys_create_custom_event">
+        <observer name="emarsysCreateCustomEvent" instance="Emartech\Emarsys\Observers\CreateCustomEvent" />
+    </event>
+    <!-- CUSTOM EVENT MANAGER -->
+</config>

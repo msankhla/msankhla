@@ -1,0 +1,39 @@
+<?php
+/*
+NOTICE OF LICENSE
+
+This source file is subject to the SafeMageEULA that is bundled with this package in the file LICENSE.txt.
+
+It is also available at this URL: https://www.safemage.com/LICENSE_EULA.txt
+
+Copyright (c)  SafeMage (https://www.safemage.com/)
+*/
+?>
+<?php
+// @codingStandardsIgnoreFile
+
+/** @var $block \SafeMage\Extensions\Block\Adminhtml\System\Config\Extension\ExtensionsList */
+$moduleConfigList = $block->getExtensionsList(); ?>
+<ul>
+    <?php foreach ($moduleConfigList as $code => $config): ?>
+        <li class="safemage-item">
+            <div class="ovh">
+                <div class="safemage-row safemage-ext-name">
+                    <?php echo $config['name'] . ' ' . $config['version'] ?>
+                </div>
+                <?php if ($block->getExtensionUrl($config)): ?>
+                <a class="safemage-link" href="<?php echo $this->getExtensionUrl($config) ?>" target="_blank">
+                    <?php endif; ?>
+                    <div class="safemage-img safemage-row"><img src="<?php echo $block->getImageUrl($code) ?>"/></div>
+                    <?php if ($block->getExtensionUrl($config)): ?>
+                </a>
+            <?php endif; ?>
+            </div>
+            <div><?php echo $block->getEnableSelectHtml($code) ?></div>
+        </li>
+    <?php endforeach; ?>
+</ul>
+<div class="safemage-comment">
+    <?php echo __('Extensions can only be enabled/disabled in developer or default mode.') ?>
+    <?php echo __('Current mode:') ?> <u><?php echo $block->getMagentoMode()?></u>
+</div>

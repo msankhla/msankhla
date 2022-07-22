@@ -1,0 +1,9 @@
+"Invalid Document: %1%2 Error: %3","Invalid Document: %1%2 Error: %3"
+Disabled,Disabled
+Enabled,Enabled
+"SafeMage Section","SafeMage Section"
+Extensions,Extensions
+SafeMage,SafeMage
+"Installed SafeMage Extensions","Installed SafeMage Extensions"
+"Current mode:","Current mode:"
+"Extensions can only be enabled/disabled in developer or default mode.","Extensions can only be enabled/disabled in developer or default mode."

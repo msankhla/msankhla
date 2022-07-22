@@ -1,0 +1,24 @@
+<?php
+/**
+ * @category   Emarsys
+ * @package    Emartech_Emarsys
+ * @copyright  Copyright (c) 2018 Emarsys. (http://www.emarsys.net/)
+ */
+/** @var \Emartech\Emarsys\Block\Snippets $block */
+?>
+
+<?php $injectable = $block->isInjectable(); ?>
+<?php if ($injectable): ?>
+  <script type="text/javascript">
+    var ScarabQueue = ScarabQueue || [];
+    (function(id) {
+      if (document.getElementById(id)) return;
+      var js = document.createElement('script'); js.id = id;
+      js.src = '\/' + '\/' + 'cdn.scarabresearch.com/js/<?= /* @noEscape */ $block->getMerchantId() ?>/scarab-v2.js';
+      var fs = document.getElementsByTagName('script')[0];
+      fs.parentNode.insertBefore(js, fs);
+    })('scarab-js-api');
+  </script>
+  <script src='<?= /* @noEscape */ $block->getSnippetUrl() ?>'></script>
+  <script>Emarsys.Magento2.track(<?= /* @noEscape */ $block->getTrackingData() ?>);</script>
+<?php endif; ?>

@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/emarsys/customers" method="GET">
+        <service class="Emartech\Emarsys\Api\CustomersApiInterface" method="get"/>
+        <resources>
+            <resource ref="Emartech_Emarsys::api_customers" />
+        </resources>
+    </route>
+    <route url="/V1/emarsys/subscriptions" method="GET">
+        <service class="Emartech\Emarsys\Api\SubscriptionsApiInterface" method="get"/>
+        <resources>
+            <resource ref="Emartech_Emarsys::api_subscriptions" />
+        </resources>
+    </route>
+    <route url="/V1/emarsys/subscriptions" method="POST">
+        <service class="Emartech\Emarsys\Api\SubscriptionsApiInterface" method="update"/>
+        <resources>
+            <resource ref="Emartech_Emarsys::api_subscriptions" />
+        </resources>
+    </route>
+    <route url="/V1/emarsys/events" method="POST">
+        <service class="Emartech\Emarsys\Api\EventsApiInterface" method="get"/>
+        <resources>
+            <resource ref="Emartech_Emarsys::api_events" />
+        </resources>
+    </route>
+    <route url="/V1/emarsys/config" method="POST">
+        <service class="Emartech\Emarsys\Api\ConfigApiInterface" method="set"/>
+        <resources>
+            <resource ref="Emartech_Emarsys::api_configs"/>
+        </resources>
+    </route>
+    <route url="/V1/emarsys/config/attributes/:type" method="POST">
+        <service class="Emartech\Emarsys\Api\ConfigApiInterface" method="setAttributes"/>
+        <resources>
+            <resource ref="Emartech_Emarsys::api_configs"/>
+        </resources>
+    </route>
+    <route url="/V1/emarsys/products" method="GET">
+        <service class="Emartech\Emarsys\Api\ProductsApiInterface" method="get"/>
+        <resources>
+            <resource ref="Emartech_Emarsys::api_products"/>
+        </resources>
+    </route>
+    <route url="/V1/emarsys/categories" method="GET">
+        <service class="Emartech\Emarsys\Api\CategoriesApiInterface" method="get"/>
+        <resources>
+            <resource ref="Emartech_Emarsys::api_categories"/>
+        </resources>
+    </route>
+    <route url="/V1/emarsys/system" method="GET">
+        <service class="Emartech\Emarsys\Api\SystemApiInterface" method="get"/>
+        <resources>
+            <resource ref="Emartech_Emarsys::api_system"/>
+        </resources>
+    </route>
+    <route url="/V1/emarsys/orders" method="GET">
+        <service class="Emartech\Emarsys\Api\OrdersApiInterface" method="get"/>
+        <resources>
+            <resource ref="Emartech_Emarsys::api_orders"/>
+        </resources>
+    </route>
+    <route url="/V1/emarsys/refunds" method="GET">
+        <service class="Emartech\Emarsys\Api\RefundsApiInterface" method="get"/>
+        <resources>
+            <resource ref="Emartech_Emarsys::api_refunds"/>
+        </resources>
+    </route>
+    <route url="/V1/emarsys/attributes/:type" method="GET">
+        <service class="Emartech\Emarsys\Api\AttributesApiInterface" method="get"/>
+        <resources>
+            <resource ref="Emartech_Emarsys::api_attributes"/>
+        </resources>
+    </route>
+    <route url="/V1/emarsys/inventory/items" method="POST">
+        <service class="Emartech\Emarsys\Api\InventoryApiInterface" method="getList"/>
+        <resources>
+            <resource ref="Emartech_Emarsys::api_inventory"/>
+        </resources>
+    </route>
+</routes>

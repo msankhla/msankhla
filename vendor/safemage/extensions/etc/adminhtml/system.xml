@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!--
+NOTICE OF LICENSE
+
+This source file is subject to the SafeMageEULA that is bundled with this package in the file LICENSE.txt.
+
+It is also available at this URL: https://www.safemage.com/LICENSE_EULA.txt
+
+Copyright (c)  SafeMage (https://www.safemage.com/)
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="safemage" translate="label" sortOrder="300">
+            <label>SafeMage</label>
+        </tab>
+        <section id="safemage_extensions" translate="label" sortOrder="9999" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Extensions</label>
+            <tab>safemage</tab>
+            <resource>SafeMage_Extensions::extensions</resource>
+            <group id="extension" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Installed SafeMage Extensions</label>
+                <frontend_model>SafeMage\Extensions\Block\Adminhtml\System\Config\Extension</frontend_model>
+                <field id="enabled" translate="label" type="hidden" sortOrder="10" showInDefault="0" showInWebsite="0" showInStore="0">
+                    <label>Enable</label>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

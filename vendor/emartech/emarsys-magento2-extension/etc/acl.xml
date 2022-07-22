@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+    <acl>
+        <resources>
+            <resource id="Magento_Backend::admin">
+                <resource id="Emartech_Emarsys::api" title="Emartech/Emarsys" sortOrder="10">
+                    <resource id="Emartech_Emarsys::api_customers" title="Customers API" sortOrder="10"/>
+                    <resource id="Emartech_Emarsys::api_subscriptions" title="Subscriptions API" sortOrder="20"/>
+                    <resource id="Emartech_Emarsys::api_events" title="Events API" sortOrder="30"/>
+                    <resource id="Emartech_Emarsys::api_configs" title="Config API" sortOrder="40"/>
+                    <resource id="Emartech_Emarsys::api_products" title="Product API" sortOrder="50"/>
+                    <resource id="Emartech_Emarsys::api_categories" title="Category API" sortOrder="60"/>
+                    <resource id="Emartech_Emarsys::api_system" title="System information API" sortOrder="70"/>
+                    <resource id="Emartech_Emarsys::api_orders" title="Order API" sortOrder="80"/>
+                    <resource id="Emartech_Emarsys::api_refunds" title="Refund API" sortOrder="90"/>
+                </resource>
+            </resource>
+        </resources>
+    </acl>
+</config>

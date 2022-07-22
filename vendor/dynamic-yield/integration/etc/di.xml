@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="productExport" xsi:type="object">DynamicYield\Integration\Console\Export</item>
+                <item name="heartBeat" xsi:type="object">DynamicYield\Integration\Console\HeartBeat</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="DyiFeedLogger" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="debug" xsi:type="object">DynamicYield\Integration\Model\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="DynamicYield\Integration\Model\Export">
+        <arguments>
+            <argument name="logger" xsi:type="object">DyiFeedLogger</argument>
+        </arguments>
+    </type>
+
+    <!-- Web API Plugin -->
+    <type name="Magento\Quote\Model\CouponManagement">
+        <plugin name="DynamicYield_Integration::afterSetCouponCode" type="DynamicYield\Integration\Plugin\SetCouponCodePlugin" sortOrder="5" disabled="false" />
+    </type>
+</config>

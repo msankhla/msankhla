@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Loggers -->
+    <type name="Signifyd\Connect\Logger\Handler">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+            <argument name="fileName" xsi:type="string">var/log/signifyd_connect.log</argument>
+        </arguments>
+    </type>
+    <virtualType name="debuggerHandler" type="Signifyd\Connect\Logger\Handler">
+        <arguments>
+            <argument name="fileName" xsi:type="string">var/log/signifyd_connect_debug.log</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="testHandler" type="Signifyd\Connect\Logger\Handler">
+        <arguments>
+            <argument name="fileName" xsi:type="string">var/log/signifyd_connect_test.log</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="installHandler" type="Signifyd\Connect\Logger\Handler">
+        <arguments>
+            <argument name="fileName" xsi:type="string">var/log/signifyd_connect_install.log</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Signifyd\Connect\Logger\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">SignifydLogger</argument>
+            <argument name="handlers"  xsi:type="array">
+                <item name="system" xsi:type="object">Signifyd\Connect\Logger\Handler</item>
+            </argument>
+            <argument name="processors" xsi:type="array"></argument>
+        </arguments>
+    </type>
+    <type name="Signifyd\Connect\Logger\Debugger">
+        <arguments>
+            <argument name="name" xsi:type="string">SignifydDebugger</argument>
+            <argument name="handlers"  xsi:type="array">
+                <item name="system" xsi:type="object">debuggerHandler</item>
+            </argument>
+            <argument name="processors" xsi:type="array"></argument>
+        </arguments>
+    </type>
+    <type name="Signifyd\Connect\Logger\Test">
+        <arguments>
+            <argument name="name" xsi:type="string">SignifydTest</argument>
+            <argument name="handlers"  xsi:type="array">
+                <item name="system" xsi:type="object">testHandler</item>
+            </argument>
+            <argument name="processors" xsi:type="array"></argument>
+        </arguments>
+    </type>
+    <type name="Signifyd\Connect\Logger\Install">
+        <arguments>
+            <argument name="name" xsi:type="string">SignifydInstall</argument>
+            <argument name="handlers"  xsi:type="array">
+                <item name="system" xsi:type="object">installHandler</item>
+            </argument>
+            <argument name="processors" xsi:type="array"></argument>
+        </arguments>
+    </type>
+
+    <!-- Payment data factory -->
+    <type name="Signifyd\Connect\Model\PaymentVerificationFactory">
+        <arguments>
+            <argument name="config" xsi:type="object">Magento\Payment\Gateway\Config\Config</argument>
+            <argument name="avsDefaultAdapter" xsi:type="object">Signifyd\Connect\Model\Payment\Base\AvsEmsCodeMapper</argument>
+            <argument name="cvvDefaultAdapter" xsi:type="object">Signifyd\Connect\Model\Payment\Base\CvvEmsCodeMapper</argument>
+            <argument name="cardholderDefaultAdapter" xsi:type="object">Signifyd\Connect\Model\Payment\Base\CardholderMapper</argument>
+            <argument name="last4DefaultAdapter" xsi:type="object">Signifyd\Connect\Model\Payment\Base\Last4Mapper</argument>
+            <argument name="expMonthDefaultAdapter" xsi:type="object">Signifyd\Connect\Model\Payment\Base\ExpMonthMapper</argument>
+            <argument name="expYearDefaultAdapter" xsi:type="object">Signifyd\Connect\Model\Payment\Base\ExpYearMapper</argument>
+            <argument name="binDefaultAdapter" xsi:type="object">Signifyd\Connect\Model\Payment\Base\BinMapper</argument>
+            <argument name="transactionIdDefaultAdapter" xsi:type="object">Signifyd\Connect\Model\Payment\Base\TransactionIdMapper</argument>
+        </arguments>
+    </type>
+
+    <!-- Plugins -->
+    <type name="Magento\Paypal\Model\Payflowlink">
+        <plugin name="Signifyd_Connect_Magento_Paypal_Model_Payflowlink" type="\Signifyd\Connect\Plugin\Magento\Paypal\Model\Payflowlink" />
+    </type>
+
+    <type name="Magento\Authorizenet\Model\TransactionService">
+        <plugin name="Signifyd_Connect_Magento_Authorizenet_Model_TransactionService" type="\Signifyd\Connect\Plugin\Magento\Authorizenet\Model\TransactionService" />
+    </type>
+
+    <type name="Magento\Sales\Model\Order">
+        <plugin name="Signifyd_Connect_Magento_Sales_Model_Order" type="\Signifyd\Connect\Plugin\Magento\Sales\Model\Order" />
+    </type>
+
+    <type name="Magento\GiftCard\Model\AccountGenerator">
+        <plugin name="Signifyd_Connect_Plugin_Magento_GiftCard_Model_AccountGenerator" type="\Signifyd\Connect\Plugin\Magento\GiftCard\Model\AccountGenerator" />
+    </type>
+
+    <type name="Magento\Sales\Model\ResourceModel\Order\Grid\Collection">
+        <plugin name="Signifyd_Connect_Plugin_Magento_Sales_Model_ResourceModel_Order_Grid" type="\Signifyd\Connect\Plugin\Magento\Sales\Model\ResourceModel\Order\Grid\Collection" />
+    </type>
+
+    <type name="Magento\Reports\Model\ResourceModel\Quote\Collection">
+        <plugin name="Signifyd_Connect_Plugin_Magento_Reports_Model_ResourceModel_Quote_Collection" type="\Signifyd\Connect\Plugin\Magento\Reports\Model\ResourceModel\Quote\Collection" />
+    </type>
+
+    <type name="Adyen\Payment\Helper\Data">
+        <plugin name="Signifyd_Connect_Plugin_Adyen_Payment_Helper_Data" type="\Signifyd\Connect\Plugin\Adyen\Payment\Helper\Data" />
+    </type>
+
+    <type name="Adyen\Payment\Gateway\Request\CheckoutDataBuilder">
+        <plugin name="Signifyd_Connect_Plugin_Adyen_Payment_Gateway_Request_CheckoutDataBuilder" type="\Signifyd\Connect\Plugin\Adyen\Payment\Gateway\Request\CheckoutDataBuilder" />
+    </type>
+
+    <type name="Adyen\Payment\Gateway\Response\CheckoutPaymentsDetailsHandler">
+        <plugin name="Signifyd_Connect_Plugin_Adyen_Payment_Gateway_Response_CheckoutPaymentsDetailsHandler" type="\Signifyd\Connect\Plugin\Adyen\Payment\Gateway\Response\CheckoutPaymentsDetailsHandler" />
+    </type>
+
+    <type name="Adyen\Payment\Controller\Process\Json">
+        <plugin name="Signifyd_Connect_Plugin_Adyen_Payment_Controller_Process_Json" type="\Signifyd\Connect\Plugin\Adyen\Payment\Controller\Process\Json" />
+    </type>
+
+    <!-- Preferences -->
+    <preference for="Magento\Sales\Model\ResourceModel\Order\Grid\Collection" type="Signifyd\Connect\Model\ResourceModel\Order\Grid\Collection" />
+
+    <preference for="Magento\Reports\Block\Adminhtml\Shopcart\Abandoned\Grid" type="Signifyd\Connect\Block\Adminhtml\Shopcart\Abandoned\Grid" />
+</config>

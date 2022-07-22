@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <dyi_integration>
+            <general>
+                <event_name>Dyi-Event-Data</event_name>
+                <access_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+            </general>
+            <feed>
+                <enable_feed_sync>1</enable_feed_sync>
+                <update_rate>7,1440</update_rate>
+            </feed>
+            <integration>
+                <cdn_integration>No</cdn_integration>
+                <europe_account>0</europe_account>
+            </integration>
+        </dyi_integration>
+
+        <dev>
+            <dyi_event_selectors>
+                <layered_nav_trigger>.filter-options-content .item a</layered_nav_trigger>
+                <layered_nav_swatch_trigger>.filter-options-content .swatch-option</layered_nav_swatch_trigger>
+                <product_page_swatch_trigger>.swatch-attribute-options .swatch-option</product_page_swatch_trigger>
+                <product_page_attribute_trigger>.swatch-attribute-options .swatch-select</product_page_attribute_trigger>
+                <product_page_custom_option_trigger>.product-custom-option</product_page_custom_option_trigger>
+                <category_page_sort_order_trigger>.sorter-options</category_page_sort_order_trigger>
+                <category_page_sort_order_switcher_trigger>.sorter-action</category_page_sort_order_switcher_trigger>
+                <category_page_filters_type>{"closest":".filter-options-item","querySelector":".filter-options-title","innerText":""}</category_page_filters_type>
+                <category_page_filters_price_value>{"removeChildElement":".count","innerText":"","trim":"()"}</category_page_filters_price_value>
+                <category_page_filters_regular_value>{"getChildNode":"0","textContent":"","trim":"()"}</category_page_filters_regular_value>
+                <category_page_filters_swatch_value>{"getAttribute":"option-label"}</category_page_filters_swatch_value>
+                <category_page_filters_swatch_image_value>{"getAttribute":"option-label"}</category_page_filters_swatch_image_value>
+                <product_page_swatch_type>{"closest":".swatch-attribute","querySelector":".swatch-attribute-label","innerText":""}</product_page_swatch_type>
+                <product_page_swatch_value>{"innerText":""}</product_page_swatch_value>
+                <product_page_swatch_image_value>{"getAttribute":"option-label"}</product_page_swatch_image_value>
+                <product_page_attribute_type>{"closest":".swatch-attribute","querySelector":".swatch-attribute-label","innerText":""}</product_page_attribute_type>
+                <product_page_attribute_value>{"getSelectedOption":"()","innerText":"","trim":"()"}</product_page_attribute_value>
+                <product_page_custom_option_type>{"closest":".control","closest":".field","querySelector":".label span","innerText":""}</product_page_custom_option_type>
+                <product_page_custom_option_value>{"getSelectedOption":"()","innerText":"","trim":"()"}</product_page_custom_option_value>
+                <product_page_custom_option_alt_value>{"closest":".field","querySelector":".label","innerText":""}</product_page_custom_option_alt_value>
+                <category_page_sort_order_by>{"closest":".toolbar-sorter","querySelector":".sorter-options","getSelectedOption":"()","innerText":"","trim":"()"}</category_page_sort_order_by>
+                <category_page_sort_order_direction>{"closest":".toolbar-sorter","querySelector":".sorter-action","getAttribute":"data-value"}</category_page_sort_order_direction>
+            </dyi_event_selectors>
+        </dev>
+    </default>
+</config>
