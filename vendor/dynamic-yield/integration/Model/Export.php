@@ -374,7 +374,7 @@ class Export
      *
      * @return array
      */
-    public function chunkProductExport($file, $additionalAttributes, $limit = 100, $offset = 0)
+    public function chunkProductExport($file, $limit = 100, $offset = 0, $additionalAttributes)
     {
         if($this->_feedHelper->getIsDebugMode()){
             $time_start = microtime(true);
