@@ -94,7 +94,7 @@ $regionProvider = $block->getRegionProvider();
                     </label>
                 </div>
                 <input type="text"
-                       name="street[]"
+                       name="street[0]"
                        value="<?= $block->escapeHtml($block->getStreetLine(1)) ?>"
                        title="<?= $block->escapeHtmlAttr(__('Street Address')) ?>"
                        id="street_1"
@@ -108,7 +108,7 @@ $regionProvider = $block->getRegionProvider();
                             </label>
                             <div class="control">
                                 <input type="text"
-                                       name="street[]"
+                                       name="street[<?= /* @noEscape */ $_i ?>]"
                                        value="<?= $block->escapeHtml($block->getStreetLine($_i)) ?>"
                                        title="<?= $block->escapeHtmlAttr(__('Street Address %1', $_i)) ?>"
                                        id="street_<?= /* @noEscape */ $_i ?>"

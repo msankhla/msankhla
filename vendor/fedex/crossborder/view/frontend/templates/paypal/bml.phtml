@@ -1,0 +1,29 @@
+<?php
+/**
+ * FedEx Cross Border component
+ *
+ * @category    FedEx
+ * @package     FedEx_CrossBorder
+ * @author      Andrey Rapshtynsky <andrey.bh@gmail.com>
+ * @copyright   FedEx (https://crossborder.fedex.com/)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+/** @var \Magento\Paypal\Block\Bml\Banners $block */
+?>
+<?php
+$helper = $this->helper(\FedEx\CrossBorder\Helper\Data::class);
+?>
+<?php if (!$helper->isInternational()) : ?>
+<div class="paypal-logo">
+    <script data-pp-pubid="<?= $block->escapeHtmlAttr($block->getPublisherId()) ?>"
+            data-pp-placementtype="<?= $block->escapeHtmlAttr($block->getSize()) ?>"
+        > (function (d, t) {
+            "use strict";
+            var s = d.getElementsByTagName(t)[0], n = d.createElement(t);
+            n.src = "//paypal.adtag.where.com/merchant.js";
+            s.parentNode.insertBefore(n, s);
+        }(document, "script"));
+    </script>
+</div>
+<?php endif; ?>

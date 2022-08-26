@@ -696,3 +696,15 @@ MNB-2546 Fix issue with admin orders throwing errors
 MNB-2591 use InventoryManagement instead of StockRegistry
 
 
+## 20.49.1 (2022-07-15)
+MNB-2717 Prevent exception being thrown when configurable product with options added to cart
+
+
+## 20.50.0 (2022-07-19)
+MNB-2726 fix issue when MSI uninstalled
+
+
+## 20.50.1 (2022-08-08)
+MNB-2863 Fix error thrown when Magento inventory is disabled
+
+

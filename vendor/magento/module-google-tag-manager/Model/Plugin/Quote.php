@@ -5,32 +5,40 @@
  */
 namespace Magento\GoogleTagManager\Model\Plugin;
 
+use Magento\Checkout\Model\Session;
+use Magento\Framework\Registry;
+use Magento\GoogleTagManager\Helper\Data;
+use Magento\GoogleTagManager\Model\Config\TagManagerConfig;
+
+/**
+ * @SuppressWarnings(PHPMD.CookieAndSessionMisuse)
+ */
 class Quote
 {
     /**
-     * @var \Magento\GoogleTagManager\Helper\Data
+     * @var Data
      */
     protected $helper;
 
     /**
-     * @var \Magento\Checkout\Model\Session
+     * @var Session
      */
     protected $checkoutSession;
 
     /**
-     * @var \Magento\Framework\Registry
+     * @var Registry
      */
     protected $registry;
 
     /**
-     * @param \Magento\GoogleTagManager\Helper\Data $helper
-     * @param \Magento\Checkout\Model\Session $checkoutSession
-     * @param \Magento\Framework\Registry $registry
+     * @param Data $helper
+     * @param Session $checkoutSession
+     * @param Registry $registry
      */
     public function __construct(
-        \Magento\GoogleTagManager\Helper\Data $helper,
-        \Magento\Checkout\Model\Session $checkoutSession,
-        \Magento\Framework\Registry $registry
+        Data $helper,
+        Session $checkoutSession,
+        Registry $registry
     ) {
         $this->helper = $helper;
         $this->checkoutSession = $checkoutSession;
@@ -38,9 +46,12 @@ class Quote
     }
 
     /**
+     * After load pluging
+     *
      * @param \Magento\Quote\Model\Quote $subject
      * @param \Magento\Quote\Model\Quote $result
      * @return \Magento\Quote\Model\Quote
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function afterLoad(\Magento\Quote\Model\Quote $subject, $result)
     {
@@ -79,10 +90,10 @@ class Quote
         }
         /** prevent from overwriting on page load */
         if (!$this->checkoutSession->hasData(
-            \Magento\GoogleTagManager\Helper\Data::PRODUCT_QUANTITIES_BEFORE_ADDTOCART
+            TagManagerConfig::PRODUCT_QUANTITIES_BEFORE_ADDTOCART
         )) {
             $this->checkoutSession->setData(
-                \Magento\GoogleTagManager\Helper\Data::PRODUCT_QUANTITIES_BEFORE_ADDTOCART,
+                TagManagerConfig::PRODUCT_QUANTITIES_BEFORE_ADDTOCART,
                 $productQtys
             );
         }

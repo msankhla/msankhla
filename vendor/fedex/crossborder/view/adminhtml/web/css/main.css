@@ -1,0 +1,30 @@
+.sales-order-view .fdxcb-info {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+}
+
+.sales-order-view .fdxcb-info .order-number {
+    text-align: left;
+}
+
+.sales-order-view .fdxcb-info .tracking-link {
+    text-align: right;
+}
+
+.admin__data-grid-wrap .admin__field-datetime {
+    width: 120px;
+    text-align: center;
+}
+
+.admin__data-grid-wrap .admin__field-number {
+    width: 60px;
+    text-align: right;
+}
+
+.sales-order-view .original-shipping-address {
+    margin-top: 1.7rem;
+}

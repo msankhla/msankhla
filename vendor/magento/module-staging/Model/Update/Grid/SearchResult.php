@@ -6,7 +6,6 @@
 
 namespace Magento\Staging\Model\Update\Grid;
 
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Framework\Data\Collection\Db\FetchStrategyInterface as FetchStrategy;
 use Magento\Framework\Data\Collection\EntityFactoryInterface as EntityFactory;
@@ -83,7 +82,7 @@ class SearchResult extends AbstractSearchResult
         VersionHistoryInterface $versionHistory,
         IncludesRetriever $includes,
         Hierarchy $hierarchy,
-        DateTimeFactory $dateTimeFactory = null
+        DateTimeFactory $dateTimeFactory
     ) {
         $this->stagingList = $stagingList;
         $this->versionHistory = $versionHistory;
@@ -122,26 +121,35 @@ class SearchResult extends AbstractSearchResult
                 'end_time' => 'start_time'
             ]
         );
-        $dateTime = $this->getDateTimeFactory()->create();
+        $status = $this->getConnection()->getCheckSql(
+            $this->getConnection()->prepareSqlCondition(
+                'main_table.id',
+                [['gt' => $this->versionHistory->getCurrentId()]]
+            ),
+            Status::STATUS_UPCOMING,
+            Status::STATUS_ACTIVE
+        );
+        $dateTime = $this->dateTimeFactory->create()->format('Y-m-d H:i:s');
         $this->getSelect()->where(
             $this->getConnection()->prepareSqlCondition(
                 sprintf('rollbacks.%s', UpdateInterface::START_TIME),
-                [["gteq" => $dateTime->format('Y-m-d H:i:s')], ["null" => true]]
+                [['gteq' => $dateTime], ['null' => true]]
             )
         );
-        $this->getSelect()->columns(
-            [
-                '*',
-                'status' => $this->getConnection()->getCheckSql(
-                    $this->getConnection()->prepareSqlCondition(
-                        'main_table.id',
-                        [['gt' => $this->versionHistory->getCurrentId()]]
-                    ),
-                    Status::STATUS_UPCOMING,
-                    Status::STATUS_ACTIVE
-                ),
-            ]
+        $this->getSelect()->where(
+            $this->getConnection()->prepareSqlCondition(
+                sprintf('rollbacks.%s', UpdateInterface::START_TIME),
+                ['notnull' => true]
+            )
+            . ' OR ' .
+            $this->getConnection()->prepareSqlCondition(
+                sprintf('main_table.%s', UpdateInterface::START_TIME),
+                ['gteq' => $dateTime]
+            )
+            . ' OR ' .
+            sprintf('%s = %d', $status, Status::STATUS_UPCOMING)
         );
+        $this->getSelect()->columns(['*', 'status' => $status]);
     }
 
     /**
@@ -226,21 +234,6 @@ class SearchResult extends AbstractSearchResult
             }
             $item->setData('includes', array_values($includes));
         }
-    }
-
-    /**
-     * Get DateTime Factory.
-     *
-     * @return DateTimeFactory
-     * @deprecated 100.1.7
-     */
-    private function getDateTimeFactory()
-    {
-        if ($this->dateTimeFactory === null) {
-            $this->dateTimeFactory = ObjectManager::getInstance()->get(DateTimeFactory::class);
-        }
-
-        return $this->dateTimeFactory;
     }
 
     /**

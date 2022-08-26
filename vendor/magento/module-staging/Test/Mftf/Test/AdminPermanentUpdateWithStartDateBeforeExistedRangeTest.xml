@@ -50,6 +50,7 @@
                 <argument name="StoreGroup" value="NewStoreData"/>
                 <argument name="customStore" value="NewStoreViewData"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
         </before>
         <after>
             <magentoCLI command="config:set {{GlobalCatalogPriceScopeConfigData.path}} {{GlobalCatalogPriceScopeConfigData.value}}" stepKey="setPriceScopeGlobal"/>
@@ -62,6 +63,7 @@
             <actionGroup ref="AdminDeleteWebsiteActionGroup" stepKey="deleteWebsite">
                 <argument name="websiteName" value="{{NewWebSiteData.name}}"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
 
             <amOnPage url="{{AdminStagingDashboardPage.url}}" stepKey="amOnStagingUpdatePage"/>
             <actionGroup ref="ClearFiltersAdminDataGridActionGroup" stepKey="clearStagingFiltersOnStagingDashboard"/>

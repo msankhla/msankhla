@@ -6,7 +6,7 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/topology.xsd">
-    <exchange name="magento-db" type="topic" connection="db">
-        <binding id="placeOrderBinding" topic="async_order.placeOrder" destinationType="queue" destination="placeOrder"/>
+    <exchange name="magento">
+        <binding id="placeOrderBinding" topic="async_order.placeOrder" destination="placeOrder"/>
     </exchange>
 </config>

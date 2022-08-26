@@ -97,3 +97,7 @@ Xtento_XtCore
 
 ===== 2.16.0 =====
  * Converted data patch scripts to new format
+
+===== 2.17.0 =====
+ * Fixed error "Area code not set" during installation/upgrade
+ * Established compatibility with Magento 2.4.5, 2.4.4-p1, 2.4.3-p3, 2.3.7-p4

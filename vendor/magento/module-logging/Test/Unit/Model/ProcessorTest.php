@@ -101,10 +101,6 @@ class ProcessorTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->controllers = $this->getMockBuilder(Controllers::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
         $handlerFactoryMock = $this->createPartialMock(ControllersFactory::class, ['create']);
 
         $this->session = $this->getMockBuilder(Session::class)
@@ -163,6 +159,18 @@ class ProcessorTest extends TestCase
         $this->processor->initAction($fullActionName, 'init');
 
         return $this->processor;
+    }
+
+    public function testLogActionWithoutConfig()
+    {
+        $fullActionName = 'full_controller_action_name';
+        $this->config->method('getEventByFullActionName')
+            ->with(self::equalTo($fullActionName))
+            ->willReturn(null);
+        $this->session->expects($this->never())
+            ->method('isLoggedIn');
+        $this->processor->initAction($fullActionName, 'init');
+        $this->assertFalse($this->processor->logAction());
     }
 
     /**

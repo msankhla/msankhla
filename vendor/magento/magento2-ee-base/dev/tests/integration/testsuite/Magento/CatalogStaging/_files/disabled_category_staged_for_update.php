@@ -16,31 +16,26 @@ use Magento\TestFramework\Helper\Bootstrap;
 $objectManager = Bootstrap::getObjectManager();
 $updateFactory = $objectManager->get(UpdateFactory::class);
 $updateRepository = $objectManager->get(UpdateRepositoryInterface::class);
-$productStaging = $objectManager->get(ProductStagingInterface::class);
+$categoryRepository = $objectManager->get(CategoryRepositoryInterface::class);
+$categoryStaging = $objectManager->get(CategoryStagingInterface::class);
 $versionManager = $objectManager->get(VersionManager::class);
-$productRepository = $objectManager->get(ProductRepositoryInterface::class);
+$currentVersionId = $versionManager->getCurrentVersion()->getId();
 
 //Stage changes to the inactive category
 $startTime = date('Y-m-d H:i:s', strtotime('+1 day'));
-$updateId = strtotime($startTime);
 $updateData = [
-    'id' => $updateId,
     'name' => 'Update for Category 8 Staging',
     'start_time' => $startTime,
     'is_campaign' => 0,
     'is_rollback' => null,
 ];
-
 $update = $updateFactory->create(['data' => $updateData]);
 $updateRepository->save($update);
 
 $categoryId = 8;
-$versionManager->setCurrentVersionId($updateId);
-$categoryRepository = $objectManager->get(CategoryRepositoryInterface::class);
-
 /** @var \Magento\Catalog\Api\Data\CategoryInterface $category */
 $category = $categoryRepository->get($categoryId, 0);
 $category->setIsActive(true);
-/** @var CategoryStagingInterface $categoryStaging */
-$categoryStaging = $objectManager->get(CategoryStagingInterface::class);
-$categoryStaging->schedule($category, $updateId);
+$versionManager->setCurrentVersionId($update->getId());
+$categoryStaging->schedule($category, $update->getId());
+$versionManager->setCurrentVersionId($currentVersionId);

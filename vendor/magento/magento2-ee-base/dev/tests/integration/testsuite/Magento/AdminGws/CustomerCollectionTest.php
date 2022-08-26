@@ -10,11 +10,13 @@ namespace Magento\AdminGws;
 use Magento\AdminGws\Model\Role as GwsRole;
 use Magento\Authorization\Model\Role as AdminRole;
 use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Framework\MessageQueue\DefaultValueProvider;
+use Magento\Framework\MessageQueue\Envelope;
+use Magento\Framework\MessageQueue\QueueRepository;
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\MysqlMq\Model\QueueManagement;
 use Magento\Store\Api\WebsiteRepositoryInterface;
 use Magento\TestFramework\Helper\Bootstrap;
-use Magento\TestFramework\MysqlMq\DeleteTopicRelatedMessages;
+use Magento\TestFramework\MessageQueue\ClearQueueProcessor;
 use Magento\TestFramework\TestCase\AbstractBackendController;
 
 /**
@@ -22,6 +24,7 @@ use Magento\TestFramework\TestCase\AbstractBackendController;
  * @magentoAppIsolation enabled
  * @magentoDbIsolation disabled
  * @magentoAppArea adminhtml
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class CustomerCollectionTest extends AbstractBackendController
 {
@@ -53,19 +56,24 @@ class CustomerCollectionTest extends AbstractBackendController
     private $adminGwsRole;
 
     /**
-     * @var QueueManagement
-     */
-    private $queueManagement;
-
-    /**
      * @var SerializerInterface
      */
     private $json;
 
     /**
-     * @var DeleteTopicRelatedMessages
+     * @var ClearQueueProcessor
      */
-    private $deleteTopicRelatedMessages;
+    private $clearQueueProcessor;
+
+    /**
+     * @var QueueRepository
+     */
+    private $queueRepository;
+
+    /**
+     * @var DefaultValueProvider
+     */
+    private $defaultValueProvider;
 
     /**
      * @inheritdoc
@@ -77,10 +85,11 @@ class CustomerCollectionTest extends AbstractBackendController
         $this->customerRepository = $this->objectManager->get(CustomerRepositoryInterface::class);
         $this->adminRole = $this->objectManager->get(AdminRole::class);
         $this->adminGwsRole = $this->objectManager->get(GwsRole::class);
-        $this->queueManagement = $this->objectManager->get(QueueManagement::class);
         $this->json = $this->objectManager->get(SerializerInterface::class);
-        $this->deleteTopicRelatedMessages = $this->objectManager->get(DeleteTopicRelatedMessages::class);
-        $this->deleteTopicRelatedMessages->execute(self::TOPIC_NAME);
+        $this->clearQueueProcessor = $this->objectManager->get(ClearQueueProcessor::class);
+        $this->clearQueueProcessor->execute('exportProcessor');
+        $this->queueRepository = $this->objectManager->get(QueueRepository::class);
+        $this->defaultValueProvider = $this->objectManager->get(DefaultValueProvider::class);
 
         parent::setUp();
     }
@@ -92,7 +101,7 @@ class CustomerCollectionTest extends AbstractBackendController
     {
         $this->adminRole->load('role_has_general_access', 'role_name');
         $this->adminGwsRole->setAdminRole($this->adminRole);
-        $this->deleteTopicRelatedMessages->execute(self::TOPIC_NAME);
+        $this->clearQueueProcessor->execute('exportProcessor');
 
         parent::tearDown();
     }
@@ -120,10 +129,10 @@ class CustomerCollectionTest extends AbstractBackendController
             . ' Make sure your cron job is running to export the file');
         $this->assertSessionMessages($this->containsEqual($expectedSessionMessage));
         $this->assertRedirect($this->stringContains('/export/index/key/'));
-        $messages = $this->queueManagement->readMessages('export');
-        $this->assertCount(1, $messages);
-        $message = array_pop($messages);
-        $body = $this->json->unserialize($message['body']);
+        $queue = $this->queueRepository->get($this->defaultValueProvider->getConnection(), 'export');
+        /** @var Envelope $message */
+        $message = $queue->dequeue();
+        $body = $this->json->unserialize($message->getBody());
         $exportFilter = $this->json->unserialize($body['export_filter']);
         $this->assertEquals($exportFilter['website_id'], [$this->websiteRepository->get('test_website')->getId()]);
     }

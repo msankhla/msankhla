@@ -11,6 +11,7 @@ use Magento\Backend\Model\Session;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\GoogleTagManager\Helper\Data;
 use Magento\GoogleTagManager\Model\Plugin\Creditmemo;
+use Magento\Sales\Api\CreditmemoRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Creditmemo\Item;
 use Magento\Sales\Model\ResourceModel\Order\Creditmemo\Item\Collection;
@@ -31,6 +32,11 @@ class CreditmemoTest extends TestCase
     /** @var Session|MockObject */
     protected $session;
 
+    /**
+     * @var CreditmemoRepositoryInterface|MockObject
+     */
+    private $creditmemoRepositoryMock;
+
     protected function setUp(): void
     {
         $this->helper = $this->createMock(Data::class);
@@ -40,6 +46,9 @@ class CreditmemoTest extends TestCase
             ->getMock();
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
+        $this->creditmemoRepositoryMock = $this->getMockForAbstractClass(
+            CreditmemoRepositoryInterface::class
+        );
         $this->creditmemo = $this->objectManagerHelper->getObject(
             Creditmemo::class,
             [
@@ -51,7 +60,7 @@ class CreditmemoTest extends TestCase
 
     public function testAfterSave()
     {
-        $this->helper->expects($this->atLeastOnce())->method('isTagManagerAvailable')->willReturn(true);
+        $this->helper->expects($this->atLeastOnce())->method('isTagManagerAvailable')->willReturn(false);
 
         $this->session->expects($this->any())
             ->method('setData')
@@ -96,24 +105,23 @@ class CreditmemoTest extends TestCase
         $collection->expects($this->any())->method('getIterator')
             ->willReturn(new \ArrayIterator([$item1, $item2]));
 
-        /** @var \Magento\Sales\Model\Order\Creditmemo|MockObject $result */
-        $result = $this->createMock(\Magento\Sales\Model\Order\Creditmemo::class);
+        /** @var Order\Creditmemo|MockObject $result */
+        $result = $this->createMock(Order\Creditmemo::class);
         $result->expects($this->any())->method('getOrder')->willReturn($order);
         $result->expects($this->any())->method('getStoreId')->willReturn(2);
         $result->expects($this->any())->method('getBaseGrandTotal')->willReturn('19.99');
         $result->expects($this->any())->method('getItemsCollection')->willReturn($collection);
-
-        $this->assertSame($result, $this->creditmemo->afterSave($result, $result));
+        $this->assertSame($result, $this->creditmemo->afterSave($this->creditmemoRepositoryMock, $result));
     }
 
     public function testAfterSaveNotAvailable()
     {
         $this->helper->expects($this->atLeastOnce())->method('isTagManagerAvailable')->willReturn(false);
-        /** @var \Magento\Sales\Model\Order\Creditmemo|MockObject $result */
-        $result = $this->createMock(\Magento\Sales\Model\Order\Creditmemo::class);
+        /** @var Order\Creditmemo|MockObject $result */
+        $result = $this->createMock(Order\Creditmemo::class);
         $result->expects($this->never())->method('getOrder');
         $this->session->expects($this->never())->method('setData');
 
-        $this->assertSame($result, $this->creditmemo->afterSave($result, $result));
+        $this->assertSame($result, $this->creditmemo->afterSave($this->creditmemoRepositoryMock, $result));
     }
 }

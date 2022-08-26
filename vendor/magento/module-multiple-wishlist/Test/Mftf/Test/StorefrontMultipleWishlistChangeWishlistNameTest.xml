@@ -16,6 +16,7 @@
             <testCaseId value="MC-17639"/>
             <useCaseId value="MAGETWO-99312"/>
             <group value="wishlist"/>
+            <group value="cloud_smoke"/>
         </annotations>
         <before>
             <createData entity="SimpleSubCategory" stepKey="createCategory"/>

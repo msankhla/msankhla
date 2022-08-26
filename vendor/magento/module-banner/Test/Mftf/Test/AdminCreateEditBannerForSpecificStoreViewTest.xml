@@ -19,7 +19,6 @@
             <group value="Banner"/>
         </annotations>
         <before>
-            <createData entity="sampleBannerWidget" stepKey="createPreReqWidget"/>
             <createData stepKey="createSalesRule" entity="ApiSalesRule" />
             <createData stepKey="createSalesRuleCoupon" entity="ApiSalesRuleCoupon">
                 <requiredEntity createDataKey="createSalesRule"/>
@@ -29,14 +28,24 @@
                 <requiredEntity createDataKey="createPreReqCategory"/>
             </createData>
             <actionGroup ref="AdminLoginActionGroup" stepKey="loginGetFromGeneralFile"/>
+            <amOnPage url="{{AdminNewWidgetPage.url}}" stepKey="amOnAdminNewWidgetPage"/>
+            <selectOption selector="{{AdminNewWidgetSection.widgetType}}" userInput="Dynamic Blocks Rotator" stepKey="setWidgetType"/>
+            <selectOption selector="{{AdminNewWidgetSection.widgetDesignTheme}}" userInput="Magento Luma" stepKey="setWidgetDesignTheme"/>
+            <click selector="{{AdminNewWidgetSection.continue}}" stepKey="clickContinue"/>
+            <grabFromCurrentUrl regex="~/theme_id/(\d+)/~" stepKey="themeId"/>
+            <createData entity="sampleBannerWidget" stepKey="createPreReqWidget">
+                <field key="theme_id">{$themeId}</field>
+            </createData>
             <actionGroup ref="EnabledWYSIWYGActionGroup" stepKey="enableWYSIWYG"/>
             <actionGroup ref="AdminCreateStoreViewActionGroup" stepKey="createStoreView" />
+            <magentoCron groups="index" stepKey="reindex"/>
         </before>
         <after>
             <actionGroup ref="DeleteWidgetActionGroup" stepKey="deleteWidget"/>
             <actionGroup ref="AdminDeleteStoreViewActionGroup" stepKey="deleteStoreView">
                 <argument name="customStore" value="customStore"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
             <deleteData createDataKey="createPreReqCategory" stepKey="deleteCategory"/>
             <deleteData createDataKey="createPreReqProduct" stepKey="deleteProduct"/>
             <deleteData createDataKey="createSalesRuleCoupon" stepKey="deleteSalesRuleCoupon"/>

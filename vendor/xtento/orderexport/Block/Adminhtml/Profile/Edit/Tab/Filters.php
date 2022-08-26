@@ -3,7 +3,7 @@
 /**
  * Product:       Xtento_OrderExport
  * ID:            %!uniqueid!%
- * Last Modified: 2020-08-04T15:03:48+00:00
+ * Last Modified: 2022-08-16T14:28:38+00:00
  * File:          Block/Adminhtml/Profile/Edit/Tab/Filters.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -264,14 +264,15 @@ class Filters extends \Xtento\OrderExport\Block\Adminhtml\Widget\Tab implements 
         }
 
         if ($entity !== Export::ENTITY_CUSTOMER && $entity !== Export::ENTITY_AWRMA && $entity !== Export::ENTITY_EERMA && $entity !== Export::ENTITY_BOOSTRMA) {
-            $renderer = $this->rendererFieldset->setTemplate(
+            $renderer = $this->getLayout()->createBlock(\Magento\Backend\Block\Widget\Form\Renderer\Fieldset::class);
+            $renderer = $renderer->setTemplate(
                 'Magento_CatalogRule::promo/fieldset.phtml'
             )->setNewChildUrl(
                 $this->getUrl(
                     'xtento_orderexport/profile/newConditionHtml/form/rule_conditions_fieldset',
                     ['profile_id' => $model->getId()]
                 )
-            );
+            )->setNameInLayout('xtento_orderexport_profile_newConditionHtml_form_rule-conditions-fieldset');
 
             $fieldset = $form->addFieldset(
                 'rule_conditions_fieldset',

@@ -166,6 +166,76 @@ class UpdateProductDateAttributesTest extends TestCase
     }
 
     /**
+     * @dataProvider dataProviderTestExecuteWithoutExistingUpdate
+     * @param string $isNewProduct
+     * @param \DateTime $startTime
+     * @param \DateTime $endTime
+     * @param string|null $expectedStartTime
+     * @param string|null $expectedEndTime
+     */
+    public function testExecuteWithoutExistingUpdate(
+        $isNewProduct,
+        $startTime,
+        $endTime,
+        $expectedStartTime,
+        $expectedEndTime
+    ) {
+
+        $productMock = $this->getMockBuilder(ProductInterface::class)
+            ->addMethods(['getData', 'setData'])
+            ->getMockForAbstractClass();
+        $productMock->expects($this->any())
+            ->method('getData')
+            ->willReturnMap(
+                [
+                    ['is_new', $isNewProduct],
+                    ['news_from_date', $startTime],
+                    ['news_to_date', $endTime],
+                    ['created_in', VersionManager::MIN_VERSION],
+                    ['updated_in', VersionManager::MAX_VERSION]
+                ]
+            );
+        $productMock->expects($this->any())
+            ->method('setData')
+            ->withConsecutive(
+                ['news_from_date', $expectedStartTime],
+                ['news_to_date', $expectedEndTime]
+            );
+
+        $observerMock = $this->getMockBuilder(Observer::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $observerMock->expects($this->any())
+            ->method('getEvent')
+            ->willReturn(new DataObject(['product' => $productMock]));
+
+        $this->observer->execute($observerMock);
+    }
+
+    public function dataProviderTestExecuteWithoutExistingUpdate(): array
+    {
+        $startTime = new \DateTime('+1 day');
+        $endTime = new \DateTime('+3 days');
+
+        return [
+            [
+                'is_new' => '1',
+                'start_time' => $startTime,
+                'end_time' => $endTime,
+                'expected_start_time' => $startTime,
+                'expected_end_time' => $endTime
+            ],
+            [
+                'is_new' => '0',
+                'start_time' => $startTime,
+                'end_time' => $endTime,
+                'expected_start_time' => null,
+                'expected_end_time' => null
+            ]
+        ];
+    }
+
+    /**
      * Checks execute() method logic in cases when is_new value is not NULL
      *
      * Test cases:

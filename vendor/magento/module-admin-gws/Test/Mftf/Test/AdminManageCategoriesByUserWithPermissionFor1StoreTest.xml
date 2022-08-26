@@ -28,6 +28,7 @@
                 <argument name="storeGroupCode" value="{{SecondStoreGroupUnique.code}}"/>
             </actionGroup>
             <actionGroup ref="AdminCreateStoreViewActionGroup" stepKey="createStoreView"/>
+            <magentoCron groups="index" stepKey="reindex"/>
             <!--Create simple category and product-->
             <createData entity="_defaultCategory" stepKey="createCategory"/>
             <createData entity="ApiSimpleProduct" stepKey="createProduct">
@@ -62,10 +63,11 @@
             <actionGroup ref="AdminDeleteStoreViewActionGroup" stepKey="deleteFirstStoreView">
                 <argument name="customStore" value="customStore"/>
             </actionGroup>
-            <click selector="{{AdminStoresGridSection.resetButton}}" stepKey="resetSearchFilter"/>
+            <actionGroup ref="AdminClearGridFiltersActionGroup" stepKey="resetSearchFilter"/>
             <actionGroup ref="AdminDeleteStoreActionGroup" stepKey="deleteSecondStoreView">
                 <argument name="storeName" value="{{SecondStoreGroupUnique.name}}"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
         </after>
         <!--Login as restricted user-->
         <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>

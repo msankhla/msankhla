@@ -58,6 +58,14 @@
                 <label>System Information</label>
                 <frontend_model>Amasty\Base\Block\Info</frontend_model>
             </group>
+            <group id="system" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>System Settings</label>
+                <field id="cli_php_path" translate="label comment" type="note" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>CLI PHP Path</label>
+                    <comment>Current CLI PHP path of your Magento which is used by our extension when running the commands directly during the processing of PHP requests. To change it, please run bin/magento config:set amasty_base/system/cli_php_path %CLI_PHP_PATH% from the command line.</comment>
+                    <frontend_model>Amasty\Base\Block\Adminhtml\System\Config\CliPhpPath</frontend_model>
+                </field>
+            </group>
         </section>
     </system>
 </config>

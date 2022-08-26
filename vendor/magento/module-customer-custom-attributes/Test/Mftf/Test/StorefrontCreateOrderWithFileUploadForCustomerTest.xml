@@ -86,9 +86,9 @@
         <waitForPageLoad stepKey="waitForAddressSaved"/>
         <!--Place for order-->
         <comment userInput="Place for order" stepKey="commentPlaceForOrder"/>
-        <click selector="{{CheckoutShippingSection.next}}" stepKey="clickNext"/>
-        <waitForElementVisible selector="{{CheckoutPaymentSection.placeOrder}}" stepKey="waitForPlaceOrderButton"/>
-        <click selector="{{CheckoutPaymentSection.placeOrder}}" stepKey="clickPlaceOrder"/>
+        <actionGroup ref="StorefrontCheckoutClickNextButtonActionGroup" stepKey="clickNext"/>
+        <comment userInput="BIC workaround" stepKey="waitForPlaceOrderButton"/>
+        <actionGroup ref="ClickPlaceOrderActionGroup" stepKey="clickPlaceOrder"/>
         <!--Go to customer addressed page and check that file is present-->
         <comment userInput="Go to customer addressed page and check that file is present" stepKey="commentFilePresent"/>
         <amOnPage url="{{AdminEditCustomerPage.url($$createCustomer.id$$)}}" stepKey="goToCustomerEditPage"/>

@@ -12,6 +12,7 @@ use Magento\Framework\GraphQl\Query\Resolver\BatchResolverInterface;
 use Magento\Framework\GraphQl\Query\Resolver\BatchResponse;
 use Magento\Framework\GraphQl\Query\Resolver\ContextInterface;
 use Magento\RelatedProductGraphQl\Model\Resolver\Batch\UpSellProducts as ResolverUpSellProducts;
+use Magento\TargetRule\Helper\Data;
 use Magento\TargetRule\Model\Rule;
 
 /**
@@ -22,7 +23,7 @@ class UpSellProducts implements BatchResolverInterface
     /**
      * Query node
      */
-    const NODE = 'upsell_products';
+    public const NODE = 'upsell_products';
 
     /**
      * @var TargetRuleProducts
@@ -35,15 +36,31 @@ class UpSellProducts implements BatchResolverInterface
     private $relatedResolver;
 
     /**
+     * @var Data
+     */
+    private $targetRuleHelper;
+
+    /**
+     * @var BatchResponseGenerator
+     */
+    private $batchResponseGenerator;
+
+    /**
      * @param TargetRuleProducts $targetRuleProducts
      * @param ResolverUpSellProducts $relatedResolver
+     * @param Data $targetRuleHelper
+     * @param BatchResponseGenerator $batchResponseGenerator
      */
     public function __construct(
         TargetRuleProducts $targetRuleProducts,
-        ResolverUpSellProducts $relatedResolver
+        ResolverUpSellProducts $relatedResolver,
+        Data $targetRuleHelper,
+        BatchResponseGenerator $batchResponseGenerator
     ) {
         $this->targetRuleProducts = $targetRuleProducts;
         $this->relatedResolver = $relatedResolver;
+        $this->targetRuleHelper = $targetRuleHelper;
+        $this->batchResponseGenerator = $batchResponseGenerator;
     }
 
     /**
@@ -51,14 +68,23 @@ class UpSellProducts implements BatchResolverInterface
      */
     public function resolve(ContextInterface $context, Field $field, array $requests): BatchResponse
     {
-        $responses = $this->relatedResolver->resolve($context, $field, $requests);
+        $behavior = $this->targetRuleHelper->getShowProducts(Rule::UP_SELLS);
+        if (in_array($behavior, [Rule::BOTH_SELECTED_AND_RULE_BASED, Rule::SELECTED_ONLY])) {
+            $responses = $this->relatedResolver->resolve($context, $field, $requests);
+        } else {
+            $responses = $this->batchResponseGenerator->create($requests);
+        }
 
-        return $this->targetRuleProducts->applyTargetRuleResponses(
-            $context,
-            $requests,
-            $responses,
-            self::NODE,
-            Rule::UP_SELLS
-        );
+        if (in_array($behavior, [Rule::BOTH_SELECTED_AND_RULE_BASED, Rule::RULE_BASED_ONLY])) {
+            $responses = $this->targetRuleProducts->applyTargetRuleResponses(
+                $context,
+                $requests,
+                $responses,
+                self::NODE,
+                Rule::UP_SELLS
+            );
+        }
+
+        return $responses;
     }
 }

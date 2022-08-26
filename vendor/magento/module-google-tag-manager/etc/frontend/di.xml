@@ -17,4 +17,7 @@
     <type name="Magento\Framework\View\Layout">
         <plugin name="gtmLayout" type="Magento\GoogleTagManager\Model\Plugin\Layout" />
     </type>
+    <type name="Magento\Framework\Stdlib\Cookie\PhpCookieManager">
+        <plugin name="gtmAddToCartAdvanced" type="Magento\GoogleTagManager\Plugin\Framework\Stdlib\Cookie\PhpCookieManagerPlugin" />
+    </type>
 </config>

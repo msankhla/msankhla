@@ -85,6 +85,9 @@ class GiftCardOptions implements ResolverInterface
             $customAmountOption = $this->getCustomAmountOptions($product);
             $customOptions = array_merge($customOptions, $customAmountOption);
         }
+        foreach ($customOptions as &$customOption) {
+            $customOption['uid'] = $customOption['value']['uid'];
+        }
 
         return $customOptions;
     }

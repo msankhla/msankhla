@@ -37,6 +37,7 @@
                 <argument name="StoreGroup" value="NewStoreData"/>
                 <argument name="customStore" value="NewStoreViewData"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
             <!--We will get website_id into $grabFromCurrentUrlGetCustomWebsiteId-->
             <actionGroup ref="AdminGetWebsiteIdActionGroup" stepKey="getCustomWebsiteId">
                 <argument name="website" value="NewWebSiteData"/>
@@ -93,6 +94,7 @@
                 <argument name="websiteName" value="{{NewWebSiteData.name}}"/>
             </actionGroup>
             <actionGroup ref="ClearFiltersAdminDataGridActionGroup" stepKey="clearWebsitesGridFilter"/>
+            <magentoCron groups="index" stepKey="reindex"/>
 
             <actionGroup ref="AdminOrdersGridClearFiltersActionGroup" stepKey="clearOrderGridFilters"/>
 

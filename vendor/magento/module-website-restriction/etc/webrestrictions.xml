@@ -29,4 +29,6 @@
     <action path="customer_account_create" type="register" />
     <action path="customer_account_createPost" type="register" />
     <action path="shipping_tracking_popup" type="generic"/>
+    <action path="stores_store_redirect" type="generic"/>
+    <action path="stores_store_switch" type="generic"/>
 </config>

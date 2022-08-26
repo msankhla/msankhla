@@ -14,8 +14,6 @@ use Magento\Sales\Model\Order\Creditmemo;
 class CreditmemoSaveAfterObserver implements ObserverInterface
 {
     /**
-     * Customer balance data
-     *
      * @var \Magento\CustomerBalance\Helper\Data
      */
     protected $_customerBalanceData;
@@ -61,7 +59,9 @@ class CreditmemoSaveAfterObserver implements ObserverInterface
             }
         }
 
-        $this->balance->save($creditmemo);
+        if ($creditmemo->getCustomerBalanceRefundFlag() && $creditmemo->getBsCustomerBalTotalRefunded()) {
+            $this->balance->save($creditmemo);
+        }
 
         return $this;
     }

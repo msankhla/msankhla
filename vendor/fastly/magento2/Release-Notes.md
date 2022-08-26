@@ -1,5 +1,20 @@
 # Fastly_Cdn Release Notes
 
+## 1.2.186
+
+- Fix for ratelimiting not exempting maintenance IPs from rate limiting https://github.com/fastly/fastly-magento2/pull/555
+- Add stale-while-revalidate to GraphQL responses https://github.com/fastly/fastly-magento2/pull/561
+
+## 1.2.185
+
+- Fixes for PHP 8.1 issue in Rate Limiting https://github.com/fastly/fastly-magento2/pull/552
+
+## 1.2.184
+
+- Turn of generating images that crawlers may request from cache after turning on Deep Image Optimization https://github.com/fastly/fastly-magento2/pull/542
+- Update Handlebars to 4.7.7 https://github.com/fastly/fastly-magento2/pull/547
+- Update Javascript to avoid a XSS issue https://github.com/fastly/fastly-magento2/pull/545
+
 ## 1.2.183
 
 - Revert "Improvements to custom VCL snippets upload logic" https://github.com/fastly/fastly-magento2/pull/541

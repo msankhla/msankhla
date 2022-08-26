@@ -1,0 +1,174 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * FedEx Cross Border component
+ *
+ * @category    FedEx
+ * @package     FedEx_CrossBorder
+ * @author      Andrey Rapshtynsky <andrey.bh@gmail.com>
+ * @copyright   FedEx (https://crossborder.fedex.com/)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="FedEx\CrossBorder\Api\Data\OrderLink\AddressInterface" type="FedEx\CrossBorder\Model\OrderLink\Address"/>
+    <preference for="FedEx\CrossBorder\Api\Data\OrderManagement\OrderInformationInterface" type="FedEx\CrossBorder\Model\OrderManagement\OrderInformation"/>
+    <preference for="FedEx\CrossBorder\Api\Data\OrderManagement\OrderInformation\AddressInformationInterface" type="FedEx\CrossBorder\Model\OrderManagement\OrderInformation\AddressInformation"/>
+    <preference for="FedEx\CrossBorder\Api\Data\OrderManagement\OrderInformation\ProductInformationInterface" type="FedEx\CrossBorder\Model\OrderManagement\OrderInformation\ProductInformation"/>
+    <preference for="FedEx\CrossBorder\Api\Data\OrderManagement\ReadyForExport\DocumentInterface" type="FedEx\CrossBorder\Model\OrderManagement\ReadyForExport\Document"/>
+    <preference for="FedEx\CrossBorder\Api\Data\OrderManagement\ReadyForExport\InformationInterface" type="FedEx\CrossBorder\Model\OrderManagement\ReadyForExport\Information"/>
+    <preference for="FedEx\CrossBorder\Api\Data\OrderManagement\ReadyForExport\OrderInformationInterface" type="FedEx\CrossBorder\Model\OrderManagement\ReadyForExport\OrderInformation"/>
+    <preference for="FedEx\CrossBorder\Api\Data\OrderLinkInterface" type="FedEx\CrossBorder\Model\OrderLink"/>
+    <preference for="FedEx\CrossBorder\Api\Data\QuoteLinkInterface" type="FedEx\CrossBorder\Model\QuoteLink"/>
+    <preference for="FedEx\CrossBorder\Api\Data\ResultInterface" type="FedEx\CrossBorder\Model\Result"/>
+    <preference for="FedEx\CrossBorder\Api\Data\SchedulerInterface" type="FedEx\CrossBorder\Model\Scheduler"/>
+    <preference for="FedEx\CrossBorder\Api\Data\StoreConfigInterface" type="FedEx\CrossBorder\Model\StoreConfig"/>
+    <preference for="FedEx\CrossBorder\Api\Data\TaxRateInterface" type="FedEx\CrossBorder\Model\TaxRate"/>
+    <preference for="FedEx\CrossBorder\Api\OrderManagementInterface" type="FedEx\CrossBorder\Model\OrderManagement"/>
+    <preference for="FedEx\CrossBorder\Api\OrderStatusManagementInterface" type="FedEx\CrossBorder\Model\OrderStatusManagement"/>
+    <preference for="FedEx\CrossBorder\Api\OrderLinkManagementInterface" type="FedEx\CrossBorder\Model\OrderLinkManagement"/>
+    <preference for="FedEx\CrossBorder\Api\QuoteLinkManagementInterface" type="FedEx\CrossBorder\Model\QuoteLinkManagement"/>
+    <preference for="FedEx\CrossBorder\Api\SchedulerManagementInterface" type="FedEx\CrossBorder\Model\SchedulerManagement"/>
+    <preference for="FedEx\CrossBorder\Api\StoreConfigManagementInterface" type="FedEx\CrossBorder\Model\StoreConfigManagement"/>
+    <preference for="FedEx\CrossBorder\Api\TaxManagementInterface" type="FedEx\CrossBorder\Model\TaxManagement"/>
+    <preference for="Magento\Store\Model\Store" type="FedEx\CrossBorder\Model\Store" />
+
+    <type name="Magento\Directory\Model\Currency\Import\Config">
+        <arguments>
+            <argument name="servicesConfig" xsi:type="array">
+                <item name="fedex" xsi:type="array">
+                    <item name="label" xsi:type="string" translatable="true">FedEx Cross Border</item>
+                    <item name="class" xsi:type="string">FedEx\CrossBorder\Model\Currency\Import\Rates</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Catalog\Block\ShortcutButtons">
+        <plugin name="fedex-crossborder-shortcut-buttons-plugin" type="FedEx\CrossBorder\Plugin\Catalog\Block\ShortcutButtonsPlugin" />
+    </type>
+
+    <type name="Magento\Catalog\Block\ShortcutButtons\InCatalog">
+        <plugin name="fedex-crossborder-shortcut-buttons-plugin" type="FedEx\CrossBorder\Plugin\Catalog\Block\ShortcutButtonsPlugin" />
+    </type>
+
+    <type name="Magento\Catalog\Block\ShortcutButtons\InCatalog\PositionAfter">
+        <plugin name="fedex-crossborder-shortcut-buttons-plugin" type="FedEx\CrossBorder\Plugin\Catalog\Block\ShortcutButtonsPlugin" />
+    </type>
+
+    <type name="Magento\Checkout\Block\Cart">
+        <plugin name="fedex-crossborder-cart-plugin" type="FedEx\CrossBorder\Plugin\Checkout\Block\CartPlugin" />
+    </type>
+
+    <type name="Magento\Checkout\Block\Cart\Sidebar">
+        <plugin name="fedex-crossborder-cart_sidebar-plugin" type="FedEx\CrossBorder\Plugin\Checkout\Block\Cart\SidebarPlugin" />
+    </type>
+
+    <type name="Magento\Directory\Model\Currency">
+        <plugin name="rounded-price-plugin" type="FedEx\CrossBorder\Plugin\Directory\CurrencyPlugin" />
+    </type>
+
+    <type name="Magento\Framework\App\Http\Context">
+        <plugin name="cache-plugin" type="FedEx\CrossBorder\Plugin\CachePlugin" />
+    </type>
+
+    <type name="Magento\Framework\View\Element\Template">
+        <plugin name="cache-plugin" type="FedEx\CrossBorder\Plugin\CachePlugin" />
+    </type>
+
+    <type name="Magento\Sales\Api\CreditmemoRepositoryInterface">
+        <plugin name="fedex-crossborder_creditmemo_repository" type="FedEx\CrossBorder\Plugin\CreditmemoRepositoryPlugin" sortOrder="1"/>
+    </type>
+
+    <type name="Magento\Sales\Api\OrderRepositoryInterface">
+        <plugin name="fedex-crossborder_order_repository" type="FedEx\CrossBorder\Plugin\OrderRepository" sortOrder="1"/>
+    </type>
+
+    <type name="Magento\Sales\Model\Order\Email\Sender\OrderSender">
+        <plugin name="sales-order-email-sender-plugin" type="FedEx\CrossBorder\Plugin\Sales\Model\Order\Email\Sender\OrderSenderPlugin"/>
+    </type>
+
+    <type name="Magento\Sales\Model\ResourceModel\Order">
+        <plugin name="fedex-crossborder_order_resource" type="FedEx\CrossBorder\Plugin\Sales\Model\ResourceModel\OrderPlugin" sortOrder="1"/>
+    </type>
+
+    <type name="Magento\Quote\Api\CartRepositoryInterface">
+        <plugin name="fedex-crossborder_quote_repository" type="FedEx\CrossBorder\Plugin\QuoteRepository" sortOrder="1"/>
+    </type>
+
+    <type name="Magento\Shipping\Model\Rate\Result">
+        <plugin name="fedex-crossborder-shipping-rates-result-plugin" type="FedEx\CrossBorder\Plugin\Shipping\Model\Rate\ResultPlugin" />
+    </type>
+
+    <type name="Magento\Swatches\Block\Product\Renderer\Listing\Configurable">
+        <plugin name="cache-plugin" type="FedEx\CrossBorder\Plugin\CachePlugin" />
+    </type>
+
+    <type name="Magento\Tax\Block\Sales\Order\Tax">
+        <plugin name="sales-order-tax-plugin" type="FedEx\CrossBorder\Plugin\Tax\Block\Sales\Order\TaxPlugin"/>
+    </type>
+
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="fdxcb_import_available_countries" xsi:type="object">FedEx\CrossBorder\Console\Command\Import\AvailableCountriesCommand</item>
+                <item name="fdxcb_scheduler" xsi:type="object">FedEx\CrossBorder\Console\Command\SchedulerCommand</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <virtualType name="FedEx\CrossBorder\Model\ResourceModel\AvailableCountries\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">fdxcb_available_countries</argument>
+            <argument name="resourceModel" xsi:type="string">FedEx\CrossBorder\Model\ResourceModel\AvailableCountries</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="FedEx\CrossBorder\Model\ResourceModel\PackNotification\Box\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">fdxcb_pack_notification_box</argument>
+            <argument name="resourceModel" xsi:type="string">FedEx\CrossBorder\Model\ResourceModel\PackNotification\Box</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="FedEx\CrossBorder\Model\ResourceModel\PackNotification\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">fdxcb_pack_notification</argument>
+            <argument name="resourceModel" xsi:type="string">FedEx\CrossBorder\Model\ResourceModel\PackNotification</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="FedEx\CrossBorder\Model\ResourceModel\Scheduler\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">fdxcb_scheduler</argument>
+            <argument name="resourceModel" xsi:type="string">FedEx\CrossBorder\Model\ResourceModel\Scheduler</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="available_countries_listing_data_source" xsi:type="string">FedEx\CrossBorder\Model\ResourceModel\AvailableCountries\Grid\Collection</item>
+                <item name="pack_notification_box_listing_data_source" xsi:type="string">FedEx\CrossBorder\Model\ResourceModel\PackNotification\Box\Grid\Collection</item>
+                <item name="scheduler_listing_data_source" xsi:type="string">FedEx\CrossBorder\Model\ResourceModel\Scheduler\Grid\Collection</item>
+                <item name="sales_order_view_pack_notification_grid_data_source" xsi:type="string">FedEx\CrossBorder\Model\ResourceModel\PackNotification\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- add status column -->
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="sales_order_grid_data_source" xsi:type="string">FedEx\CrossBorder\Model\ResourceModel\Order\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="FedEx\CrossBorder\Model\ResourceModel\Order\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">sales_order_grid</argument>
+            <argument name="resourceModel" xsi:type="string">Magento\Sales\Model\ResourceModel\Order</argument>
+        </arguments>
+    </type>
+</config>

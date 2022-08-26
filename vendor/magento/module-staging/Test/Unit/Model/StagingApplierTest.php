@@ -166,7 +166,10 @@ class StagingApplierTest extends TestCase
         );
     }
 
-    public function testExecute()
+    /**
+     * @dataProvider cacheTagsDataProvider
+     */
+    public function testExecute(array $tags, int $cleanCacheRequests)
     {
         $now = strtotime('now');
         $currentVersionId = '232232332';
@@ -208,15 +211,27 @@ class StagingApplierTest extends TestCase
             ->with($entityType[0])
             ->willReturn($retrieverInterfaceMock);
         $retrieverInterfaceMock->expects($this->once())->method('getEntity')->with($entityIds[0]);
-        $this->eventManagerMock->expects($this->once())
+
+        $this->cacheContextMock->expects($this->once())->method('getIdentities')->willReturn($tags);
+        $this->cacheManagerMock->expects($this->exactly($cleanCacheRequests))->method('clean');
+        $this->eventManagerMock->expects($this->exactly($cleanCacheRequests))
             ->method('dispatch')
             ->with('clean_cache_by_tags', ['object' => $this->cacheContextMock]);
-        $this->cacheContextMock->expects($this->once())->method('getIdentities');
-        $this->cacheManagerMock->expects($this->once())->method('clean');
         $this->versionHistoryMock->expects($this->once())->method('getMaximumInDB')->willReturn($maximumInDB);
         $this->deleteObsoleteEntitiesMock->expects($this->once())
             ->method('execute')
             ->with($entityType[0], $currentVersionId, $maximumInDB);
         $this->model->execute();
+    }
+
+    /**
+     * @return array
+     */
+    public function cacheTagsDataProvider(): array
+    {
+        return [
+            'withoutTags'  => [[], 0],
+            'withTags' => [['tag1', 'tag2'], 1],
+        ];
     }
 }

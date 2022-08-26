@@ -58,6 +58,10 @@
         <data key="operator">is</data>
         <data key="operand">...</data>
     </entity>
+    <entity name="CustomerSegmentCustomerCreatedAtConditionData" type="data">
+        <data key="condition">Created At</data>
+        <data key="operator">equals or less than</data>
+    </entity>
     <entity name="CustomerSegmentConditionAggregator" type="data">
         <data key="all">ALL</data>
         <data key="any">ANY</data>

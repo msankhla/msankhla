@@ -102,13 +102,13 @@
 
         <!--  Step 10: Click Apply -->
         <click selector="{{StorefrontApplyGiftCardAccountSection.applyGiftCardButton}}" stepKey="clickApplyGiftCardButton"/>
-        <waitForPageLoad stepKey="waitForLoading2"/>
-        <see selector="{{StorefrontApplyGiftCardAccountSection.giftCardCodeAdded}}" userInput="Gift Card {$grabGiftCardCode} was added." stepKey="assertGiftCardCodeAdded"/>
+        <comment userInput="BIC workaround" stepKey="waitForLoading2"/>
+        <waitForText selector="{{StorefrontApplyGiftCardAccountSection.giftCardCodeAdded}}" userInput="Gift Card {$grabGiftCardCode} was added." stepKey="assertGiftCardCodeAdded"/>
         <waitForPageLoad stepKey="waitForLoading3"/>
         <see selector="{{StorefrontApplyGiftCardAccountSection.giftCardAccountCodeName}}" userInput="Gift Card ({$grabGiftCardCode})" stepKey="assertGiftCardCodeNameInSummerySection"/>
 
         <!--  Step 11: Select payment method and place order -->
-        <click selector="{{CheckoutPaymentSection.placeOrder}}" stepKey="clickPlaceOrderButton"/>
+        <actionGroup ref="ClickPlaceOrderActionGroup" stepKey="clickPlaceOrderButton"/>
         <seeElement selector="{{CheckoutSuccessMainSection.success}}" stepKey="orderIsSuccessfullyPlaced"/>
         <grabTextFrom selector="{{CheckoutSuccessMainSection.orderNumber}}" stepKey="grabOrderNumber"/>
         <actionGroup ref="OpenOrderByIdActionGroup" stepKey="openOrderById">

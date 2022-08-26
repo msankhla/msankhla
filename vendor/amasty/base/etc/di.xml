@@ -43,7 +43,7 @@
         </arguments>
     </type>
 
-    <type name="Magento\Setup\Model\DeclarationInstaller">
+    <type name="Magento\Framework\Setup\Declaration\Schema\OperationsExecutor">
         <plugin name="Amasty_Base::execute-patches-before-schema-apply"
                 type="Amasty\Base\Plugin\Setup\Model\DeclarationInstaller\ApplyPatchesBeforeDeclarativeSchema"/>
     </type>

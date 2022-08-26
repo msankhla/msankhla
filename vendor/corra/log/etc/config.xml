@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <corra_log>
+            <!-- <general>
+                <enable_corra_logging>0</enable_corra_logging>
+            </general> -->
+            <cron>
+                <days_to_archive>7</days_to_archive>
+                <days_to_wipe>30</days_to_wipe>
+            </cron>
+            <email_alerts>
+                <emergency_period>1</emergency_period>
+                <alert_period>2</alert_period>
+                <critical_period>5</critical_period>
+                <error_period>10</error_period>
+                <warning_period>15</warning_period>
+                <notice_period>30</notice_period>
+                <info_period>30</info_period>
+                <debug_period>30</debug_period>
+                <send_by_type_subtype>0</send_by_type_subtype>
+                <email_template>corra_log_alert_digest_email_template</email_template>
+            </email_alerts>
+            <!-- <graylog>
+                <enable_corra_logging>0</enable_corra_logging>
+                <enable_all_logging_temporary_period>10</enable_all_logging_temporary_period>
+            </graylog> -->
+        </corra_log>
+    </default>
+</config>

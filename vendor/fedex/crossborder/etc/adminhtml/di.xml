@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * FedEx Cross Border component
+ *
+ * @category    FedEx
+ * @package     FedEx_CrossBorder
+ * @author      Andrey Rapshtynsky <andrey.bh@gmail.com>
+ * @copyright   FedEx (https://crossborder.fedex.com/)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <virtualType name="Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Pool" type="Magento\Ui\DataProvider\Modifier\Pool">
+        <arguments>
+            <argument name="modifiers" xsi:type="array">
+                <item name="fdxcb_carton" xsi:type="array">
+                    <item name="class" xsi:type="string">FedEx\CrossBorder\Ui\DataProvider\Product\Form\Modifier\CartonData</item>
+                    <item name="sortOrder" xsi:type="number">200</item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Magento\Catalog\Controller\Adminhtml\Product\Save">
+        <plugin name="fedex-crossborder-controller-product-save-plugin" type="FedEx\CrossBorder\Plugin\Catalog\Controller\Adminhtml\Product\SavePlugin" />
+    </type>
+
+    <type name="Magento\Sales\Block\Adminhtml\Order\View">
+        <plugin name="fedex-crossborder-sales-order-view" type="FedEx\CrossBorder\Plugin\Sales\Block\Order\ViewPlugin" />
+    </type>
+</config>

@@ -588,7 +588,7 @@
         "title": "Fixes the issue where the price of not applicable shipping method is shown as zero during checkout.",
         "packages": {
             "magento/magento2-base": {
-                ">=2.3.3 <2.4.2": {
+                ">=2.3.3 <=2.3.7-p3 || >=2.4.0 <2.4.2": {
                     "file": "os/MDVA-29446_2.3.4.patch"
                 }
             }
@@ -2133,7 +2133,7 @@
         "title": "Fixes the issue where hard coded rma_item entity default attribute set ID is used instead of the value from the database.",
         "packages": {
             "magento/magento2-ee-base": {
-                "^2.3.0": {
+                ">=2.3.0 <2.4.5": {
                     "file": "commerce/MDVA-33344_2.3.4.patch"
                 }
             }
@@ -3318,7 +3318,7 @@
         "title": "Fixes the issue when Credit Memo updates no longer cause duplicate product reservation updates in the database.",
         "packages": {
             "magento/inventory-composer-metapackage": {
-                "~1.1.5": {
+                ">=1.1.5 <1.2.0": {
                     "file": "os/MDVA-36572_2.4.1.patch"
                 }
             },
@@ -3458,7 +3458,7 @@
                         "MDVA-35092-V2"
                     ]
                 },
-                ">=2.4.2 <2.4.4": {
+                ">=2.4.2 <2.4.3-p3": {
                     "file": "os/MDVA-38308_2.4.2-p1.patch"
                 }
             }
@@ -3565,18 +3565,14 @@
                 "1.1.2": {
                     "file": "os/MDVA-43417_1.1.2.patch"
                 }
-            }
-        },
-        "packages": {
+            },
             "magento/magento2-base": {
-                ">=2.4.3 <=2.4.3-p1": {
+                ">=2.4.3 <=2.4.3-p3": {
                     "file": "os/MDVA-43417_2.4.3-p1.patch"
                 }
-            }
-        },
-        "packages": {
+            },
             "magento/magento2-ee-base": {
-                ">=2.4.3 <=2.4.3-p1": {
+                ">=2.4.3 <=2.4.3-p3": {
                     "file": "commerce/MDVA-43417_2.4.3-p1.patch"
                 }
             }
@@ -4214,18 +4210,52 @@
         "packages": {
             "magento/magento2-base": {
                 ">=2.4.2 <2.4.3": {
-                    "file": "os/MDVA-41061_2.4.2-p1_v4.patch"
+                    "file": "os/MDVA-41061_2.4.2-p1_v4.patch",
+                    "replaced-with": "MDVA-41061-V4"
                 },
                 ">=2.4.3 <2.4.4": {
-                    "file": "os/MDVA-41061_2.4.2-p1_v4.patch"
+                    "file": "os/MDVA-41061_2.4.2-p1_v4.patch",
+                    "replaced-with": "MDVA-41061-V4"
                 }
             },
             "magento/inventory-metapackage": {
                 "1.2.2": {
-                    "file": "os/MDVA-41061_1.2.2_v4.patch"
+                    "file": "os/MDVA-41061_1.2.2_v4.patch",
+                    "replaced-with": "MDVA-41061-V4"
                 },
                 ">=1.2.3 <1.2.4": {
-                    "file": "os/MDVA-41061_1.2.3_v4.patch"
+                    "file": "os/MDVA-41061_1.2.3_v4.patch",
+                    "replaced-with": "MDVA-41061-V4"
+                }
+            }
+        }
+    },
+    "MDVA-41061-V4": {
+        "categories": [
+            "Inventory"
+        ],
+        "title": "Fixes the issue where stock status resets to salable when a product is saved from Admin.",
+        "packages": {
+            "magento/magento2-base": {
+                ">=2.4.2 <2.4.3": {
+                    "file": "os/ACSD-41061_2.4.2-p1_v6.patch"
+                },
+                ">=2.4.3 <2.4.4": {
+                    "file": "os/ACSD-41061_2.4.3-p1_v6.patch"
+                },
+                ">=2.4.4 <2.4.5": {
+                    "file": "os/MDVA-44818_2.4.4.patch"
+                }
+            },
+            "magento/inventory-metapackage": {
+                "1.2.2": {
+                    "file": "os/ACSD-41061_1.2.2_v6.patch"
+                },
+                ">=1.2.3 <1.2.4": {
+                    "file": "os/ACSD-41061_1.2.3_v6.patch"
+                },
+                ">=1.2.4 <1.2.5": {
+                    "file": "os/MDVA-44818_1.2.4.patch"
                 }
             }
         }
@@ -4602,13 +4632,13 @@
                 ">=1.2.2 <1.2.3": {
                     "file": "os/MDVA-40488_1.2.2.patch",
                     "require": [
-                        "MDVA-41061-V3"
+                        "MDVA-41061-V4"
                     ]
                 },
                 ">=1.2.3 <1.2.4": {
                     "file": "os/MDVA-40488_1.2.3.patch",
                     "require": [
-                        "MDVA-41061-V3"
+                        "MDVA-41061-V4"
                     ]
                 }
             }
@@ -4655,6 +4685,9 @@
                 },
                 ">=2.4.3 <2.4.4": {
                     "file": "os/MDVA-38626_2.4.3.patch"
+                },
+                ">=2.4.4 <2.4.5": {
+                    "file": "os/ACSD-46161_2.4.4.patch"
                 }
             }
         }
@@ -4694,6 +4727,9 @@
             "magento/magento2-base": {
                 ">=2.3.2 <2.4.4": {
                     "file": "os/MDVA-38728_2.3.3-p1.patch"
+                },
+                ">=2.4.4 <2.4.5": {
+                    "file": "os/ACSD-46190_2.4.4.patch"
                 }
             }
         }
@@ -4738,6 +4774,9 @@
             "magento/magento2-base": {
                 ">=2.4.2 <2.4.4": {
                     "file": "os/MDVA-41305_2.4.2.patch"
+                },
+                ">=2.4.4 <2.4.5": {
+                    "file": "os/ACSD-46262_2.4.4.patch"
                 }
             }
         }
@@ -4765,21 +4804,24 @@
                 ">=1.2.2 <1.2.3": {
                     "file": "os/MDVA-42584_1.2.2.patch",
                     "require": [
-                        "MDVA-41061-V3",
+                        "MDVA-41061-V4",
                         "MDVA-40488"
-                    ]
+                    ],
+                    "replaced-with": "MDVA-41061-V4"
                 },
                 ">=1.2.3 <1.2.4": {
                     "file": "os/MDVA-44500_1.2.3-p1.patch",
                     "require": [
-                        "MDVA-41061-V3",
+                        "MDVA-41061-V4",
                         "MDVA-40488"
-                    ]
+                    ],
+                    "replaced-with": "MDVA-41061-V4"
                 }
             },
             "magento/magento2-base": {
                 ">=2.4.2 <2.4.3": {
-                    "file": "os/MDVA-42584_2.4.2-p2.patch"
+                    "file": "os/MDVA-42584_2.4.2-p2.patch",
+                    "replaced-with": "MDVA-41061-V4"
                 }
             }
         }
@@ -4863,9 +4905,7 @@
             "magento/magento2-base": {
                 ">=2.3.7-p3 <2.4.0": {
                     "file": "os/MDVA-44540_2.3.7-p3.patch"
-                }
-            },
-            "magento/magento2-base": {
+                },
                 ">=2.4.3-p1 <2.4.5": {
                     "file": "os/MDVA-42269_2.4.3-p1.patch"
                 }
@@ -4992,7 +5032,7 @@
                     "file": "os/MDVA-39993_1.2.2.patch",
                     "replaced-with": "MDVA-39993-V2",
                     "require": [
-                        "MDVA-41061-V3", "MDVA-40488"
+                        "MDVA-41061-V4", "MDVA-40488"
                     ]
                 }
             }
@@ -5016,7 +5056,7 @@
                 ">=1.2.2 <1.2.4": {
                     "file": "os/MDVA-39993_1.2.2_v2.patch",
                     "require": [
-                        "MDVA-41061-V3", "MDVA-40488"
+                        "MDVA-41061-V4", "MDVA-40488"
                     ]
                 }
             }
@@ -5120,7 +5160,7 @@
         "title": "Fixes the issue where Adobe Commerce throws an Integrity Constraint Violation error while updating product categories during import.",
         "packages": {
             "magento/magento2-base": {
-                ">=2.3.0 <2.4.4": {
+                ">=2.3.0 <2.4.5": {
                     "file": "os/MDVA-42689_EE_2.4.3.patch"
                 }
             }
@@ -5130,7 +5170,7 @@
                 {
                     "type": "log",
                     "path": "var/log/exception.log",
-                    "match": "SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '*' for key 'PRIMARY', query was: INSERT INTO `catalog_url_rewrite_product_category` (`url_rewrite_id`,`category_id`,`product_id`) VALUES"
+                    "match": "SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '*' for key 'PRIMARY', query was: INSERT  INTO `catalog_url_rewrite_product_category` (`url_rewrite_id`,`category_id`,`product_id`) VALUES"
                 }
             ]
         }
@@ -5564,6 +5604,435 @@
             "magento/magento2-base": {
                 ">=2.3.1 <2.4.4": {
                     "file": "os/MDVA-44533_2.4.2-p2.patch"
+                }
+            }
+        }
+    },
+    "AC-3022": {
+        "categories": [
+            "Shipping"
+        ],
+        "title": "Fixes the issue where DHL is not working after DHL scheme 6.0 is deprecated, update to DHL scheme to 6.2",
+        "packages": {
+            "magento/magento2-base": {
+                "2.3.7 || 2.4.0 || 2.4.1 || 2.4.2 || 2.4.3 || 2.4.3-p2": {
+                    "file": "os/AC-3022_2.3.7.patch",
+                    "deprecated": true
+                },
+                "2.3.7-p4 || 2.4.4 || 2.4.4-p1": {
+                    "file": "os/AC-3022_2.4.4.patch",
+                    "deprecated": true
+                }
+            }
+        },
+        "metadata": {
+            "and": [
+                {
+                    "type": "config",
+                    "path": "carriers/dhl/active",
+                    "match": 1
+                }
+            ]
+        }
+    },
+    "MDVA-44703": {
+        "categories": [
+            "Reports"
+        ],
+        "title": "Fixes the issue where order totals in the Orders report are miscalculated for the restricted admin user.",
+        "packages": {
+            "magento/magento2-base": {
+                ">=2.4.3 <2.4.6": {
+                    "file": "os/MDVA-44703_2.4.3-p1.patch"
+                }
+            },
+            "magento/magento2-ee-base": {
+                ">=2.4.3 <2.4.6": {
+                    "file": "commerce/MDVA-44703_2.4.3-p1.patch"
+                }
+            }
+        }
+    },
+    "MDVA-44940": {
+        "categories": [
+            "Admin"
+        ],
+        "title": "Fixes the SQL error that occurs while saving the category from admin.",
+        "packages": {
+            "magento/magento2-ee-base": {
+                ">=2.4.3 <2.4.6": {
+                    "file": "commerce/MDVA-44940_2.4.3-p1.patch"
+                }
+            },
+            "magento/inventory-metapackage": {
+                ">=1.2.3 <1.2.6": {
+                    "file": "os/MDVA-44940_1.2.3-p1.patch"
+                }
+            }
+        }
+    },
+    "MDVA-44562": {
+        "categories": [
+            "Shopping Cart",
+            "GraphQL"
+        ],
+        "title": "Fixes the issue where the non-default store id for quote items is overridden by the default store id, despite the GraphQL request originating from the non-default store view.",
+        "packages": {
+            "magento/magento2-base": {
+                ">=2.4.0 <2.4.3": {
+                    "file": "os/MDVA-44562_2.4.2.patch"
+                }
+            }
+        }
+    },
+    "MDVA-43167": {
+        "categories": [
+            "Admin"
+        ],
+        "title": "Fixes the issue where admin order grid mass action doesn't apply for multi-page when admin user selects all orders.",
+        "packages": {
+            "magento/magento2-base": {
+                ">=2.4.2 <2.4.6": {
+                    "file": "os/MDVA-43167_2.4.2.patch"
+                }
+            }
+        }
+    },
+    "MDVA-44044": {
+        "categories": [
+            "Catalog/Product"
+        ],
+        "title": "Fixes the issue where a product is not displayed on the category page after it is assigned to a new website.",
+        "packages": {
+            "magento/magento2-base": {
+                ">=2.3.0 <2.4.3": {
+                    "file": "os/MDVA-44044_2.4.2-p1.patch"
+                }
+            }
+        }
+    },
+    "MDVA-42509": {
+        "categories": [
+            "B2B"
+        ],
+        "title": "Fixes the issue where a CSV could not be uploaded for a quick order resulting in an 'Unable to send the cookie' error.",
+        "packages": {
+            "magento/magento2-ee-base": {
+                ">=2.3.3 <2.4.5": {
+                    "file": "commerce/MDVA-42509_2.4.1.patch"
+                }
+            }
+        }
+    },
+    "ACSD-45241": {
+        "categories": [
+            "Inventory"
+        ],
+        "title": "Fixes the issue where stock quantity for a virtual product is miscalculated after creating a credit memo.",
+        "packages": {
+            "magento/inventory-composer-metapackage": {
+                ">=1.1.5 <1.2.0": {
+                    "file": "os/ACSD-45241_2.4.1.patch",
+                    "require": [
+                        "MDVA-36572"
+                    ]
+                }
+            },
+            "magento/inventory-metapackage": {
+                ">=1.2.0 <1.2.4": {
+                    "file": "os/ACSD-45241_2.4.1.patch",
+                    "require": [
+                        "MDVA-36572"
+                    ]
+                }
+            }
+        }
+    },
+    "ACSD-43887": {
+        "categories": [
+            "B2B"
+        ],
+        "title": "Fixes the issue where incorrect details are displayed on the checkout payment page when Purchase Orders for companies are enabled.",
+        "packages": {
+            "magento/magento2-b2b-base": {
+                ">=1.3.1 <1.3.5": {
+                    "file": "commerce/ACSD-43887_1.3.2.patch"
+                }
+            }
+        }
+    },
+    "MDVA-42807": {
+        "categories": [
+            "Price/Tax"
+        ],
+        "title": "Fixes the issue where the custom currency sign is not displayed on the store front.",
+        "packages": {
+            "magento/magento2-base": {
+                ">=2.3.1 <2.4.6": {
+                    "file": "os/MDVA-42807_2.4.3.patch"
+                }
+            }
+        }
+    },
+    "ACSD-45143": {
+        "categories": [
+            "GraphQL", "Order/Checkout"
+        ],
+        "title": "Fixes the issue where the setShippingAddressesOnCart mutation doesn't allow setting numeric region code as 'region'.",
+        "packages": {
+            "magento/magento2-base": {
+                ">=2.4.0 <2.4.5": {
+                    "file": "os/ACSD-45143_2.4.2-p2_v2.patch"
+                }
+            }
+        }
+    },
+    "ACSD-44591": {
+        "categories": [
+            "Order/Checkout"
+        ],
+        "title": "Fixes the error that occurs when an order is placed without CAPTCHA confirmation.",
+        "packages": {
+            "magento/security-package": {
+                ">=1.1.2 <1.1.5": {
+                    "file": "os/ACSD-44591_2.4.3-p1.patch"
+                }
+            }
+        }
+    },
+    "ACSD-45520": {
+        "categories": [
+            "Shopping Cart"
+        ],
+        "title": "Fixes the issue where swatch options are not pre-selected on the product detail page when a user edits configurable products from the shopping cart.",
+        "packages": {
+            "magento/magento2-base": {
+                ">=2.3.0 <2.4.6": {
+                    "file": "os/ACSD-45520_2.4.4.patch"
+                }
+            }
+        }
+    },
+    "ACSD-45169": {
+        "categories": [
+            "Inventory"
+        ],
+        "title": "Fixes the issue where Visual Merchandiser doesn't display the correct stock and price for a configurable product after a staging update is applied.",
+        "packages": {
+            "magento/inventory-metapackage": {
+                ">=1.2.1 <1.2.5": {
+                    "file": "os/ACSD-45169_2.4.2-p2.patch"
+                }
+            }
+        }
+    },
+    "ACSD-45424": {
+        "categories": [
+            "Inventory"
+        ],
+        "title": "Fixes the issue where an incorrect reservation compensation is created after a partial refund (credit memo).",
+        "packages": {
+            "magento/inventory-composer-metapackage": {
+                ">=1.1.4 <1.2.0": {
+                    "file": "os/ACSD-45424_2.4.1.patch"
+                }
+            },
+            "magento/inventory-metapackage": {
+                ">=1.2.0 <1.2.6": {
+                    "file": "os/ACSD-45424_2.4.1.patch"
+                }
+            }
+        }
+    },
+    "ACSD-45817": {
+        "categories": [
+            "GraphQL", "Catalog/Product"
+        ],
+        "title": "Fixes the issue where a GraphQL product mutation for a specific store returns all configurable variants, including those not assigned to the requested store.",
+        "packages": {
+            "magento/magento2-base": {
+                ">=2.4.2 <2.4.4": {
+                    "file": "os/ACSD-45817_2.4.3-p1.patch"
+                }
+            }
+        }
+    },
+    "ACSD-46146": {
+        "categories": [
+            "Admin", "Order/Checkout"
+        ],
+        "title": "Fixes the issue where two order confirmation emails are sent after placing an order from Admin.",
+        "packages": {
+            "magento/magento2-base": {
+                ">=2.3.0 <2.4.6": {
+                    "file": "os/ACSD-46146_2.4.4.patch"
+                }
+            }
+        }
+    },
+    "ACSD-45255": {
+        "categories": [
+            "Admin", "Reports"
+        ],
+        "title": "Fixes an exception on the Low Stock Report page for a restricted admin user.",
+        "packages": {
+            "magento/magento2-ee-base": {
+                ">=2.4.3 <2.4.6": {
+                    "file": "commerce/ACSD-45255_2.4.3-p1.patch",
+                    "require": [
+                        "MDVA-44703"
+                    ]
+                }
+            },
+            "magento/inventory-metapackage": {
+                ">=1.2.3 <1.2.6": {
+                    "file": "os/ACSD-45255_1.2.3-p1.patch"
+                }
+            }
+        },
+        "metadata": {
+            "and": [
+                {
+                    "type": "log",
+                    "path": "var/log/system.log",
+                    "match": "TypeError: Magento\\InventoryLowQuantityNotification\\Model\\ResourceModel\\LowQuantityCollection\\Interceptor::addStoreFilter(): Argument #1 ($storeId) must be of type int, array given"
+                }
+            ]
+        }
+    },
+    "ACSD-45488": {
+        "categories": [
+            "Catalog/Product"
+        ],
+        "title": "Fixes the issue where a configurable product with multiple sources is not returned to In Stock automatically.",
+        "packages": {
+            "magento/inventory-metapackage": {
+                ">=1.2.2 <1.2.4": {
+                    "file": "os/ACSD-45488_1.2.2.patch",
+                    "require": [
+                        "MDVA-41061-V4"
+                    ]
+                },
+                ">=1.2.4 <1.2.6": {
+                    "file": "os/ACSD-45488_1.2.2.patch"
+                }
+            }
+        }
+    },
+    "ACSD-45754": {
+        "categories": [
+            "Customer"
+        ],
+        "title": "Fixes the issue where Reward points are not added after applying a coupon to the cart.",
+        "packages": {
+            "magento/magento2-base": {
+                ">=2.3.1 <2.4.6": {
+                    "file": "os/ACSD-45754_2.4.3-p1.patch"
+                }
+            }
+        }
+    },
+    "ACSD-45849": {
+        "categories": [
+            "Catalog/Product"
+        ],
+        "title": "Fixes the issue where video metadata is lost after a staging update is applied.",
+        "packages": {
+            "magento/magento2-base": {
+                ">=2.4.3 <2.4.4": {
+                    "file": "os/ACSD-45849_2.4.3-p2.patch"
+                }
+            },
+            "magento/magento2-ee-base": {
+                ">=2.4.3 <2.4.4": {
+                    "file": "commerce/ACSD-45849_2.4.3-p2.patch"
+                }
+            }
+        }
+    },
+    "ACSD-45257": {
+        "categories": [
+            "GraphQL", "Shopping Cart"
+        ],
+        "title": "Fixes the issue where GraphQL doesn't display a cart discount correctly.",
+        "packages": {
+            "magento/magento2-base": {
+                ">=2.3.4 <2.4.4": {
+                    "file": "os/ACSD-45257_2.4.2-p2.patch"
+                }
+            }
+        }
+    },
+    "ACSD-44938": {
+        "categories": [
+            "GraphQL", "Shopping Cart"
+        ],
+        "title": "Fixes the issue where VAT_ID cannot be applied in a GraphQL request for a guest user.",
+        "packages": {
+            "magento/magento2-base": {
+                ">=2.4.0 <2.4.4": {
+                    "file": "os/ACSD-44938_2.4.2.patch",
+                    "require": [
+                        "MDVA-39521"
+                    ]
+                }
+            }
+        }
+    },
+    "ACSD-46213": {
+        "categories": [
+            "GraphQL"
+        ],
+        "title": "Fixes the issue where category tree request is limited to 20 categories.",
+        "packages": {
+            "magento/magento2-base": {
+                ">=2.4.2 <2.4.3": {
+                    "file": "os/ACSD-46213_2.4.2-p1.patch"
+                }
+            }
+        }
+    },
+    "ACSD-45781": {
+        "categories": [
+            "Catalog/Product", "Catalog Search"
+        ],
+        "title": "Fixes the issue where the store front search field is not displayed on mobile.",
+        "packages": {
+            "magento/magento2-base": {
+                ">=2.4.1 <2.4.2": {
+                    "file": "os/ACSD-45781_2.4.1-p1.patch"
+                }
+            }
+        }
+    },
+    "ACSD-46192": {
+        "categories": [
+            "Web API", "Catalog/Product"
+        ],
+        "title": "Fixes the issue with using the async/bulk/V1/configurable-products/bySku/options endpoint.",
+        "packages": {
+            "magento/magento2-base": {
+                ">=2.3.6 <2.4.3-p2": {
+                    "file": "os/MDVA-44493_2.4.3-p1.patch"
+                },
+                ">=2.4.3-p2 <2.4.4": {
+                    "file": "os/MDVA-44600_2.4.3-p2.patch"
+                },
+                ">=2.4.4 <2.4.5": {
+                    "file": "os/ACSD-46192_2.4.4.patch"
+                }
+            }
+        }
+    },
+    "ACSD-46404": {
+        "categories": [
+            "Admin"
+        ],
+        "title": "Fixes the issue where an admin user cannot log in after upgrading to 2.4.4.",
+        "packages": {
+            "magento/magento2-base": {
+                ">=2.4.4 <2.4.5": {
+                    "file": "os/ACSD-46404_2.4.4.patch"
                 }
             }
         }

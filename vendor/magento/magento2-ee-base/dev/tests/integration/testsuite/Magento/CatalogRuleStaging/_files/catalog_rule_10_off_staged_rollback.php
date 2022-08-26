@@ -21,7 +21,9 @@ $updateResourceModel = $objectManager->get(Update::class);
 
 $rule = $ruleFactory->create();
 $ruleResourceModel->load($rule, 96);
-$ruleRepository->deleteById($rule->getId());
+if ($rule->getId()) {
+    $ruleRepository->deleteById($rule->getId());
+}
 
 $update = $updateFactory->create();
 $updateResourceModel->load($update, 'Test Catalog Rule Update', 'name');

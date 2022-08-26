@@ -15,6 +15,28 @@ use PHPUnit\Framework\TestCase;
 class ReindexPoolTest extends TestCase
 {
     /**
+     * @var array
+     */
+    private const REINDEX_POOL = [
+        'FlatIndexProcessor',
+        'CatalogInventoryIndexProcessor',
+        'PriceIndexProcessor',
+        'EavIndexProcessor',
+        'ProductCategoryIndexProcessor',
+        'FulltextIndexProcessor'
+    ];
+
+    /**
+     * @var string
+     */
+    private const REINDEX_POOL_CLASS_NAME = 'Magento\CatalogStaging\Helper\ReindexPool';
+
+    /**
+     * @var string
+     */
+    private const REINDEX_POOL_NAME = 'reindexPool';
+
+    /**
      * @var AbstractProcessor|MockObject
      */
     private $indexerProcessor;
@@ -24,6 +46,9 @@ class ReindexPoolTest extends TestCase
      */
     private $helper;
 
+    /**
+     * @inheritdoc
+     */
     protected function setUp(): void
     {
         $this->indexerProcessor = $this->getMockBuilder(AbstractProcessor::class)
@@ -38,6 +63,30 @@ class ReindexPoolTest extends TestCase
         $this->helper = new ReindexPool($reindexPool);
     }
 
+    /**
+     * Tests that reindexPool has all the necessary processors in the list
+     */
+    public function testReindexPoolList()
+    {
+        $diXml = simplexml_load_file(__DIR__ . '/../../../etc/di.xml');
+        $actualReindexPool = [];
+        foreach ($diXml->type as $type) {
+            if ($type->attributes()['name'] == self::REINDEX_POOL_CLASS_NAME) {
+                foreach ($type->arguments->argument as $argument) {
+                    if ((string)$argument->attributes()['name'] == self::REINDEX_POOL_NAME) {
+                        foreach ($argument->item as $item) {
+                            array_push($actualReindexPool, (string)$item->attributes()['name']);
+                        }
+                    }
+                }
+            }
+        }
+        $this->assertEquals(self::REINDEX_POOL, $actualReindexPool);
+    }
+
+    /**
+     * Tests that reindexList was executed
+     */
     public function testReindexList()
     {
         $ids = [1];

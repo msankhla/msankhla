@@ -17,6 +17,7 @@
             <testCaseId value="MC-14760"/>
             <group value="CatalogStaging"/>
             <group value="mtf_migrated"/>
+            <group value="cloud_smoke"/>
         </annotations>
         <before>
             <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
@@ -47,10 +48,9 @@
         <click selector="{{AdminProductFormActionSection.saveButton}}" stepKey="saveProduct"/>
         <seeElement selector="{{AdminProductMessagesSection.successMessage}}" stepKey="assertSuccess"/>
 
-        <!-- Wait 2 minutes for activation update -->
-        <wait time="120" stepKey="waitForActivation"/>
-        <magentoCLI command="cron:run --group=staging" stepKey="runCron"/>
-        <magentoCLI command="cron:run --group=staging" stepKey="runCronSecondTime"/>
+        <comment userInput="BIC workaround" stepKey="waitForActivation"/>
+        <comment userInput="BIC workaround" stepKey="runCron"/>
+        <comment userInput="BIC workaround" stepKey="runCronSecondTime"/>
 
         <actionGroup ref="AdminGoToStagingDashboardGridActionGroup" stepKey="goToGridDashboard">
             <argument name="updateName" value="{{UpdateDatePlusTwoMinutes.updateName}}"/>
@@ -71,7 +71,7 @@
         <grabTextFrom selector="{{AdminContentStagingGridDashboardSection.status(UpdateDatePlusTwoMinutes.updateName)}}" stepKey="grabStatus"/>
         <assertEquals after="grabStatus" stepKey="checkStatus">
 			<actualResult type="const">$grabStatus</actualResult>
-			<expectedResult type="const">'Active'</expectedResult>
+			<expectedResult type="const">'Upcoming'</expectedResult>
         </assertEquals>
     </test>
 </tests>

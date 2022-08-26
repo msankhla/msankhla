@@ -20,4 +20,7 @@
             </argument>
         </arguments>
     </type>
+    <type name="Magento\Checkout\Block\Checkout\LayoutProcessor">
+        <plugin name="extra_checks_customerbalance_allowed_on_checkout" type="Magento\CustomerBalance\Plugin\Block\Checkout\LayoutProcessorPlugin"/>
+    </type>
 </config>

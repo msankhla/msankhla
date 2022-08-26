@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/queue.xsd">
+    <broker topic="corra.log.created" type="amqp" exchange="magento-db">
+        <queue name="corra_log_created" consumer="corraLogCreated"
+               consumerInstance="Magento\Framework\MessageQueue\Consumer"
+               handler="Corra\Log\Model\LogCreatedConsumer::process"/>
+    </broker>
+</config>

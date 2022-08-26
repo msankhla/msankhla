@@ -145,7 +145,17 @@ class Price implements DimensionalIndexerInterface
             \Magento\GiftCard\Model\Catalog\Product\Type\Giftcard::TYPE_GIFTCARD,
             iterator_to_array($entityIds)
         );
-        $this->tableMaintainer->insertFromSelect($select, $temporaryPriceTable->getTableName(), []);
+        $this->tableMaintainer->insertFromSelect($select, $temporaryPriceTable->getTableName(), [
+            "entity_id",
+            "customer_group_id",
+            "website_id",
+            "tax_class_id",
+            "price",
+            "final_price",
+            "min_price",
+            "max_price",
+            "tier_price",
+        ]);
 
         $this->basePriceModifier->modifyPrice($temporaryPriceTable, iterator_to_array($entityIds));
     }

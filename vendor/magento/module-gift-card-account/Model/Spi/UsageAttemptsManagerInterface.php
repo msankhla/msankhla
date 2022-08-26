@@ -13,6 +13,8 @@ use Magento\GiftCardAccount\Api\Exception\TooManyAttemptsException;
 
 /**
  * Log and manage attempts to use gift card codes.
+ *
+ * @api
  */
 interface UsageAttemptsManagerInterface
 {

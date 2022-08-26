@@ -172,4 +172,21 @@ class Update extends AbstractDb
 
         parent::processAfterSaves($object);
     }
+
+    /**
+     * Get update to which provided one is moved.
+     *
+     * @param int $movedTo
+     * @return int|null
+     */
+    public function getPreviousUpdateId(int $movedTo): ?int
+    {
+        $select = $this->getConnection()->select()
+            ->from($this->getMainTable(), ['id'])
+            ->where('moved_to = ?', $movedTo)
+            ->limit(1);
+        $updateId = $this->getConnection()->fetchOne($select);
+
+        return $updateId ? (int) $updateId : null;
+    }
 }

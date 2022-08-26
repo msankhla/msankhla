@@ -26,6 +26,7 @@
             </createData>
             <createData entity="Simple_US_Customer" stepKey="createSimpleUsCustomer"/>
 
+            <magentoCron groups="index" stepKey="reindexInvalidatedIndices"/>
             <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
             <actionGroup ref="OpenEditCustomerFromAdminActionGroup" stepKey="openCustomerEdit">
                 <argument name="customer" value="$createSimpleUsCustomer$" />

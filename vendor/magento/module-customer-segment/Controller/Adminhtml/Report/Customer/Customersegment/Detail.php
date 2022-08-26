@@ -11,6 +11,8 @@ use Magento\CustomerSegment\Helper\Data;
 
 /**
  * Renders a Customer Segment Report
+ *
+ * @SuppressWarnings(PHPMD.AllPurposeAction)
  */
 class Detail extends Customersegment
 {
@@ -53,8 +55,10 @@ class Detail extends Customersegment
             $this->_initAction();
             $this->_view->getPage()->getConfig()->getTitle()->prepend(__('Customer Segment Report'));
             $this->_view->getPage()->getConfig()->getTitle()->prepend(__('Details'));
+            // phpcs:ignore
             $this->_view->renderLayout();
         } else {
+            // phpcs:ignore
             $this->_redirect('*/*/segment');
         }
     }

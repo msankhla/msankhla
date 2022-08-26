@@ -1,0 +1,43 @@
+<?php
+/**
+ * FedEx Cross Border component
+ *
+ * @category    FedEx
+ * @package     FedEx_CrossBorder
+ * @author      Andrey Rapshtynsky <andrey.bh@gmail.com>
+ * @copyright   FedEx (https://crossborder.fedex.com/)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+/** @var \FedEx\CrossBorder\Block\MonitorApp $block */
+?>
+<div class="monitoring_web_app"><?= $block->getWidgetHtml(); ?></div>
+<script>
+    require(
+        ['jquery'],
+        function($) {
+            var myModel = {
+                targetElement   : $('.fcb-pm-modal-overlay'),
+
+                init : function() {
+                    var self = this;
+                    var observer = new MutationObserver(function( mutations ) {
+                        mutations.forEach(function( mutation ) {
+                            if (mutation.type === 'attributes') {
+                                if (!self.targetElement.is(':visible')) {
+                                    window.location = '<?= $block->getBaseUrl() ?>';
+                                }
+                            }
+                        });
+                    });
+
+                    if (this.targetElement.length) {
+                        observer.observe(this.targetElement[0], {attributes: true});
+                    }
+                }
+            };
+
+            myModel.init();
+        }
+    );
+</script>

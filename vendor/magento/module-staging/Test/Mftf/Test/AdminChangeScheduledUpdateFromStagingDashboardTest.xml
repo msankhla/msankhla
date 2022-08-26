@@ -60,8 +60,10 @@
         </actionGroup>
 
         <!-- Change "End Date" to the max year value -->
-        <generateDate date="+30 year" format="m/j/Y g:i A" stepKey="generate30YEndDate"/>
-        <fillField selector="{{AdminStagingEditSection.endDate}}" userInput="{$generate30YEndDate}" stepKey="fill30YEndDate"/>
+        <comment userInput="Adding the comment to replace generate30YEndDate step key for preserving Backward Compatibility" stepKey="generate30YEndDate"/>
+        <comment userInput="Adding the comment to replace fill30YEndDate step key for preserving Backward Compatibility" stepKey="fill30YEndDate"/>
+        <generateDate date="01/19/2038 03:14:07 AM UTC" format="m/j/Y g:i A" stepKey="generate16YEndDate"/>
+        <fillField selector="{{AdminStagingEditSection.endDate}}" userInput="{$generate16YEndDate}" stepKey="fill16YEndDate"/>
         <click selector="{{AdminMainActionsSection.save}}" stepKey="saveStagingUpdate"/>
         <waitForElementVisible selector="{{AdminMessagesSection.success}}" stepKey="waitSuccessMessageAppeared"/>
         <see selector="{{AdminMessagesSection.success}}" userInput="You saved the &#34;{{S5UpdateNameStaging.updateName}}&#34; update." stepKey="seeSuccessMessage"/>

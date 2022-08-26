@@ -92,27 +92,29 @@ class RewardPointsRefund
         /* @var $order \Magento\Sales\Model\Order */
         $order = $creditmemo->getOrder();
 
-        $isRefundAllowed = false;
-        if ($creditmemo->getAutomaticallyCreated()) {
-            if ($this->rewardData->isAutoRefundEnabled()) {
+        if ($order->getCustomerId()) {
+            $isRefundAllowed = false;
+            if ($creditmemo->getAutomaticallyCreated()) {
+                if ($this->rewardData->isAutoRefundEnabled()) {
+                    $isRefundAllowed = true;
+                }
+                $rewardPointsBalance = is_numeric($creditmemo->getRewardPointsBalance()) ?
+                    round($creditmemo->getRewardPointsBalance()) : 0;
+                $creditmemo->setRewardPointsBalanceRefund($rewardPointsBalance);
+            } else {
                 $isRefundAllowed = true;
             }
-            $rewardPointsBalance = is_numeric($creditmemo->getRewardPointsBalance()) ?
-                round($creditmemo->getRewardPointsBalance()) : 0;
-            $creditmemo->setRewardPointsBalanceRefund($rewardPointsBalance);
-        } else {
-            $isRefundAllowed = true;
-        }
 
-        if ($creditmemo->getBaseRewardCurrencyAmount() && $isRefundAllowed) {
-            if ((int)$creditmemo->getRewardPointsBalanceRefund() > 0) {
-                $this->getRewardModel()
-                    ->setCustomerId($order->getCustomerId())
-                    ->setStore($order->getStoreId())
-                    ->setPointsDelta(round($creditmemo->getRewardPointsBalanceRefund()))
-                    ->setAction(\Magento\Reward\Model\Reward::REWARD_ACTION_CREDITMEMO)
-                    ->setActionEntity($order)
-                    ->save();
+            if ($creditmemo->getBaseRewardCurrencyAmount() && $isRefundAllowed) {
+                if ((int)$creditmemo->getRewardPointsBalanceRefund() > 0) {
+                    $this->getRewardModel()
+                        ->setCustomerId($order->getCustomerId())
+                        ->setStore($order->getStoreId())
+                        ->setPointsDelta(round($creditmemo->getRewardPointsBalanceRefund()))
+                        ->setAction(\Magento\Reward\Model\Reward::REWARD_ACTION_CREDITMEMO)
+                        ->setActionEntity($order)
+                        ->save();
+                }
             }
         }
     }
@@ -132,8 +134,10 @@ class RewardPointsRefund
         CreditMemoResourceModel $result,
         AbstractModel $creditmemo
     ) {
-        $this->updateHistoryRow($creditmemo);
-        $this->salesRuleRefund->refund($creditmemo);
+        if ($creditmemo->getOrder()->getCustomerId()) {
+            $this->updateHistoryRow($creditmemo);
+            $this->salesRuleRefund->refund($creditmemo);
+        }
 
         return $result;
     }

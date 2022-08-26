@@ -36,28 +36,33 @@ class CartTest extends \PHPUnit\Framework\TestCase
      */
     public function daysDiffConditionDataProvider()
     {
-        $firstClause = 'AND ((TO_DAYS(\'2013-12-24 00:00:00\')';
+        $prefixClause = 'AND';
+        $suffixClause = '\'2013-12-24 00:00:00\'';
 
         return [
             [
                 '>=',
                 '1',
-                $firstClause. ' - TO_DAYS(IF(quote.updated_at = 0, quote.created_at, quote.updated_at))) >= 1)'
+                $prefixClause. ' (TIMESTAMPDIFF(DAY, IF(quote.updated_at = 0, quote.created_at, quote.updated_at), '
+                . $suffixClause.') >= 1)'
             ],
             [
                 '>',
                 '1',
-                $firstClause. ' - TO_DAYS(IF(quote.updated_at = 0, quote.created_at, quote.updated_at))) > 1)'
+                $prefixClause. ' (TIMESTAMPDIFF(DAY, IF(quote.updated_at = 0, quote.created_at, quote.updated_at), '
+                . $suffixClause.') > 1)'
             ],
             [
                 '>=',
                 '0',
-                $firstClause. ' - TO_DAYS(IF(quote.updated_at = 0, quote.created_at, quote.updated_at))) >= 0)'
+                $prefixClause. ' (TIMESTAMPDIFF(DAY, IF(quote.updated_at = 0, quote.created_at, quote.updated_at), '
+                . $suffixClause.') >= 0)'
             ],
             [
                 '>',
                 '0',
-                $firstClause. ' - TO_DAYS(IF(quote.updated_at = 0, quote.created_at, quote.updated_at))) > 0)'
+                $prefixClause. ' (TIMESTAMPDIFF(DAY, IF(quote.updated_at = 0, quote.created_at, quote.updated_at), '
+                . $suffixClause.') > 0)'
             ]
         ];
     }

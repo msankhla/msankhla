@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Corra_Log::main_menu"
+             title="C O R R A"
+             module="Corra_Log"
+             sortOrder="100" resource="Corra_Log::menu"/>
+        <add id="Corra_Log::log"
+             title="Log" module="Corra_Log" sortOrder="100"
+             action="corra_log/log/index"
+             resource="Corra_Log::log" parent="Corra_Log::main_menu"/>
+        <add id="Corra_Log::log_archive" title="Log Archive"
+             module="Corra_Log" sortOrder="200"
+             action="corra_log/log_archive/index" resource="Corra_Log::log_archive"
+             parent="Corra_Log::main_menu"/>
+    </menu>
+</config>

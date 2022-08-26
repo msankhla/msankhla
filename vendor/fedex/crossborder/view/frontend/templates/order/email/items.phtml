@@ -1,0 +1,97 @@
+<?php
+/**
+ * FedEx Cross Border component
+ *
+ * @category    FedEx
+ * @package     FedEx_CrossBorder
+ * @author      Andrey Rapshtynsky <andrey.bh@gmail.com>
+ * @copyright   FedEx (https://crossborder.fedex.com/)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+// phpcs:disable Magento2.Templates.ThisInTemplate
+
+/** @var $block \Magento\Sales\Block\Order\Email\Items */
+?>
+<?php $_order = $block->getOrder(); ?>
+<?php if ($_order) : ?>
+    <?php
+    if ($extensionAttributes = $_order->getExtensionAttributes()) {
+        /** @var \FedEx\CrossBorder\Model\OrderLink $_orderLink */
+        if ($_orderLink = $extensionAttributes->getFdxcbData()) {
+            $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+            /** @var \FedEx\CrossBorder\Model\MerchantControl $merchantControl */
+            $merchantControl = $objectManager->get('FedEx\CrossBorder\Model\MerchantControl');
+            if ($merchantControl->canShowTrackingLink()) {
+                $_trackingLink = $_orderLink->getTrackingLink();
+            }
+            if ($merchantControl->canShowMonitorApp()) {
+                $_monitorLink = $block->getBaseUrl() . 'fdxcb/monitorApp/';
+            }
+        }
+    }
+    ?>
+    <?php if (!empty($_trackingLink) || !empty($_monitorLink)): ?>
+        <table class="email-items" style="width: 100%; border-collapse: collapse; border-spacing: 0; max-width: 100%;">
+            <tr>
+            <?php if (!empty($_trackingLink)): ?>
+                <td style="font-family: 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif; vertical-align: center; background-color: #f5f5f5; padding: 20px; text-align: <?php if (empty($_monitorLink)): ?>center<?php else: ?>left; width: 50%;<?php endif; ?>">
+                    <a href="<?= $_trackingLink ?>" target="_blank"><?= $block->escapeHtml(__('Click here to track your shipment')) ?></a>
+                </td>
+            <?php endif; ?>
+            <?php if (!empty($_monitorLink)): ?>
+                <td style="font-family: 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif; vertical-align: center; background-color: #f5f5f5; padding: 20px; text-align:  <?php if (empty($_trackingLink)): ?>center<?php else: ?>right; width: 50%;<?php endif; ?>">
+                    <a href="<?= $_monitorLink ?>" target="_blank"><?= $block->escapeHtml(__('Monitor App')) ?></a>
+                </td>
+            <?php endif; ?>
+            </tr>
+        </table>
+    <?php endif; ?>
+    <?php $_items = $_order->getAllItems(); ?>
+    <table class="email-items">
+        <thead>
+            <tr>
+                <th class="item-info">
+                    <?= $block->escapeHtml(__('Items')) ?>
+                </th>
+                <th class="item-qty">
+                    <?= $block->escapeHtml(__('Qty')) ?>
+                </th>
+                <th class="item-price">
+                    <?= $block->escapeHtml(__('Price')) ?>
+                </th>
+            </tr>
+        </thead>
+        <?php foreach ($_items as $_item) : ?>
+            <?php if (!$_item->getParentItem()) : ?>
+                <tbody>
+                    <?= $block->getItemHtml($_item) ?>
+                </tbody>
+            <?php endif; ?>
+        <?php endforeach; ?>
+        <tfoot class="order-totals">
+            <?= $block->getChildHtml('order_totals') ?>
+        </tfoot>
+    </table>
+    <?php if ($this->helper(\Magento\GiftMessage\Helper\Message::class)
+            ->isMessagesAllowed('order', $_order, $_order->getStore())
+        && $_order->getGiftMessageId()
+    ) : ?>
+        <?php $_giftMessage = $this->helper(\Magento\GiftMessage\Helper\Message::class)
+            ->getGiftMessage($_order->getGiftMessageId()); ?>
+        <?php if ($_giftMessage) : ?>
+            <br />
+            <table class="message-gift">
+                <tr>
+                    <td>
+                        <h3><?= $block->escapeHtml(__('Gift Message for this Order')) ?></h3>
+                        <strong><?= $block->escapeHtml(__('From:')) ?></strong> <?= $block->escapeHtml($_giftMessage->getSender()) ?>
+                        <br /><strong><?= $block->escapeHtml(__('To:')) ?></strong> <?= $block->escapeHtml($_giftMessage->getRecipient()) ?>
+                        <br /><strong><?= $block->escapeHtml(__('Message:')) ?></strong>
+                        <br /><?= $block->escapeHtml($_giftMessage->getMessage()) ?>
+                    </td>
+                </tr>
+            </table>
+        <?php endif; ?>
+    <?php endif; ?>
+<?php endif; ?>

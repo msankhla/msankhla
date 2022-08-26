@@ -13,19 +13,22 @@ namespace Magento\Rma\Api;
 interface RmaAttributesManagementInterface extends \Magento\Customer\Api\MetadataInterface
 {
     /**
-     * Attribute set id
+     * Default attribute set id
+     *
+     * @deprecated This value should be retrieved from database
+     * @see \Magento\Eav\Model\Entity\Type::getDefaultAttributeSetId
      */
-    const ATTRIBUTE_SET_ID = 9;
+    public const ATTRIBUTE_SET_ID = 9;
 
     /**
-     * Entity type
+     * Item entity type
      */
-    const ENTITY_TYPE = 'rma_item';
+    public const ENTITY_TYPE = 'rma_item';
 
     /**
-     * Data object class name
+     * Item data object class name
      */
-    const DATA_OBJECT_CLASS_NAME = \Magento\Rma\Api\Data\ItemInterface::class;
+    public const DATA_OBJECT_CLASS_NAME = \Magento\Rma\Api\Data\ItemInterface::class;
 
     /**
      * Retrieve all attributes filtered by form code

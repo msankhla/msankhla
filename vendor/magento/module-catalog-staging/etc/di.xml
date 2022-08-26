@@ -127,6 +127,7 @@
         <arguments>
             <argument name="reindexPool" xsi:type="array">
                 <item name="FlatIndexProcessor" xsi:type="object">Magento\Catalog\Model\Indexer\Product\Flat\Processor</item>
+                <item name="CatalogInventoryIndexProcessor" xsi:type="object">Magento\CatalogInventory\Model\Indexer\Stock\Processor</item>
                 <item name="PriceIndexProcessor" xsi:type="object">Magento\Catalog\Model\Indexer\Product\Price\Processor</item>
                 <item name="EavIndexProcessor" xsi:type="object">Magento\Catalog\Model\Indexer\Product\Eav\Processor</item>
                 <item name="ProductCategoryIndexProcessor" xsi:type="object">Magento\Catalog\Model\Indexer\Product\Category\Processor</item>
@@ -400,5 +401,17 @@
                 </item>
             </argument>
         </arguments>
+    </type>
+    <type name="Magento\CatalogStaging\Model\Plugin\Model\Product\ActionPlugin">
+        <arguments>
+            <argument name="attrCodes" xsi:type="array">
+                <item name="news_from_date" xsi:type="string">news_to_date</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Catalog\Model\Product\Action">
+        <plugin name="stagingMassAttributesUpdate"
+                type="Magento\CatalogStaging\Model\Plugin\Model\Product\ActionPlugin"
+                sortOrder="1"/>
     </type>
 </config>

@@ -111,11 +111,11 @@ class DataTest extends TestCase
     public function testGetAttributeValidateRules(): void
     {
         $data = [
-            'date_range_min' => '07/18/2020',
+            'date_range_min' => '07/18/1920',
             'date_range_max' => '07/31/2020',
         ];
         $expectedOutput = [
-            'date_range_min' => 1595030400,
+            'date_range_min' => -1560729600,
             'date_range_max' => 1596153600,
         ];
         $result = $this->helper->getAttributeValidateRules('date', $data);
@@ -199,5 +199,16 @@ class DataTest extends TestCase
     private function hydrateData(array $inputData): array
     {
         return array_merge($this->getStaticData(), $inputData);
+    }
+
+    /**
+     * Test the get format which will be applied for date
+     */
+    public function testGetDateFormat()
+    {
+        $this->assertEquals(
+            'M/d/y',
+            $this->helper->getDateFormat()
+        );
     }
 }

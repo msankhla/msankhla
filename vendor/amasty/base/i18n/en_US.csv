@@ -78,3 +78,6 @@ Notifications,Notifications
 Menu,Menu
 "Enable Amasty Menu Item","Enable Amasty Menu Item"
 "System Information","System Information"
+"System Settings","System Settings"
+"CLI PHP Path","CLI PHP Path"
+"Current CLI PHP path of your Magento which is used by our extension when running the commands directly during the processing of PHP requests. To change it, please run bin/magento config:set amasty_base/system/cli_php_path %CLI_PHP_PATH% from the command line.","Current CLI PHP path of your Magento which is used by our extension when running the commands directly during the processing of PHP requests. To change it, please run bin/magento config:set amasty_base/system/cli_php_path %CLI_PHP_PATH% from the command line."

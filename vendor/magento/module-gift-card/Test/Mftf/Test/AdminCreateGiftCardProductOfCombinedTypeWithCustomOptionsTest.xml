@@ -18,6 +18,7 @@
             <testCaseId value="MC-14496"/>
             <group value="mtf_migrated"/>
             <group value="GiftCard"/>
+            <group value="cloud_smoke"/>
         </annotations>
         <before>
             <!-- Create category -->
@@ -34,13 +35,14 @@
             <actionGroup ref="DeleteProductBySkuActionGroup" stepKey="deleteProduct">
                 <argument name="sku" value="{{CombinedGiftCard.sku}}"/>
             </actionGroup>
+            <actionGroup ref="ResetAdminDataGridToDefaultViewActionGroup" stepKey="clearFilters"/>
 
             <!-- Log out -->
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
         </after>
 
         <!-- Create  gift card product -->
-        <amOnPage url="{{AdminProductIndexPage.url}}" stepKey="navigateToCatalogProductGrid"/>
+        <actionGroup ref="AdminOpenProductIndexPageActionGroup" stepKey="navigateToCatalogProductGrid"/>
         <waitForPageLoad stepKey="waitForCatalogProductGrid"/>
         <actionGroup ref="GoToSpecifiedCreateProductPageActionGroup" stepKey="openProductFillForm">
             <argument name="productType" value="giftcard"/>

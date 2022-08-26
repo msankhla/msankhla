@@ -34,17 +34,17 @@ class Cart extends \Magento\Framework\DataObject implements \Magento\Checkout\Mo
     /**
      * Context of the cart - admin order
      */
-    const CONTEXT_ADMIN_ORDER = 'admin_order';
+    public const CONTEXT_ADMIN_ORDER = 'admin_order';
 
     /**
      * Context of the cart - admin checkout
      */
-    const CONTEXT_ADMIN_CHECKOUT = 'admin_checkout';
+    public const CONTEXT_ADMIN_CHECKOUT = 'admin_checkout';
 
     /**
      * Context of the cart - frontend
      */
-    const CONTEXT_FRONTEND = 'frontend';
+    public const CONTEXT_FRONTEND = 'frontend';
 
     /**
      * Context of the cart
@@ -127,7 +127,7 @@ class Cart extends \Magento\Framework\DataObject implements \Magento\Checkout\Mo
     protected $quoteRepository;
 
     /**
-     * Wishlist factory
+     * Wishlist factory model
      *
      * @var \Magento\Wishlist\Model\WishlistFactory
      */
@@ -1014,7 +1014,7 @@ class Cart extends \Magento\Framework\DataObject implements \Magento\Checkout\Mo
             try {
                 $product = $this->productRepository->get($sku, false, $storeId);
                 $this->addProductToLocalCache($product, $storeId);
-            } catch (NoSuchEntityException $e) {
+            } catch (\Magento\Framework\Exception\LocalizedException $e) {
                 return false;
             }
         }

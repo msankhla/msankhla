@@ -19,7 +19,7 @@ use Magento\Staging\Model\StagingApplier\PostProcessorInterface;
 use Magento\Framework\Exception\ConfigurationMismatchException;
 
 /**
- * Class StagingApplier
+ * Apply staging updates
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class StagingApplier
@@ -136,7 +136,7 @@ class StagingApplier
     }
 
     /**
-     * {@inheritdoc}
+     * Process staging update
      */
     public function execute()
     {
@@ -178,8 +178,13 @@ class StagingApplier
                     }
                 }
             }
-            $this->eventManager->dispatch('clean_cache_by_tags', ['object' => $this->cacheContext]);
-            $this->cacheManager->clean($this->cacheContext->getIdentities());
+
+            $tags = $this->cacheContext->getIdentities();
+            // cleaning cache without tags is deprecated
+            if (!empty($tags)) {
+                $this->eventManager->dispatch('clean_cache_by_tags', ['object' => $this->cacheContext]);
+                $this->cacheManager->clean($tags);
+            }
             $this->deleteObsoleteEntities($currentVersionId);
         }
     }

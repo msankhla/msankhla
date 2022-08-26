@@ -7,15 +7,18 @@ namespace Magento\CatalogPermissions\Model\Indexer\Category\Action;
 
 use Magento\Catalog\Model\Config as CatalogConfig;
 use Magento\CatalogPermissions\App\ConfigInterface;
+use Magento\CatalogPermissions\Model\Indexer\Category\ModeSwitcher;
+use Magento\CatalogPermissions\Model\Indexer\CustomerGroupFilter;
+use Magento\CatalogPermissions\Model\Indexer\Product\Action\ProductSelectDataProvider;
 use Magento\CatalogPermissions\Model\Indexer\Product\IndexFiller as ProductIndexFiller;
+use Magento\CatalogPermissions\Model\Indexer\TableMaintainer;
 use Magento\Customer\Model\ResourceModel\Group\CollectionFactory as GroupCollectionFactory;
+use Magento\Framework\App\CacheInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\DB\Query\Generator;
 use Magento\Store\Model\ResourceModel\Website\CollectionFactory as WebsiteCollectionFactory;
 use Magento\Store\Model\StoreManagerInterface;
-use Magento\Framework\App\CacheInterface;
-use Magento\CatalogPermissions\Model\Indexer\Product\Action\ProductSelectDataProvider;
-use Magento\Framework\DB\Query\Generator;
-use Magento\CatalogPermissions\Model\Indexer\CustomerGroupFilter;
-use Magento\Framework\App\ObjectManager;
 
 /**
  * Class responsible for partial reindex of category permissions.
@@ -51,6 +54,11 @@ class Rows extends \Magento\CatalogPermissions\Model\Indexer\AbstractAction
     private $customerGroupFilter;
 
     /**
+     * @var ScopeConfigInterface
+     */
+    private $scopeConfig;
+
+    /**
      * @param \Magento\Framework\App\ResourceConnection $resource
      * @param WebsiteCollectionFactory $websiteCollectionFactory
      * @param GroupCollectionFactory $groupCollectionFactory
@@ -64,6 +72,8 @@ class Rows extends \Magento\CatalogPermissions\Model\Indexer\AbstractAction
      * @param ProductSelectDataProvider|null $productSelectDataProvider
      * @param CustomerGroupFilter|null $customerGroupFilter
      * @param ProductIndexFiller|null $productIndexFiller
+     * @param TableMaintainer|null $tableMaintainer
+     * @param ScopeConfigInterface|null $scopeConfig
      * @throws \Exception
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
@@ -80,7 +90,9 @@ class Rows extends \Magento\CatalogPermissions\Model\Indexer\AbstractAction
         Generator $batchQueryGenerator = null,
         ProductSelectDataProvider $productSelectDataProvider = null,
         CustomerGroupFilter $customerGroupFilter = null,
-        ProductIndexFiller $productIndexFiller = null
+        ProductIndexFiller $productIndexFiller = null,
+        TableMaintainer $tableMaintainer = null,
+        ScopeConfigInterface $scopeConfig = null
     ) {
         parent::__construct(
             $resource,
@@ -93,9 +105,13 @@ class Rows extends \Magento\CatalogPermissions\Model\Indexer\AbstractAction
             $metadataPool,
             $batchQueryGenerator,
             $productSelectDataProvider,
-            $productIndexFiller
+            $productIndexFiller,
+            null,
+            $tableMaintainer
         );
         $this->helper = $helper;
+        $this->scopeConfig = $scopeConfig
+            ??ObjectManager::getInstance()->get(ScopeConfigInterface::class);
         $this->customerGroupFilter = $customerGroupFilter
             ?: ObjectManager::getInstance()->get(CustomerGroupFilter::class);
     }
@@ -139,12 +155,36 @@ class Rows extends \Magento\CatalogPermissions\Model\Indexer\AbstractAction
     protected function removeObsoleteIndexData()
     {
         $this->entityIds = array_merge($this->entityIds, $this->helper->getChildCategories($this->entityIds));
+        $indexTempTable = $this->getIndexTempTable();
+        $productIndexTempTable = $this->getProductIndexTempTable();
+        if ($this->scopeConfig->getValue(ModeSwitcher::XML_PATH_CATEGORY_PERMISSION_DIMENSIONS_MODE) ===
+            ModeSwitcher::DIMENSION_CUSTOMER_GROUP
+        ) {
+            foreach ($this->getCustomerGroupIds() as $groupId) {
+                $indexTableName =  $indexTempTable . '_' . $groupId;
+                $productIndexTableName = $productIndexTempTable . '_' . $groupId;
+                $this->removeIndexData($indexTableName, $productIndexTableName);
+            }
+        } else {
+            $this->removeIndexData($indexTempTable, $productIndexTempTable);
+        }
+    }
+
+    /**
+     * Remove Index entries
+     *
+     * @param string $indexTempTable
+     * @param string $productIndexTempTable
+     * @return void
+     */
+    private function removeIndexData(string $indexTempTable, string $productIndexTempTable)
+    {
         $this->connection->delete(
-            $this->getIndexTempTable(),
+            $indexTempTable,
             ['category_id IN (?)' => $this->entityIds]
         );
         $this->connection->delete(
-            $this->getProductIndexTempTable(),
+            $productIndexTempTable,
             ['product_id IN (?)' => $this->getProductList()]
         );
     }

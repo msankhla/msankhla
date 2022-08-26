@@ -111,4 +111,8 @@
         <plugin name="Amasty_Rules::DisableRulesViaConsole"
                 type="Amasty\Rules\Plugin\Framework\Module\Status\DisableRules"/>
     </type>
+    <type name="Magento\Quote\Model\Quote">
+        <plugin name="Amasty_Rules::resetMaxDiscountCache"
+                type="Amasty\Rules\Plugin\ResetMaxDiscountCache"/>
+    </type>
 </config>

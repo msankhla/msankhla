@@ -73,30 +73,13 @@ class SaveActionTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->updateService = $this->getMockBuilder(Service::class)
-            ->disableOriginalCOnstructor()
-            ->getMock();
-
-        $this->versionManager = $this->getMockBuilder(VersionManager::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->entityHydrator = $this->getMockBuilder(HydratorInterface::class)
-            ->getMockForAbstractClass();
-
-        $this->entityStaging = $this->getMockBuilder(EntityStaging::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->updateRepository = $this->getMockBuilder(UpdateRepositoryInterface::class)
-            ->getMockForAbstractClass();
-
-        $this->metadataPool = $this->getMockBuilder(MetadataPool::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->updateValidator = $this->getMockBuilder(UpdateValidator::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->updateService = $this->createMock(Service::class);
+        $this->versionManager = $this->createMock(VersionManager::class);
+        $this->entityHydrator = $this->createMock(HydratorInterface::class);
+        $this->entityStaging = $this->createMock(EntityStaging::class);
+        $this->updateRepository = $this->createMock(UpdateRepositoryInterface::class);
+        $this->metadataPool = $this->createMock(MetadataPool::class);
+        $this->updateValidator = $this->createMock(UpdateValidator::class);
         $this->updateFactory = $this->getMockBuilder(UpdateFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
@@ -118,11 +101,10 @@ class SaveActionTest extends TestCase
      * Checks the creation of new update
      *
      * @dataProvider createUpdateDataProvider
-     * @param int $updateId
+     * @param string|null $updateId
      */
-    public function testExecuteCreateUpdate(
-        $updateId
-    ) {
+    public function testExecuteCreateUpdate(?string $updateId)
+    {
         $newUpdateId = 32;
         $params = [
             'stagingData' => isset($updateId) ? ['update_id' => $updateId] : [],
@@ -311,68 +293,5 @@ class SaveActionTest extends TestCase
             ->with($entity, $updateId, ['origin_in' => $updateId]);
 
         $this->assertTrue($this->saveAction->execute($params));
-    }
-
-    /**
-     * Checks the editing of existed update for case when 'StartTime' parameter was changed with Active entity
-     */
-    public function testExecuteEditUpdateStartTimeWithActiveEntity()
-    {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
-        $this->expectExceptionMessage('The Start Time of this Update cannot be changed. It\'s been already started.');
-        $this->saveAction = new SaveAction(
-            $this->updateService,
-            $this->versionManager,
-            $this->entityHydrator,
-            $this->entityStaging,
-            $this->updateRepository,
-            $this->metadataPool,
-            $this->updateFactory
-        );
-
-        $startDateTime = new \DateTime();
-        //set passed time for activate entity
-        $startDateTime->sub(new \DateInterval('P1D'));
-        $updateTime = new \DateTime();
-        $endDateTimeChanged = new \DateTime();
-        $endDateTimeChanged->add(new \DateInterval('P3D'));
-        $currentEndDateTimeChanged = $endDateTimeChanged->format('Y-m-d H:i:s');
-
-        $stagingData = [
-            'update_id' => 1,
-            'start_time' => $startDateTime->format('Y-m-d H:i:s'),
-            'end_time' => $currentEndDateTimeChanged,
-        ];
-        $params = [
-            'stagingData' => $stagingData,
-            'entityData' => [],
-        ];
-
-        $updateMock = $this->getMockBuilder(Update::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $updateMock->method('getId')
-            ->willReturn(1);
-        $updateMock->method('getStartTime')
-            ->willReturn($updateTime->format('Y-m-d H:i:s'));
-        $this->updateRepository->expects($this->atLeastOnce())
-            ->method('get')
-            ->with(1)
-            ->willReturn($updateMock);
-        $hydratorMock = $this->getMockBuilder(\Magento\Framework\EntityManager\HydratorInterface::class)
-            ->getMockForAbstractClass();
-        $this->metadataPool->method('getHydrator')
-            ->with(UpdateInterface::class)
-            ->willReturn($hydratorMock);
-        $this->updateRepository->method('save')
-            ->willReturnSelf();
-        $entity = new \stdClass();
-        $this->entityHydrator->method('hydrate')
-            ->with($params['entityData'])
-            ->willReturn($entity);
-        $this->entityStaging->method('schedule')
-            ->with($entity, 1, ['origin_in' => 1]);
-
-        $this->saveAction->execute($params);
     }
 }

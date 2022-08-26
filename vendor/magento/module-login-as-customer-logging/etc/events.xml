@@ -9,6 +9,15 @@
     <event name="checkout_cart_add_product_complete">
         <observer name="login_as_customer_log_add_to_cart" instance="Magento\LoginAsCustomerLogging\Observer\LogAddToCartObserver" />
     </event>
+    <event name="sales_quote_item_qty_set_after">
+        <observer name="login_as_customer_log_update_qty" instance="Magento\LoginAsCustomerLogging\Observer\LogUpdateQtyObserver" />
+    </event>
+    <event name="sales_quote_remove_item">
+        <observer name="login_as_customer_log_remove_item_from_cart" instance="Magento\LoginAsCustomerLogging\Observer\LogRemoveItemFromCartObserver" />
+    </event>
+    <event name="sales_quote_collect_totals_after">
+        <observer name="login_as_customer_log_apply_coupon" instance="Magento\LoginAsCustomerLogging\Observer\LogApplyCoupon" />
+    </event>
     <event name="wishlist_product_add_after">
         <observer name="login_as_customer_log_add_product_to_wishlist" instance="Magento\LoginAsCustomerLogging\Observer\LogAddToWishlistObserver" />
     </event>
@@ -20,5 +29,8 @@
     </event>
     <event name="customer_address_delete_after">
         <observer name="login_as_customer_log_delete_customer_address" instance="Magento\LoginAsCustomerLogging\Observer\LogDeleteCustomerAddressObserver" />
+    </event>
+    <event name="customer_save_after_data_object">
+        <observer name="login_as_customer_log_save_customer" instance="Magento\LoginAsCustomerLogging\Observer\LogSaveCustomerObserver" />
     </event>
 </config>

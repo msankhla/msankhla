@@ -32,5 +32,9 @@
             </argument>
         </arguments>
     </virtualType>
+    <type name="Magento\Catalog\Controller\Adminhtml\Product\Initialization\Helper">
+        <plugin name="updateConfigurations" disabled="true" />
+        <plugin name="updateConfigurationsStaging" type="Magento\ConfigurableProductStaging\Plugin\Catalog\UpdateConfigurationsStaging" sortOrder="60" />
+    </type>
 </config>
 

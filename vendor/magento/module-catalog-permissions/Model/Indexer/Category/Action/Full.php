@@ -9,8 +9,10 @@ use Magento\Catalog\Model\Config as CatalogConfig;
 use Magento\Catalog\Model\ResourceModel\Indexer\ActiveTableSwitcher;
 use Magento\CatalogPermissions\App\ConfigInterface;
 use Magento\CatalogPermissions\Model\Indexer\Product\IndexFiller as ProductIndexFiller;
+use Magento\CatalogPermissions\Model\Indexer\TableMaintainer;
 use Magento\Customer\Model\ResourceModel\Group\CollectionFactory as GroupCollectionFactory;
 use Magento\Framework\App\CacheInterface;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Store\Model\ResourceModel\Website\CollectionFactory as WebsiteCollectionFactory;
@@ -33,6 +35,11 @@ class Full extends \Magento\CatalogPermissions\Model\Indexer\AbstractAction
     private $activeTableSwitcher;
 
     /**
+     * @var TableMaintainer
+     */
+    private $tableMaintainer;
+
+    /**
      * @param ResourceConnection $resource
      * @param WebsiteCollectionFactory $websiteCollectionFactory
      * @param GroupCollectionFactory $groupCollectionFactory
@@ -45,6 +52,7 @@ class Full extends \Magento\CatalogPermissions\Model\Indexer\AbstractAction
      * @param Generator $batchQueryGenerator
      * @param ProductSelectDataProvider|null $productSelectDataProvider
      * @param ProductIndexFiller|null $productIndexFiller
+     * @param TableMaintainer|null $tableMaintainer
      * @throws \Exception
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
@@ -60,7 +68,8 @@ class Full extends \Magento\CatalogPermissions\Model\Indexer\AbstractAction
         ActiveTableSwitcher $activeTableSwitcher,
         Generator $batchQueryGenerator = null,
         ProductSelectDataProvider $productSelectDataProvider = null,
-        ProductIndexFiller $productIndexFiller = null
+        ProductIndexFiller $productIndexFiller = null,
+        TableMaintainer $tableMaintainer = null
     ) {
         parent::__construct(
             $resource,
@@ -76,6 +85,7 @@ class Full extends \Magento\CatalogPermissions\Model\Indexer\AbstractAction
             $productIndexFiller
         );
         $this->activeTableSwitcher = $activeTableSwitcher;
+        $this->tableMaintainer = $tableMaintainer ?? ObjectManager::getInstance()->get(TableMaintainer::class);
     }
 
     /**
@@ -108,10 +118,16 @@ class Full extends \Magento\CatalogPermissions\Model\Indexer\AbstractAction
     public function execute()
     {
         $this->useIndexTempTable = false;
-        $this->clearIndexTempTable();
+        $this->tableMaintainer->clearIndexTempTable();
         $this->reindex();
-        $this->activeTableSwitcher->switchTable($this->connection, [parent::getIndexTable()]);
-        $this->activeTableSwitcher->switchTable($this->connection, [parent::getIndexTable() . self::PRODUCT_SUFFIX]);
+        $this->activeTableSwitcher->switchTable(
+            $this->connection,
+            $this->tableMaintainer->getAllCategoryTablesForCustomerGroups()
+        );
+        $this->activeTableSwitcher->switchTable(
+            $this->connection,
+            $this->tableMaintainer->getAllProductsTablesForCustomerGroups()
+        );
         $this->cleanCache();
     }
 
@@ -132,17 +148,6 @@ class Full extends \Magento\CatalogPermissions\Model\Indexer\AbstractAction
         );
 
         return $this->connection->fetchPairs($select);
-    }
-
-    /**
-     * Clear all index temporary data
-     *
-     * @return void
-     */
-    private function clearIndexTempTable()
-    {
-        $this->connection->truncateTable($this->getIndexTempTable());
-        $this->connection->truncateTable($this->getProductIndexTempTable());
     }
 
     /**

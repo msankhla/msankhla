@@ -134,6 +134,8 @@ class Update implements UpdateInterface
     }
 
     /**
+     * Resolve version id
+     *
      * @param array $data
      * @return string|null
      */
@@ -143,6 +145,8 @@ class Update implements UpdateInterface
     }
 
     /**
+     * Process entity update
+     *
      * @param EntityMetadataInterface $metadata
      * @param string $entityType
      * @param object $entity
@@ -156,22 +160,28 @@ class Update implements UpdateInterface
         $entity,
         $arguments
     ) {
-        $needReschedule = (isset($arguments['origin_in']) && $arguments['created_in'] != $arguments['origin_in']);
-        if ($needReschedule) {
-            $this->rescheduleUpdate->reschedule($arguments['origin_in'], $arguments['created_in'], $entity);
-        }
         $hydrator = $this->metadataPool->getHydrator($entityType);
         $entityData = $hydrator->extract($entity);
-        $identifier = $entityData[$metadata->getIdentifierField()];
-        $version = $this->versionInfoProvider->getVersionInfo(
-            $entity,
-            $this->resolveVersion(array_merge($entityData, $arguments))
-        );
         if (!isset($arguments['created_in'])) {
             $createdIn = array_key_exists('created_in', $entityData) ? $entityData['created_in'] : 1;
             $arguments['created_in'] = $createdIn;
         }
         $update = $this->updateRepository->get($arguments['created_in']);
+
+        $needReschedule = false;
+        if (isset($arguments['origin_in'])) {
+            $needReschedule = $arguments['created_in'] != $arguments['origin_in']
+                || $update->getRollbackId() != $entityData['updated_in'];
+            if ($needReschedule) {
+                $this->rescheduleUpdate->reschedule($arguments['origin_in'], $arguments['created_in'], $entity);
+            }
+        }
+
+        $identifier = $entityData[$metadata->getIdentifierField()];
+        $version = $this->versionInfoProvider->getVersionInfo(
+            $entity,
+            $this->resolveVersion(array_merge($entityData, $arguments))
+        );
         if ($version->getRowId() != null) {
             if ($update->getRollbackId()) {
                 $arguments['updated_in'] = $update->getRollbackId();
@@ -193,10 +203,7 @@ class Update implements UpdateInterface
     }
 
     /**
-     * @param object $entity
-     * @param array $arguments
-     * @return object
-     * @throws \Exception
+     * @inheritdoc
      */
     public function execute($entity, $arguments = [])
     {

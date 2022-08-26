@@ -47,6 +47,7 @@
         <amOnPage url="$$product.custom_attributes[url_key]$$.html" stepKey="goToProductPage"/>
         <waitForPageLoad stepKey="waitForPageLoad"/>
         <!--Add product to cart-->
+        <waitForElementClickable selector="{{StorefrontProductActionSection.addToCart}}" stepKey="waitForAddToCartButton"/>
         <click selector="{{StorefrontProductActionSection.addToCart}}" stepKey="addProductToCart"/>
         <waitForPageLoad stepKey="waitForPageLoad1"/>
         <waitForElementVisible selector="{{StorefrontMessagesSection.success}}" stepKey="waitForSuccessMessage"/>

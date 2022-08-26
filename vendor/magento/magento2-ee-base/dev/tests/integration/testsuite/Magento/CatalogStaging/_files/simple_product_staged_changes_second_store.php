@@ -24,17 +24,16 @@ $updateRepository = $objectManager->get(UpdateRepositoryInterface::class);
 $productStaging = $objectManager->get(ProductStagingInterface::class);
 $versionManager = $objectManager->get(VersionManager::class);
 $productRepository = $objectManager->get(ProductRepositoryInterface::class);
+$currentVersionId = $versionManager->getCurrentVersion()->getId();
 
 /**
  * Create Website
  */
-
 /**
  * @var Website $website
  */
 $website = $objectManager->get(Magento\Store\Model\Website::class);
 $website->load('test_secondwebsite', 'code');
-
 if (!$website->getId()) {
     /** @var Magento\Store\Model\Website $website */
     $website->setData(
@@ -44,14 +43,12 @@ if (!$website->getId()) {
 
         ]
     );
-
     $website->save();
 }
 
 /**
  * Create store group
  */
-
 /**
  * @var Group $storeGroup
  */
@@ -60,19 +57,16 @@ $storeGroup->setCode('secondstorecode')
     ->setName('second store')
     ->setRootCategoryId(2)
     ->setWebsite($website);
-
 $storeGroup->save($storeGroup);
 
 $website->setDefaultGroupId($storeGroup->getId());
 $website->save($website);
-
 $websiteId = $website->getId();
 
 //Create Stores
 /** @var Store $store */
 $store = $objectManager->create(Store::class);
 $store->load('fixture_second_store', 'code');
-
 if (!$store->getId()) {
     $groupId = $website->getDefaultGroupId();
     $store->setData(
@@ -122,16 +116,15 @@ $updateData = [
     'is_campaign' => 0,
     'is_rollback' => null,
 ];
-
 $update = $updateFactory->create(['data' => $updateData]);
 $updateRepository->save($update);
+
 /** @var \Magento\Store\Model\StoreManagerInterface $storeManageInterface */
 $storeManageInterface = $objectManager->get(\Magento\Store\Model\StoreManagerInterface::class);
 $storeManageInterface->setCurrentStore($storeId);
 
 $product = $productRepository->get('simplep1');
-
 $versionManager->setCurrentVersionId($update->getId());
-
 $product->setName('Updated Product Name store2')->setPrice(40)->save();
 $productStaging->schedule($product, $update->getId());
+$versionManager->setCurrentVersionId($currentVersionId);

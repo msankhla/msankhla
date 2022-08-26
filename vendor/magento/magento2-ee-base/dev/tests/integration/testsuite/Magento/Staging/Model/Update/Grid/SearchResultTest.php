@@ -70,11 +70,9 @@ class SearchResultTest extends TestCase
     {
         $this->searchResult->setOrder('status', SearchResult::SORT_ORDER_DESC);
         $items = array_values($this->searchResult->getItems());
-        $this->assertCount(2, $items);
+        $this->assertCount(1, $items);
         $this->assertEquals(100, $items[0]['id']);
         $this->assertEquals(Status::STATUS_UPCOMING, $items[0]['status']);
-        $this->assertEquals(1, $items[1]['id']);
-        $this->assertEquals(Status::STATUS_ACTIVE, $items[1]['status']);
     }
 
     /**
@@ -85,8 +83,8 @@ class SearchResultTest extends TestCase
      */
     public function testRecordsCounter(): void
     {
-        $this->assertCount(1, $this->searchResult->getItems());
-        $this->assertCount(2, $this->searchResult->getData());
-        $this->assertEquals(1, $this->searchResult->getTotalCount());
+        $this->assertCount(0, $this->searchResult->getItems());
+        $this->assertCount(1, $this->searchResult->getData());
+        $this->assertEquals(0, $this->searchResult->getTotalCount());
     }
 }

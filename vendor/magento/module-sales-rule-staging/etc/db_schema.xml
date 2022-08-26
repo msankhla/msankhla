@@ -58,10 +58,18 @@
         </constraint>
     </table>
     <table name="salesrule_label" resource="default" comment="Salesrule Label">
+        <column xsi:type="int" name="rule_id" disabled="true"/>
+        <column xsi:type="int" name="row_id" unsigned="true" nullable="false" identity="false"
+                onCreate="migrateDataFrom(rule_id)" comment="Version Id"/>
         <constraint xsi:type="foreign" referenceId="SALESRULE_LABEL_RULE_ID_SALESRULE_RULE_ID" disabled="1"/>
-        <constraint xsi:type="foreign" referenceId="SALESRULE_LABEL_RULE_ID_SEQUENCE_SALESRULE_SEQUENCE_VALUE"
-                    table="salesrule_label" column="rule_id" referenceTable="sequence_salesrule"
-                    referenceColumn="sequence_value" onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="SALESRULE_LABEL_ROW_ID_SALESRULE_ROW_ID"
+                    table="salesrule_label" column="row_id" referenceTable="salesrule"
+                    referenceColumn="row_id" onDelete="CASCADE"/>
+        <constraint xsi:type="unique" referenceId="SALESRULE_LABEL_RULE_ID_STORE_ID" disabled="1"/>
+        <constraint xsi:type="unique" referenceId="SALESRULE_LABEL_ROW_ID_STORE_ID">
+            <column name="row_id"/>
+            <column name="store_id"/>
+        </constraint>
     </table>
     <table name="salesrule_coupon" resource="default" comment="Salesrule Coupon">
         <constraint xsi:type="foreign" referenceId="SALESRULE_COUPON_RULE_ID_SALESRULE_RULE_ID" disabled="1"/>

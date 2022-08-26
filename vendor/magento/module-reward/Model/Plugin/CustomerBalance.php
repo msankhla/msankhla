@@ -8,7 +8,6 @@ declare(strict_types=1);
 namespace Magento\Reward\Model\Plugin;
 
 use Magento\CustomerBalance\Model\Creditmemo\Balance;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Reward\Model\Reward;
 use Magento\Reward\Model\RewardFactory;
@@ -25,15 +24,12 @@ class CustomerBalance
     private $rewardFactory;
 
     /**
-     * @param Reward $reward
-     * @param RewardFactory|null $rewardFactory
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @param RewardFactory $rewardFactory
      */
     public function __construct(
-        Reward $reward,
-        ?RewardFactory $rewardFactory = null
+        RewardFactory $rewardFactory
     ) {
-        $this->rewardFactory = $rewardFactory ?? ObjectManager::getInstance()->get(RewardFactory::class);
+        $this->rewardFactory = $rewardFactory;
     }
 
     /**
@@ -41,7 +37,7 @@ class CustomerBalance
      *
      * @param Balance $subject
      * @param Creditmemo $creditmemo
-     * @return string|null
+     * @return void
      * @throws LocalizedException
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
@@ -52,8 +48,6 @@ class CustomerBalance
         if (!$this->isBalanceAvailable($creditmemo)) {
             throw new LocalizedException(__('You can\'t use more store credit than the order amount.'));
         }
-
-        return null;
     }
 
     /**
@@ -74,6 +68,8 @@ class CustomerBalance
             (float) $creditmemo->getBsCustomerBalTotalRefunded()
         );
 
+        // As Reward Points is rounded value but max allowed Customer Balance calculated with raw totals,
+        // we need to use some delta to validate allowed balance
         $rewardPointsCeilCompensation = 1;
         $availableBalance = $reward->getPointsEquivalent(
             (float) $creditmemo->getBaseCustomerBalanceReturnMax() + $rewardPointsCeilCompensation

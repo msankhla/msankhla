@@ -219,19 +219,17 @@ class SqlBuilder
         );
         if ($this->shouldUseBind($condition)) {
             $select->where(
-                $this->indexResource->getOperatorBindCondition(
+                $this->getOperatorBindCondition(
+                    $condition,
                     $valueExpr,
-                    $condition->getAttribute(),
-                    $condition->getOperator(),
                     $bind
                 )
             );
         } else {
             $select->where(
-                $this->indexResource->getOperatorCondition(
-                    $valueExpr,
-                    $condition->getOperator(),
-                    $condition->getValueParsed()
+                $this->getOperatorCondition(
+                    $condition,
+                    $valueExpr
                 )
             );
         }
@@ -247,11 +245,24 @@ class SqlBuilder
      *
      * The produced part of SELECT query looks like this:
      *
-     * e.row_id IN (
-     *   SELECT IFNULL(relation.parent_id, table.row_id)
-     *   FROM `catalog_product_entity_int` AS `table`
-     *   LEFT JOIN `catalog_product_relation` AS `relation` ON table.row_id=relation.child_id
-     *   WHERE (table.attribute_id='93') AND (table.store_id=0) AND (`table`.`value`='15')
+     * EXISTS (
+     *  SELECT 1
+     *  FROM `catalog_product_entity_int` AS `table`
+     *  LEFT JOIN `catalog_product_entity` AS `cpe`
+     *      ON cpe.row_id = table.row_id
+     *  INNER JOIN `catalog_product_relation` AS `relation`
+     *      ON cpe.entity_id = relation.child_id
+     *  WHERE (relation.parent_id = e.row_id)
+     *      AND (table.attribute_id='93')
+     *      AND (table.store_id=0)
+     *      AND (`table`.`value`='15')
+     *  UNION
+     *  SELECT 1
+     *  FROM `catalog_product_entity_int` AS `table`
+     *  WHERE (table.row_id = e.row_id)
+     *      AND (table.attribute_id='487')
+     *      AND (table.store_id=0)
+     *      AND (`table`.`value`='15')
      * )
      *
      * @param Select $select
@@ -271,10 +282,7 @@ class SqlBuilder
         $attribute = $condition->getAttributeObject();
         $select->from(
             ['table' => $attribute->getBackendTable()],
-            $this->indexResource->getConnection()->getIfNullSql(
-                'relation.parent_id',
-                'table.' . $linkField
-            )
+            new \Zend_Db_Expr('1')
         )->joinLeft(
             ['cpe' => $this->indexResource->getTable('catalog_product_entity')],
             'cpe.' . $linkField . ' = table.' . $linkField,
@@ -284,24 +292,23 @@ class SqlBuilder
             'cpe.entity_id = relation.child_id',
             []
         )
+        ->where('relation.parent_id = e.' . $linkField)
         ->where('table.attribute_id=?', $attribute->getId())
         ->where('table.store_id=?', Store::DEFAULT_STORE_ID);
 
         if ($this->shouldUseBind($condition)) {
             $select->where(
-                $this->indexResource->getOperatorBindCondition(
+                $this->getOperatorBindCondition(
+                    $condition,
                     'table.value',
-                    $condition->getAttribute(),
-                    $condition->getOperator(),
                     $bind
                 )
             );
         } else {
             $select->where(
-                $this->indexResource->getOperatorCondition(
-                    'table.value',
-                    $condition->getOperator(),
-                    $condition->getValueParsed()
+                $this->getOperatorCondition(
+                    $condition,
+                    'table.value'
                 )
             );
         }
@@ -310,26 +317,25 @@ class SqlBuilder
         $selectChildren = $connection->select()
             ->from(
                 ['table' => $attribute->getBackendTable()],
-                'table.' . $linkField
+                new \Zend_Db_Expr('1')
             )
+            ->where(sprintf('table.%s = e.%s', $linkField, $linkField))
             ->where('table.attribute_id=?', $attribute->getId())
             ->where('table.store_id=?', Store::DEFAULT_STORE_ID);
 
         if ($this->shouldUseBind($condition)) {
             $selectChildren->where(
-                $this->indexResource->getOperatorBindCondition(
+                $this->getOperatorBindCondition(
+                    $condition,
                     'table.value',
-                    $condition->getAttribute(),
-                    $condition->getOperator(),
                     $bind
                 )
             );
         } else {
             $selectChildren->where(
-                $this->indexResource->getOperatorCondition(
-                    'table.value',
-                    $condition->getOperator(),
-                    $condition->getValueParsed()
+                $this->getOperatorCondition(
+                    $condition,
+                    'table.value'
                 )
             );
         }
@@ -339,9 +345,7 @@ class SqlBuilder
             \Magento\Framework\DB\Select::SQL_UNION
         );
 
-        /** MySQL Subquery with IN statement performance optimizer */
-        $selectWrapper = $this->indexResource->getConnection()->select()->from($resultSelect);
-        return 'e.' . $linkField . ' IN (' . $selectWrapper . ')';
+        return 'EXISTS (' . $resultSelect . ')';
     }
 
     /**
@@ -365,5 +369,149 @@ class SqlBuilder
     protected function normalizeConditionValue($condition)
     {
         return $condition->getValue();
+    }
+
+    /**
+     * Generate SQL condition for attribute with bind value
+     *
+     * @param ProductCondition $condition
+     * @param \Zend_Db_Expr|string $field
+     * @param array $bind
+     * @return string
+     */
+    private function getOperatorBindCondition(
+        ProductCondition $condition,
+        $field,
+        array &$bind
+    ): string {
+        $attribute = $condition->getAttributeObject();
+        switch ($attribute->getFrontendInput()) {
+            case 'multiselect':
+                $where = $this->getMultiselectAttributeBindCondition($condition, $field, $bind);
+                break;
+            default:
+                $where = $this->indexResource->getOperatorBindCondition(
+                    $field,
+                    $condition->getAttribute(),
+                    $condition->getOperator(),
+                    $bind
+                );
+        }
+
+        return $where;
+    }
+
+    /**
+     * Generate SQL condition for attribute with constant value
+     *
+     * @param ProductCondition $condition
+     * @param \Zend_Db_Expr|string $field
+     * @return string
+     */
+    private function getOperatorCondition(
+        ProductCondition $condition,
+        $field
+    ): string {
+        $attribute = $condition->getAttributeObject();
+        switch ($attribute->getFrontendInput()) {
+            case 'multiselect':
+                $where = $this->getMultiselectAttributeCondition($condition, $field);
+                break;
+            default:
+                $where = $this->indexResource->getOperatorCondition(
+                    $field,
+                    $condition->getOperator(),
+                    $condition->getValueParsed()
+                );
+        }
+
+        return $where;
+    }
+
+    /**
+     * Generate SQL condition for multiselect attribute with constant value
+     *
+     * @param ProductCondition $condition
+     * @param \Zend_Db_Expr|string $field
+     * @return string
+     */
+    public function getMultiselectAttributeCondition(
+        ProductCondition $condition,
+        $field
+    ): string {
+        // [contains, does not contain, is one of, is not one of]
+        $operators = ['{}', '!{}', '()', '!()'];
+        $operator = $condition->getOperator();
+        if (in_array($operator, $operators)) {
+            $orExp = [];
+            foreach ($condition->getValueParsed() as $value) {
+                $orExp[] =  ['finset' => $value];
+            }
+            $where = $this->indexResource->getConnection()->prepareSqlCondition($field, $orExp);
+            if (strpos($operator, '!') === 0) {
+                $where = sprintf('NOT %s', $where);
+            }
+        } else {
+            $where = $this->indexResource->getOperatorCondition(
+                $field,
+                $condition->getOperator(),
+                $condition->getValueParsed()
+            );
+        }
+        return $where;
+    }
+
+    /**
+     * Generate SQL condition for multiselect attribute with bind value
+     *
+     * @param ProductCondition $condition
+     * @param \Zend_Db_Expr|string $field
+     * @param array $bind
+     * @return string
+     */
+    public function getMultiselectAttributeBindCondition(
+        ProductCondition $condition,
+        $field,
+        array &$bind
+    ): string {
+        // contains, does not contain, is one of, is not one of
+        $operators = ['{}', '!{}', '()', '!()'];
+        $operator = $condition->getOperator();
+        if (in_array($operator, $operators)) {
+            $bindCount = count($bind);
+            $where = $this->indexResource->getOperatorBindCondition(
+                $field,
+                $condition->getAttribute(),
+                $condition->getOperator(),
+                $bind
+            );
+            // check if new bind has been generated
+            if ($bindCount < count($bind)) {
+                $cloneBind = $bind;
+                $newBind = end($cloneBind);
+                $connection = $this->indexResource->getConnection();
+                $regex = $connection->getConcatSql(
+                    [
+                        //e.g ,(REPLACE(:bind_name, ',', '|')),
+                        "',('",
+                        sprintf('REPLACE(%s,\',\',\'|\')', $newBind['bind']),
+                        "'),'"
+                    ]
+                );
+                $normalizedField = $connection->getConcatSql(["','", $field, "','"]);
+                $where = $connection->prepareSqlCondition($normalizedField, ['regexp' => $regex]);
+                if (strpos($operator, '!') === 0) {
+                    $where = sprintf('NOT (%s)', $where);
+                }
+            }
+        } else {
+            $where = $this->indexResource->getOperatorBindCondition(
+                $field,
+                $condition->getAttribute(),
+                $condition->getOperator(),
+                $bind
+            );
+        }
+        return $where;
     }
 }

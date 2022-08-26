@@ -5,27 +5,35 @@
  */
 namespace Magento\GoogleTagManager\Observer;
 
+use Magento\Checkout\Model\Session;
+use Magento\Framework\App\Action\Action;
+use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
+use Magento\GoogleTagManager\Helper\Data;
+use Magento\GoogleTagManager\Model\Config\TagManagerConfig;
 
+/**
+ * @SuppressWarnings(PHPMD.CookieAndSessionMisuse)
+ */
 class ClearSessionCartQuantityObserver implements ObserverInterface
 {
     /**
-     * @var \Magento\GoogleTagManager\Helper\Data
+     * @var Data
      */
     protected $helper;
 
     /**
-     * @var \Magento\Checkout\Model\Session
+     * @var Session
      */
     protected $checkoutSession;
 
     /**
-     * @param \Magento\GoogleTagManager\Helper\Data $helper
-     * @param \Magento\Checkout\Model\Session $checkoutSession
+     * @param Data $helper
+     * @param Session $checkoutSession
      */
     public function __construct(
-        \Magento\GoogleTagManager\Helper\Data $helper,
-        \Magento\Checkout\Model\Session $checkoutSession
+        Data $helper,
+        Session $checkoutSession
     ) {
         $this->helper = $helper;
         $this->checkoutSession = $checkoutSession;
@@ -36,20 +44,20 @@ class ClearSessionCartQuantityObserver implements ObserverInterface
      *
      * Fired by controller_action_postdispatch_checkout_cart_updatePost event
      *
-     * @param \Magento\Framework\Event\Observer $observer
+     * @param Observer $observer
      * @return $this
      */
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    public function execute(Observer $observer)
     {
         if (!$this->helper->isTagManagerAvailable()) {
             return $this;
         }
-        /** @var \Magento\Framework\App\Action\Action $controllerAction */
+        /** @var Action $controllerAction */
         $controllerAction = $observer->getEvent()->getControllerAction();
         $updateAction = (string)$controllerAction->getRequest()->getParam('update_cart_action');
         if ($updateAction == 'empty_cart') {
             $this->checkoutSession->unsetData(
-                \Magento\GoogleTagManager\Helper\Data::PRODUCT_QUANTITIES_BEFORE_ADDTOCART
+                TagManagerConfig::PRODUCT_QUANTITIES_BEFORE_ADDTOCART
             );
         }
 

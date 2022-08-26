@@ -5,6 +5,13 @@
  */
 namespace Magento\GoogleTagManager\Model\Plugin\Quote;
 
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\DataObject;
+use Magento\Framework\Registry;
+use Magento\GoogleTagManager\Helper\Data;
+use Magento\Quote\Model\Quote;
+use Magento\Quote\Model\Quote\Item;
+
 /**
  * Class \Magento\GoogleTagManager\Model\Plugin\Quote\SetGoogleAnalyticsOnCartAdd
  *
@@ -13,22 +20,22 @@ namespace Magento\GoogleTagManager\Model\Plugin\Quote;
 class SetGoogleAnalyticsOnCartAdd
 {
     /**
-     * @var \Magento\GoogleTagManager\Helper\Data
+     * @var Data
      */
     private $helper;
 
     /**
-     * @var \Magento\Framework\Registry
+     * @var Registry
      */
     private $registry;
 
     /**
-     * @param \Magento\GoogleTagManager\Helper\Data $helper
-     * @param \Magento\Framework\Registry $registry
+     * @param Data $helper
+     * @param Registry $registry
      */
     public function __construct(
-        \Magento\GoogleTagManager\Helper\Data $helper,
-        \Magento\Framework\Registry $registry
+        Data $helper,
+        Registry $registry
     ) {
         $this->helper = $helper;
         $this->registry = $registry;
@@ -36,17 +43,18 @@ class SetGoogleAnalyticsOnCartAdd
 
     /**
      * Parses the product Qty data after update cart event.
+     *
      * In cases when product qty is increased the product data sets to registry.
      *
-     * @param \Magento\Quote\Model\Quote $subject
+     * @param Quote $subject
      * @param \Closure $proceed
-     * @param $itemId
-     * @param $buyRequest
-     * @param $params
-     * @return \Magento\Quote\Model\Quote\Item
+     * @param int $itemId
+     * @param DataObject $buyRequest
+     * @param null|array|DataObject $params
+     * @return Item Item
      */
     public function aroundUpdateItem(
-        \Magento\Quote\Model\Quote $subject,
+        Quote $subject,
         \Closure $proceed,
         $itemId,
         $buyRequest,
@@ -60,23 +68,28 @@ class SetGoogleAnalyticsOnCartAdd
             return $result;
         }
 
-        $this->setItemForTriggerAddEvent($this->helper, $this->registry, $result, $qty);
+        $this->setItemForTriggerAddEvent(
+            $this->helper,
+            $this->registry,
+            $result,
+            $qty
+        );
         return $result;
     }
 
     /**
      * Sets item data to registry for triggering add event.
      *
-     * @param \Magento\GoogleTagManager\Helper\Data $helper
-     * @param \Magento\Framework\Registry $registry
-     * @param \Magento\Quote\Model\Quote\Item $item
-     * @param $qty
+     * @param Data $helper
+     * @param Registry $registry
+     * @param Item $item
+     * @param float|int $qty
      * @return void
      */
     private function setItemForTriggerAddEvent(
-        \Magento\GoogleTagManager\Helper\Data $helper,
-        \Magento\Framework\Registry $registry,
-        \Magento\Quote\Model\Quote\Item $item,
+        Data $helper,
+        Registry $registry,
+        Item $item,
         $qty
     ) {
         if ($helper->isTagManagerAvailable()) {

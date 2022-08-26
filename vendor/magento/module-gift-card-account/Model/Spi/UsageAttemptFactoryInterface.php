@@ -12,6 +12,8 @@ use Magento\GiftCardAccount\Model\Spi\Data\UsageAttemptInterface;
 
 /**
  * Initiate an attempt's data.
+ *
+ * @api
  */
 interface UsageAttemptFactoryInterface
 {

@@ -3,9 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
+
 namespace Magento\GoogleTagManager\Block;
 
 use Magento\Catalog\Model\Category;
+use Magento\Framework\App\ObjectManager;
+use Magento\GoogleTagManager\Model\Config\TagManagerConfig;
+use Magento\GoogleTagManager\Helper\Data as GoogleTagManagerHelper;
 
 /**
  * Model list provider in JSON format.
@@ -93,6 +98,11 @@ class ListJson extends \Magento\Framework\View\Element\Template
     protected $bannerCollector;
 
     /**
+     * @var TagManagerConfig
+     */
+    private $tagManagerConfig;
+
+    /**
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param \Magento\GoogleTagManager\Helper\Data $helper
      * @param \Magento\Framework\Json\Helper\Data $jsonHelper
@@ -106,6 +116,7 @@ class ListJson extends \Magento\Framework\View\Element\Template
      * @param \Magento\Banner\Model\ResourceModel\Banner\CollectionFactory $bannerColFactory
      * @param \Magento\GoogleTagManager\Model\Banner\Collector $bannerCollector
      * @param array $data
+     * @param TagManagerConfig|null $tagManagerConfig
      *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
@@ -122,7 +133,8 @@ class ListJson extends \Magento\Framework\View\Element\Template
         \Magento\Framework\App\Request\Http $request,
         \Magento\Banner\Model\ResourceModel\Banner\CollectionFactory $bannerColFactory,
         \Magento\GoogleTagManager\Model\Banner\Collector $bannerCollector,
-        array $data = []
+        array $data = [],
+        TagManagerConfig $tagManagerConfig = null
     ) {
         $this->helper = $helper;
         $this->jsonHelper = $jsonHelper;
@@ -135,6 +147,9 @@ class ListJson extends \Magento\Framework\View\Element\Template
         $this->bannerColFactory = $bannerColFactory;
         $this->request = $request;
         $this->bannerCollector = $bannerCollector;
+        $this->tagManagerConfig = $tagManagerConfig ?? ObjectManager::getInstance()->get(
+            TagManagerConfig::class
+        );
         parent::__construct($context, $data);
     }
 
@@ -204,7 +219,7 @@ class ListJson extends \Magento\Framework\View\Element\Template
         if (!$this->getListBlock()) {
             return null;
         }
-        
+
         /* For catalog list and search results
          * Expects getListBlock as \Magento\Catalog\Block\Product\ListProduct
          */
@@ -296,6 +311,7 @@ class ListJson extends \Magento\Framework\View\Element\Template
      * Retrieves name of the current list assigned via layout update
      *
      * @return string
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function getCurrentListName()
     {
@@ -303,29 +319,44 @@ class ListJson extends \Magento\Framework\View\Element\Template
         if (strlen($this->getListType())) {
             switch ($this->getListType()) {
                 case 'catalog':
-                    $listName = $this->_scopeConfig->getValue(
-                        \Magento\GoogleTagManager\Helper\Data::XML_PATH_LIST_CATALOG_PAGE
-                    );
+                    $listName = $this->tagManagerConfig->isTagManagerAvailable() ?
+                        $this->_scopeConfig->getValue(
+                            TagManagerConfig::XML_PATH_LIST_CATALOG_PAGE
+                        ) : $this->_scopeConfig->getValue(
+                            GoogleTagManagerHelper::XML_PATH_LIST_CATALOG_PAGE
+                        );
                     break;
                 case 'search':
-                    $listName = $this->_scopeConfig->getValue(
-                        \Magento\GoogleTagManager\Helper\Data::XML_PATH_LIST_SEARCH_PAGE
-                    );
+                    $listName = $this->tagManagerConfig->isTagManagerAvailable() ?
+                        $this->_scopeConfig->getValue(
+                            TagManagerConfig::XML_PATH_LIST_SEARCH_PAGE
+                        ) : $this->_scopeConfig->getValue(
+                            GoogleTagManagerHelper::XML_PATH_LIST_SEARCH_PAGE
+                        );
                     break;
                 case 'related':
-                    $listName = $this->_scopeConfig->getValue(
-                        \Magento\GoogleTagManager\Helper\Data::XML_PATH_LIST_RELATED_BLOCK
-                    );
+                    $listName = $this->tagManagerConfig->isTagManagerAvailable() ?
+                        $this->_scopeConfig->getValue(
+                            TagManagerConfig::XML_PATH_LIST_RELATED_BLOCK
+                        ) : $this->_scopeConfig->getValue(
+                            GoogleTagManagerHelper::XML_PATH_LIST_RELATED_BLOCK
+                        );
                     break;
                 case 'upsell':
-                    $listName = $this->_scopeConfig->getValue(
-                        \Magento\GoogleTagManager\Helper\Data::XML_PATH_LIST_UPSELL_BLOCK
-                    );
+                    $listName = $this->tagManagerConfig->isTagManagerAvailable() ?
+                        $this->_scopeConfig->getValue(
+                            TagManagerConfig::XML_PATH_LIST_UPSELL_BLOCK
+                        ) : $this->_scopeConfig->getValue(
+                            GoogleTagManagerHelper::XML_PATH_LIST_UPSELL_BLOCK
+                        );
                     break;
                 case 'crosssell':
-                    $listName = $this->_scopeConfig->getValue(
-                        \Magento\GoogleTagManager\Helper\Data::XML_PATH_LIST_CROSSSELL_BLOCK
-                    );
+                    $listName = $this->tagManagerConfig->isTagManagerAvailable() ?
+                        $this->_scopeConfig->getValue(
+                            TagManagerConfig::XML_PATH_LIST_CROSSSELL_BLOCK
+                        ) : $this->_scopeConfig->getValue(
+                            GoogleTagManagerHelper::XML_PATH_LIST_CROSSSELL_BLOCK
+                        );
                     break;
             }
         }

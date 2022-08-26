@@ -62,6 +62,7 @@
         </actionGroup>
 
         <!-- Add products to cart and verify Mini Cart message -->
+        <waitForElementClickable selector="{{StorefrontCustomerOrderBySkuSection.addToCart}}" stepKey="waitForAddToCart"/>
         <click selector="{{StorefrontCustomerOrderBySkuSection.addToCart}}" stepKey="clickAddToCart"/>
         <waitForPageLoad stepKey="waitForCartPageLoad"/>
         <actionGroup ref="StorefrontClickOnMiniCartActionGroup" stepKey="openMiniCart"/>

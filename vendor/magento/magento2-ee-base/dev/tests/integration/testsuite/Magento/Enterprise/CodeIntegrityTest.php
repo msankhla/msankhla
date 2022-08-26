@@ -16,6 +16,6 @@ class CodeIntegrityTest extends \PHPUnit\Framework\TestCase
             \Magento\Theme\Model\View\Design::class
         );
         $this->assertEquals('Magento/luma', $design->getConfigurationDesignTheme('frontend'));
-        $this->assertEquals('Magento/backend', $design->getConfigurationDesignTheme('adminhtml'));
+        $this->assertEquals('Magento/spectrum', $design->getConfigurationDesignTheme('adminhtml'));
     }
 }

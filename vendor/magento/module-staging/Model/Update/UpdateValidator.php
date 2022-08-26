@@ -46,7 +46,7 @@ class UpdateValidator
         $startTime = strtotime($stagingData['start_time']);
         $updateStartTime = $update->getStartTime() ? strtotime($update->getStartTime()) : 0;
 
-        if ($startTime < $currentDateTime->getTimestamp() && $updateStartTime !== $startTime) {
+        if ($updateStartTime < $currentDateTime->getTimestamp() && $updateStartTime !== $startTime) {
             throw new LocalizedException(
                 __("The Start Time of this Update cannot be changed. It's been already started.")
             );

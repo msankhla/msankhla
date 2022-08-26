@@ -67,6 +67,7 @@ define([
         this.dlCurrencyCode = config.dlCurrencyCode;
         this.dataLayer = config.dataLayer;
         this.cookieAddToCart = config.cookieAddToCart;
+        this.advancedAddToCart = config.advancedAddToCart;
         this.cookieRemoveFromCart = config.cookieRemoveFromCart;
         this.productQtys = [];
         this.origProducts = {};
@@ -94,6 +95,7 @@ define([
                     function () {
                         context.subscribeProductsUpdateInCart();
                         context.parseAddToCartCookies();
+                        context.parseAddToCartAdvanced();
                         context.parseRemoveFromCartCookies();
                     };
                 // if we are removing last item init don't calling
@@ -471,6 +473,33 @@ define([
                 this.removedProducts = JSON.parse(removeProductsList);
                 delCookie(this.cookieRemoveFromCart);
                 this.cartItemRemoved();
+            }
+        },
+
+        /**
+         *Parse add products from advanced add
+         */
+        parseAddToCartAdvanced: function () {
+            var addedProductList = [];
+
+            if (getCookie(this.advancedAddToCart)) {
+                $.ajax({
+                    url: '/gtm/index/get',
+                    type: 'POST',
+                    data: JSON.stringify({
+                        'add_to_cart_advanced': true
+                    }),
+                    global: false,
+                    async: false,
+                    contentType: 'application/json'
+                }).done(
+                    function (response) {
+                        addedProductList = JSON.parse(decodeURIComponent(response));
+                    }
+                );
+                this.addedProducts = addedProductList;
+                delCookie(this.advancedAddToCart);
+                this.cartItemAdded();
             }
         }
     };

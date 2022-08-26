@@ -13,6 +13,7 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\ValidatorException;
+use Magento\Staging\Model\Entity\PeriodSync\Scheduler as PeriodSyncScheduler;
 use Magento\Staging\Model\ResourceModel\Update as UpdateResource;
 use Magento\Staging\Api\Data\UpdateInterface;
 use Magento\Staging\Model\Update\Validator;
@@ -23,11 +24,6 @@ use Magento\Staging\Model\Update\Validator;
  */
 class UpdateRepository implements UpdateRepositoryInterface
 {
-    /**
-     * @var UpdateInterface[]
-     */
-    protected $registry = [];
-
     /**
      * @var SearchResultFactory
      */
@@ -54,18 +50,23 @@ class UpdateRepository implements UpdateRepositoryInterface
     protected $versionHistory;
 
     /**
-     * @var \Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface
+     * @var CollectionProcessorInterface
      */
     private $collectionProcessor;
 
     /**
-     * UpdateRepository constructor.
+     * @var PeriodSyncScheduler
+     */
+    private $periodSyncScheduler;
+
+    /**
      * @param SearchResultFactory $searchResultFactory
      * @param UpdateResource $resource
      * @param UpdateFactory $updateFactory
      * @param Validator $validator
      * @param VersionHistoryInterface $versionHistory
-     * @param CollectionProcessorInterface|null $collectionProcessor
+     * @param CollectionProcessorInterface $collectionProcessor
+     * @param PeriodSyncScheduler $periodSyncScheduler
      */
     public function __construct(
         SearchResultFactory $searchResultFactory,
@@ -73,14 +74,16 @@ class UpdateRepository implements UpdateRepositoryInterface
         UpdateFactory $updateFactory,
         Validator $validator,
         VersionHistoryInterface $versionHistory,
-        CollectionProcessorInterface $collectionProcessor = null
+        CollectionProcessorInterface $collectionProcessor,
+        PeriodSyncScheduler $periodSyncScheduler
     ) {
         $this->searchResultFactory = $searchResultFactory;
         $this->resource = $resource;
         $this->updateFactory = $updateFactory;
         $this->validator = $validator;
         $this->versionHistory = $versionHistory;
-        $this->collectionProcessor = $collectionProcessor ?: $this->getCollectionProcessor();
+        $this->collectionProcessor = $collectionProcessor;
+        $this->periodSyncScheduler = $periodSyncScheduler;
     }
 
     /**
@@ -92,26 +95,23 @@ class UpdateRepository implements UpdateRepositoryInterface
      */
     public function get($id)
     {
-        if (!isset($this->registry[$id])) {
-            /** @var Update $update */
-            $update = $this->updateFactory->create();
-            if ($id == \Magento\Staging\Model\VersionManager::MIN_VERSION) {
-                $update->setId($id);
-            } else {
-                $this->resource->load($update, $id);
-                if (!$update->getId()) {
-                    throw new NoSuchEntityException(
-                        __('The update with the "%1" ID doesn\'t exist. Verify the ID and try again.', $id)
-                    );
-                }
-                if ($update->getRollbackId()) {
-                    $update->setEndTime($this->get($update->getRollbackId())->getStartTime());
-                }
+        /** @var Update $update */
+        $update = $this->updateFactory->create();
+        if ($id == \Magento\Staging\Model\VersionManager::MIN_VERSION) {
+            $update->setId($id);
+        } else {
+            $this->resource->load($update, $id);
+            if (!$update->getId()) {
+                throw new NoSuchEntityException(
+                    __('The update with the "%1" ID doesn\'t exist. Verify the ID and try again.', $id)
+                );
             }
-            $this->registry[$id] = $update;
+            if ($update->getRollbackId()) {
+                $update->setEndTime($this->get($update->getRollbackId())->getStartTime());
+            }
         }
 
-        return $this->registry[$id];
+        return $update;
     }
 
     /**
@@ -138,13 +138,14 @@ class UpdateRepository implements UpdateRepositoryInterface
     public function delete(UpdateInterface $entity)
     {
         try {
-            if ($this->versionHistory->getCurrentId() == $entity->getId()) {
+            $entityId = $entity->getId();
+            if ($this->versionHistory->getCurrentId() == $entityId) {
                 throw new CouldNotDeleteException(__("The active update can't be deleted."));
             }
             $rollbackId = $entity->getRollbackId();
             if ($rollbackId
                 && $rollbackId !== $this->getVersionMaxIdByTime(time())
-                && !$this->resource->isRollbackAssignedToUpdates($rollbackId, [$entity->getId()])
+                && !$this->resource->isRollbackAssignedToUpdates($rollbackId, [$entityId])
             ) {
                 $this->resource->delete($this->get($rollbackId));
             }
@@ -162,10 +163,12 @@ class UpdateRepository implements UpdateRepositoryInterface
      * @return UpdateInterface
      * @throws CouldNotSaveException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function save(UpdateInterface $entity)
     {
         try {
+            $updateIdsToSync = [];
             if (!$entity->getId()) {
                 $this->validator->validateCreate($entity);
                 $entity->setId($this->getIdForEntity($entity));
@@ -187,6 +190,9 @@ class UpdateRepository implements UpdateRepositoryInterface
                     }
                     $entity->setOldId($oldUpdate->getId());
                     $entity->setId($this->getIdForEntity($entity));
+                    if (!$entity->getIsRollback()) {
+                        $updateIdsToSync[] = $oldUpdate->getId();
+                    }
                 }
             }
             if ($entity->getEndTime()) {
@@ -195,7 +201,15 @@ class UpdateRepository implements UpdateRepositoryInterface
                 $this->delete($this->get($entity->getRollbackId()));
                 $entity->setRollbackId(null);
             }
+            if ($entity->getId() && isset($oldUpdate) && $entity->getRollbackId() !== $oldUpdate->getRollbackId()) {
+                $updateIdsToSync[] = $entity->getId();
+            }
+
             $this->resource->save($entity);
+
+            if (!empty($updateIdsToSync)) {
+                $this->periodSyncScheduler->execute($updateIdsToSync);
+            }
         } catch (ValidatorException $exception) {
             throw new CouldNotSaveException(__($exception->getMessage()));
         } catch (\Exception $exception) {
@@ -253,21 +267,5 @@ class UpdateRepository implements UpdateRepositoryInterface
     public function getVersionMaxIdByTime($timestamp)
     {
         return $this->resource->getMaxIdByTime($timestamp);
-    }
-
-    /**
-     * Retrieve collection processor
-     *
-     * @deprecated 101.0.0
-     * @return CollectionProcessorInterface
-     */
-    private function getCollectionProcessor()
-    {
-        if (!$this->collectionProcessor) {
-            $this->collectionProcessor = \Magento\Framework\App\ObjectManager::getInstance()->get(
-                \Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface::class
-            );
-        }
-        return $this->collectionProcessor;
     }
 }

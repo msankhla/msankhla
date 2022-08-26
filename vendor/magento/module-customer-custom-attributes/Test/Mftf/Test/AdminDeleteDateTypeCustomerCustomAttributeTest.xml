@@ -27,6 +27,7 @@
             <actionGroup ref="AdminCreateCustomerCustomAttribute" stepKey="adminCreateCustomerAttribute">
                 <argument name="customerAttribute" value="AttributeDateData"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
         </before>
         <after>
             <deleteData createDataKey="simpleCustomer" stepKey="deleteCustomer"/>
@@ -34,6 +35,7 @@
             <actionGroup ref="FindAndDeleteCustomerSegmentActionGroup" stepKey="deleteSegment">
                 <argument name="segmentName" value="{{CustomerSegmentDefault.name}}"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
         </after>
 

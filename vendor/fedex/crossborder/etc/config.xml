@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * FedEx Cross Border component
+ *
+ * @category    FedEx
+ * @package     FedEx_CrossBorder
+ * @author      Andrey Rapshtynsky <andrey.bh@gmail.com>
+ * @copyright   FedEx (https://crossborder.fedex.com/)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <general>
+            <locale>
+                <dimension_unit>in</dimension_unit>
+            </locale>
+        </general>
+
+        <carriers>
+            <fdxcb>
+                <active>1</active>
+                <model>FedEx\CrossBorder\Model\Carrier\Shipping</model>
+                <title>FedEx Cross Border</title>
+                <express_name>Express</express_name>
+                <standard_name>Standard</standard_name>
+                <economy_name>Economy</economy_name>
+                <domestic_shipping>0</domestic_shipping>
+                <domestic_shipping_price>0</domestic_shipping_price>
+                <handling_type>F</handling_type>
+                <specificerrmsg>This shipping method is currently unavailable. If you would like to ship using this shipping method, please contact us.</specificerrmsg>
+                <sallowspecific>0</sallowspecific>
+            </fdxcb>
+        </carriers>
+
+        <currency>
+            <fedex_crossborder>
+                <timeout>100</timeout>
+            </fedex_crossborder>
+        </currency>
+
+        <fedex_crossborder>
+            <general>
+                <enable>0</enable>
+                <order_confirmation_path>fdxcb/checkout/confirm</order_confirmation_path>
+                <order_confirmation_email>0</order_confirmation_email>
+                <logs>0</logs>
+            </general>
+
+            <api>
+                <connect_url>https://api.crossborder.fedex.com/services/v45?wsdl</connect_url>
+                <geo_ip_url>https://checkout.crossborder.fedex.com</geo_ip_url>
+                <monitoring_url>https://purplepay.crossborder.fedex.com</monitoring_url>
+                <secure_url>https://secure.crossborder.fedex.com</secure_url>
+                <webapp_url>https://purplepay.crossborder.fedex.com</webapp_url>
+            </api>
+
+            <import_export>
+                <url>https://mw-api.crossborder.fedex.com/api/magento/v1/</url>
+                <available_countries_path>availableCountries</available_countries_path>
+                <currency_rates_path>currencyRates</currency_rates_path>
+                <item_refund_path>itemRefund</item_refund_path>
+                <order_cancel_path>orderCancel</order_cancel_path>
+                <order_update_path>ordersUpdate</order_update_path>
+                <pack_notification_path>packNotification</pack_notification_path>
+                <product_update_path>productsSync</product_update_path>
+                <identifier>entity_id</identifier>
+            </import_export>
+
+            <geo_ip>
+                <enable>0</enable>
+            </geo_ip>
+
+            <merchant_control>
+                <enable>0</enable>
+                <account_type>2</account_type>
+                <show_tracking_link>1</show_tracking_link>
+                <show_monitor_app>0</show_monitor_app>
+                <subsidize_shipping_amount>0</subsidize_shipping_amount>
+            </merchant_control>
+
+            <product_validation>
+                <coo>1</coo>
+                <import_flag>1</import_flag>
+            </product_validation>
+
+            <rounded_price>
+                <enable>0</enable>
+                <allowspecific>0</allowspecific>
+            </rounded_price>
+
+            <welcome_mat>
+                <enable>0</enable>
+                <auto_open>0</auto_open>
+                <default_cms_block>welcome-mat-greeting</default_cms_block>
+            </welcome_mat>
+        </fedex_crossborder>
+
+        <payment>
+            <fdxcb>
+                <active>1</active>
+                <model>FedEx\CrossBorder\Model\Payment\General</model>
+                <order_status>pending</order_status>
+                <title>FedEx Cross Border</title>
+                <allowspecific>0</allowspecific>
+            </fdxcb>
+        </payment>
+    </default>
+</config>

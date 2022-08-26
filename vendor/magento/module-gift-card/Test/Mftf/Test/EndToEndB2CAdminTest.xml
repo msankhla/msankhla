@@ -38,5 +38,6 @@
         <actionGroup ref="DeleteProductUsingProductGridActionGroup" stepKey="deleteGiftCardProduct" after="cleanUpGiftCard">
             <argument name="product" value="GiftCard"/>
         </actionGroup>
+        <actionGroup ref="ResetAdminDataGridToDefaultViewActionGroup" stepKey="clearFilters" after="deleteGiftCardProduct"/>
     </test>
 </tests>

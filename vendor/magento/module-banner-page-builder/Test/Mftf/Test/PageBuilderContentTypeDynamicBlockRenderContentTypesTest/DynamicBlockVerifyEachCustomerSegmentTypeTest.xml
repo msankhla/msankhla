@@ -70,6 +70,7 @@
             <actionGroup ref="FindAndDeleteCustomerSegmentActionGroup" stepKey="deleteCustomerSegmentVisitors">
                 <argument name="segmentName" value="$customerSegmentVisitors.name$"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
         </after>
 

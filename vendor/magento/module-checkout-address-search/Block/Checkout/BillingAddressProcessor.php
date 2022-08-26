@@ -223,7 +223,7 @@ class BillingAddressProcessor implements LayoutProcessorInterface
                     ]
                 ],
                 'selectBillingAddressModal' => [
-                    'component' => 'Magento_Ui/js/modal/modal-component',
+                    'component' => 'Magento_CheckoutAddressSearch/js/modal-component',
                     'options' => [
                         'title' => 'Select Billing Address',
                         'modalClass' => 'billing-address-modal modal-slide'

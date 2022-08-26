@@ -9,7 +9,7 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
     <table name="magento_banner" resource="default" comment="Enterprise Banner">
         <column xsi:type="smallint" name="is_ga_enabled" nullable="false" unsigned="true" default="0"
-                comment="Is Google Analytics Universals enabled"/>
-        <column xsi:type="text" name="ga_creative" nullable="true" comment="Google Analytics Universals code"/>
+                comment="Is Google Analytics enabled"/>
+        <column xsi:type="text" name="ga_creative" nullable="true" comment="Google Analytics code"/>
     </table>
 </schema>

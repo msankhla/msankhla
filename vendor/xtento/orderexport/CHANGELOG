@@ -577,3 +577,12 @@ Xtento_OrderExport
  * Converted database install scripts to db_schema.xml - please check this upgrade carefully and take a DB backup before upgrading
  * Updated Xtento_XtCore to version 2.16.0
  * Dropped support for Magento 2.2.x. Earliest supported version is 2.3.x now.
+
+===== 2.16.0 =====
+ * Further PHP 8.1 fixes
+
+===== 2.16.1 =====
+ * Established compatibility with Magento 2.4.5, 2.4.4-p1, 2.4.3-p3, 2.3.7-p4
+ * Fixed issue with "Edit Profile" screen erroring out/being empty for Adobe Commerce/Magento Enterprise
+ * Established compatibility with Amasty Checkout fields update
+ * Updated Xtento_XtCore to version 2.17.0 ("Fixed error "Area code not set" during installation/upgrade")

@@ -3,7 +3,7 @@
 /**
  * Product:       Xtento_OrderExport
  * ID:            %!uniqueid!%
- * Last Modified: 2022-04-15T20:14:50+00:00
+ * Last Modified: 2022-07-15T20:04:34+00:00
  * File:          Model/Output/Xsl.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -341,6 +341,11 @@ class Xsl extends AbstractOutput
     {
         if ($data === null) {
             return "";
+        }
+        if (is_object($data) && $data instanceof \SimpleXMLElement) {
+            if (isset($data[0])) {
+                return $data[0];
+            }
         }
         $current = false;
         try {

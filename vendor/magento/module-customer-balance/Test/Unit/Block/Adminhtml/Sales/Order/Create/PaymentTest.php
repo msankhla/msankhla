@@ -10,19 +10,25 @@ declare(strict_types=1);
  */
 namespace Magento\CustomerBalance\Test\Unit\Block\Adminhtml\Sales\Order\Create;
 
-use Magento\Backend\Model\Session\Quote;
+use Magento\Backend\Model\Session\Quote as SessionQuote;
 use Magento\CustomerBalance\Block\Adminhtml\Sales\Order\Create\Payment;
 use Magento\CustomerBalance\Helper\Data;
 use Magento\CustomerBalance\Model\Balance;
 use Magento\CustomerBalance\Model\BalanceFactory;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Payment\Model\Method\Free;
+use Magento\Quote\Model\Quote as QuoteModel;
 use Magento\Sales\Model\AdminOrder\Create;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class PaymentTest extends TestCase
 {
     /**
@@ -38,7 +44,7 @@ class PaymentTest extends TestCase
     protected $_balanceFactoryMock;
 
     /**
-     * @var Quote
+     * @var SessionQuote
      */
     protected $_sessionQuoteMock;
 
@@ -58,7 +64,7 @@ class PaymentTest extends TestCase
     protected $_helperMock;
 
     /**
-     * @var StoreManagerInterface
+     * @var Balance
      */
     protected $_balanceInstance;
 
@@ -71,6 +77,11 @@ class PaymentTest extends TestCase
      * @var PriceCurrencyInterface|MockObject
      */
     protected $priceCurrency;
+
+    /**
+     * @var ScopeConfigInterface|MockObject;
+     */
+    private $scopeConfigMock;
 
     /**
      * initialize arguments for construct
@@ -117,17 +128,27 @@ class PaymentTest extends TestCase
         )->willReturn(
             $this->_balanceInstance
         );
-        $this->_sessionQuoteMock = $this->createMock(Quote::class);
+        $this->_sessionQuoteMock = $this->createMock(SessionQuote::class);
         $this->_orderCreateMock = $this->createMock(Create::class);
         $this->_storeManagerMock = $this->getMockForAbstractClass(StoreManagerInterface::class);
+        $this->scopeConfigMock = $this->getMockForAbstractClass(ScopeConfigInterface::class);
 
-        $quoteMock = $this->getMockBuilder(\Magento\Quote\Model\Quote::class)->addMethods(['getCustomerId'])
+        $quoteMock = $this->getMockBuilder(QuoteModel::class)
+            ->addMethods(['getCustomerId','getBaseGrandTotal', 'getBaseCustomerBalAmountUsed'])
             ->onlyMethods(['getStoreId'])
             ->disableOriginalConstructor()
             ->getMock();
         $this->_orderCreateMock->expects($this->any())->method('getQuote')->willReturn($quoteMock);
         $quoteMock->expects($this->any())->method('getCustomerId')->willReturn(true);
         $quoteMock->expects($this->any())->method('getStoreId')->willReturn(true);
+        $quoteMock
+            ->expects($this->any())
+            ->method('getBaseGrandTotal')
+            ->willReturn(1000.0000);
+        $quoteMock
+            ->expects($this->any())
+            ->method('getBaseCustomerBalAmountUsed')
+            ->willReturn(1000.0000);
         $this->_helperMock = $this->createMock(Data::class);
 
         $this->_storeMock = $this->createMock(Store::class);
@@ -148,7 +169,8 @@ class PaymentTest extends TestCase
                 'orderCreate' => $this->_orderCreateMock,
                 'priceCurrency' => $this->priceCurrency,
                 'balanceFactory' => $this->_balanceFactoryMock,
-                'customerBalanceHelper' => $this->_helperMock
+                'customerBalanceHelper' => $this->_helperMock,
+                'scopeConfig' => $this->scopeConfigMock
             ]
         );
     }
@@ -195,5 +217,75 @@ class PaymentTest extends TestCase
         $this->_balanceInstance->expects($this->once())->method('getAmount')->willReturn($amount);
         $result = $this->_className->getBalance();
         $this->assertEquals($amount, $result);
+    }
+
+    /**
+     * Test canUseCustomerBalance method
+     *
+     * @return void
+     * @dataProvider canUseCustomerBalanceProvider
+     */
+    public function testCanUseCustomerBalance(bool $config, float $balance, bool $result)
+    {
+        $this->scopeConfigMock
+            ->expects($this->once())
+            ->method('isSetFlag')
+            ->with(Free::XML_PATH_PAYMENT_FREE_ACTIVE)
+            ->willReturn($config);
+
+        if ($config) {
+            $quoteMock = $this->getMockBuilder(QuoteModel::class)
+                ->addMethods(['getBaseGrandTotal', 'getBaseCustomerBalAmountUsed'])
+                ->disableOriginalConstructor()
+                ->getMock();
+            $quoteMock
+                ->expects($this->any())
+                ->method('getBaseGrandTotal')
+                ->willReturn(1000.0000);
+            $quoteMock
+                ->expects($this->any())
+                ->method('getBaseCustomerBalAmountUsed')
+                ->willReturn(1000.0000);
+            $this->_orderCreateMock
+                ->expects($this->exactly(2))
+                ->method('getQuote')
+                ->willReturn($quoteMock);
+            $this->_helperMock
+                ->expects($this->once())
+                ->method('isEnabled')
+                ->willReturn(true);
+            $this->_balanceInstance
+                ->expects($this->any())
+                ->method('getAmount')
+                ->willReturn($balance);
+        }
+
+        $this->assertEquals($result, $this->_className->canUseCustomerBalance());
+    }
+
+    /**
+     * Data provider with array in param values.
+     *
+     * @return array
+     */
+    public function canUseCustomerBalanceProvider(): array
+    {
+        return [
+            'free_payment_disabled' => [
+                'config' => false,
+                'balance' => 1000.0000,
+                'result' => false
+            ],
+            'free_payment_enabled_no_balance' => [
+                'config' => true,
+                'balance' => 0.0000,
+                'result' => false
+            ],
+            'free_payment_enabled_with_balance' => [
+                'config' => true,
+                'balance' => 3000.0000,
+                'result' => true
+            ]
+        ];
     }
 }

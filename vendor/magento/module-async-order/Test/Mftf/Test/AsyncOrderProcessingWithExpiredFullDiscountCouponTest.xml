@@ -16,10 +16,10 @@
             <severity value="CRITICAL"/>
             <testCaseId value="MC-42953"/>
             <group value="checkout"/>
+            <group value="async_checkout"/>
         </annotations>
         <before>
-            <!-- Enable Async Checkout-->
-            <magentoCLI command="setup:config:set {{AsyncCheckoutConfigData.enable_option}}" stepKey="enableAsyncCheckout"/>
+            <comment userInput="BIC workaround" stepKey="enableAsyncCheckout"/>
 
             <!-- Create Product and Category for Order Placement -->
             <createData entity="_defaultCategory" stepKey="createCategory"/>
@@ -39,11 +39,14 @@
             <createData entity="DisableFreeShippingConfig" stepKey="disableFreeShippingConfig"/>
             <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
             <deleteData createDataKey="createProduct" stepKey="deleteProduct"/>
-            <magentoCLI command="setup:config:set {{AsyncCheckoutConfigData.disable_option}}" stepKey="disableAsyncCheckout"/>
+            <comment userInput="BIC workaround" stepKey="disableAsyncCheckout"/>
             <actionGroup ref="DeleteCustomerByEmailActionGroup" stepKey="deleteCustomer">
                 <argument name="email" value="{{CustomerEntityOne.email}}"/>
             </actionGroup>
             <actionGroup ref="ResetAdminDataGridToDefaultViewActionGroup" stepKey="resetGrid"/>
+            <actionGroup ref="AdminDeleteCartPriceRuleActionGroup" stepKey="deleteCartPriceRule">
+                <argument name="ruleName" value="ApiSalesRule"/>
+            </actionGroup>
             <actionGroup ref="AdminLogoutActionGroup" stepKey="adminLogout"/>
         </after>
 

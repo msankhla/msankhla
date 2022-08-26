@@ -7,7 +7,6 @@ declare(strict_types=1);
 
 namespace Magento\Staging\Test\Unit\Model\Update;
 
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\Staging\Api\Data\UpdateInterface;
 use Magento\Staging\Model\Update\UpdateValidator;
 use PHPUnit\Framework\TestCase;
@@ -17,30 +16,25 @@ class UpdateValidatorTest extends TestCase
     /** @var UpdateValidator */
     private $model;
 
-    /** @var ObjectManagerHelper */
-    private $objectManagerHelper;
-
     protected function setUp(): void
     {
-        $this->objectManagerHelper = new ObjectManagerHelper($this);
-        $this->model = $this->objectManagerHelper->getObject(
-            UpdateValidator::class
-        );
+        $this->model = new UpdateValidator();
     }
 
     public function testValidateUpdateStartedExecption()
     {
-        $this->expectException('Magento\Framework\Exception\LocalizedException');
+        $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('The Start Time of this Update cannot be changed. It\'s been already started.');
         $updateId = 1;
         $stagingData = [
             'update_id' => $updateId,
-            'start_time' => '2017-02-02 02:02:02',
+            'start_time' => date('Y-m-d H:i:s', strtotime('+1 day')),
         ];
 
-        $updateMock = $this->getMockForAbstractClass(UpdateInterface::class);
-        $result= $this->model->validateUpdateStarted($updateMock, $stagingData);
-        $this->assertNull($result);
+        $updateMock = $this->createMock(UpdateInterface::class);
+        $updateMock->method('getStartTime')
+            ->willReturn(date('Y-m-d H:i:s', strtotime('-1 day')));
+        $this->model->validateUpdateStarted($updateMock, $stagingData);
     }
 
     public function testValidateUpdateStarted()
@@ -51,7 +45,9 @@ class UpdateValidatorTest extends TestCase
             'start_time' => date('Y-m-d H:i:s', strtotime('+1 year')),
         ];
 
-        $updateMock = $this->getMockForAbstractClass(UpdateInterface::class);
+        $updateMock = $this->createMock(UpdateInterface::class);
+        $updateMock->method('getStartTime')
+            ->willReturn(date('Y-m-d H:i:s', strtotime('+1 day')));
         $result = $this->model->validateUpdateStarted($updateMock, $stagingData);
         $this->assertNull($result);
     }
@@ -69,7 +65,7 @@ class UpdateValidatorTest extends TestCase
 
     public function testValidateWithInvalidParam()
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The required parameter is "stagingData". Set parameter and try again.');
         $params = [
             'entityData' => []

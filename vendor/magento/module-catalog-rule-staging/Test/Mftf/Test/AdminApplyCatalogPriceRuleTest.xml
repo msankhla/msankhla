@@ -85,7 +85,9 @@
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
 
             <!-- Reindex invalidated indices after product attribute has been created/deleted -->
-           <magentoCron groups="index" stepKey="reindexInvalidatedIndices"/>
+            <actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindexInvalidatedIndices">
+                <argument name="indices" value=""/>
+            </actionGroup>
         </after>
         <!--Create catalog price rule and check if active toggle exists and set to no-->
         <actionGroup ref="AdminCreateNewCatalogPriceRuleWithActiveToggleAndItsValueFalseActionGroup" stepKey="createCatalogPriceRule">
@@ -108,8 +110,11 @@
         <!-- Verify that a schedule update is not created -->
         <dontSeeElement selector="{{AdminStagingSlideOutSection.preview}}" stepKey="checkThatScheduleUpdateIsNotCreated2"/>
         <!-- Apply changes -->
-        <magentoCLI command="cron:run" arguments="--group index" stepKey="runCron1"/>
-        <magentoCLI command="cron:run" arguments="--group index" stepKey="runCron2"/>
+        <comment userInput="BIC workaround" stepKey="runCron1"/>
+        <comment userInput="BIC workaround" stepKey="runCron2"/>
+        <actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindex">
+            <argument name="indices" value=""/>
+        </actionGroup>
         <!--Verify price on category page for simple and configurable products-->
         <amOnPage url="{{StorefrontCategoryPage.url($$createCategory.custom_attributes[url_key]$$)}}" stepKey="onCategoryPage1"/>
         <waitForPageLoad stepKey="waitForCategoryPageLoad1"/>
@@ -165,8 +170,8 @@
 			<actualResult type="const">$grabOrderTotal</actualResult>
 			<expectedResult type="string">$231.40</expectedResult>
         </assertStringContainsString>
-        <click selector="{{CheckoutPaymentSection.placeOrder}}" stepKey="clickPlaceOrder"/>
-        <waitForPageLoad stepKey="waitForOrderPlacing"/>
+        <actionGroup ref="ClickPlaceOrderActionGroup" stepKey="clickPlaceOrder"/>
+        <comment userInput="BIC workaround" stepKey="waitForOrderPlacing"/>
         <!--Navigate to catalog price rule page-->
         <actionGroup ref="AdminSearchCatalogRuleInGridActionGroup" stepKey="searchCreatedCatalogRule2">
             <argument name="catalogRuleName" value="{{_defaultCatalogRule.name}}"/>

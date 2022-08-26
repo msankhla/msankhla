@@ -35,7 +35,7 @@ define([
                     }
 
                     if (formElement) {
-                        $(formElement).find('input').each(function () {
+                        $(formElement).find(':input').each(function () {
                             formData[$(this).attr('name')] = $(this).val();
                         });
                     } else {

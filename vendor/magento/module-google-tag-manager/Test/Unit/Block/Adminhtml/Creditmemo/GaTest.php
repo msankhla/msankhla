@@ -10,6 +10,7 @@ namespace Magento\GoogleTagManager\Test\Unit\Block\Adminhtml\Creditmemo;
 use Magento\Backend\Model\Session;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\GoogleTagManager\Block\Adminhtml\Creditmemo\Ga;
+use Magento\GoogleTagManager\Helper\Data;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -24,14 +25,19 @@ class GaTest extends TestCase
     /** @var Session|MockObject */
     protected $session;
 
+    /** @var Data|MockObject */
+    protected $googleTagManagerHelper;
+
     protected function setUp(): void
     {
         $this->session = $this->createMock(Session::class);
+        $this->googleTagManagerHelper = $this->createMock(Data::class);
 
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->ga = $this->objectManagerHelper->getObject(
             Ga::class,
             [
+                'googleAnalyticsData' => $this->googleTagManagerHelper,
                 'backendSession' => $this->session
             ]
         );
@@ -45,6 +51,8 @@ class GaTest extends TestCase
      */
     public function testGetOrderId($orderId, $expected)
     {
+        $this->googleTagManagerHelper->expects($this->any())->method('isGoogleAnalyticsAvailable')
+            ->willReturn(true);
         $this->session->expects($this->any())->method('getData')->with('googleanalytics_creditmemo_order', true)
             ->willReturn($orderId);
         $this->assertEquals($expected, $this->ga->getOrderId());
@@ -102,6 +110,8 @@ class GaTest extends TestCase
 
     public function testGetRefundJson()
     {
+        $this->googleTagManagerHelper->expects($this->any())->method('isGoogleAnalyticsAvailable')
+            ->willReturn(true);
         $this->session->expects($this->any())->method('getData')->willReturnMap([
             ['googleanalytics_creditmemo_order', true, 11],
             ['googleanalytics_creditmemo_revenue', true, 22],

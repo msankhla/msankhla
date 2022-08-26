@@ -12,6 +12,8 @@ use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Too many attempts to use gift card codes were made.
+ *
+ * @api
  */
 class TooManyAttemptsException extends LocalizedException
 {

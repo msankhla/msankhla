@@ -58,6 +58,7 @@
             </actionGroup>
             <click selector="{{AdminDataGridHeaderSection.clearFilters}}" stepKey="resetFiltersOnWidgetGrid"/>
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <magentoCron groups="index" stepKey="reindex"/>
         </after>
         <!--Create Customer Segment with conditions-->
         <actionGroup ref="CreateCustomerSegmentWithContinueEditActionGroup" stepKey="createCustomerSegment">

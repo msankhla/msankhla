@@ -109,8 +109,9 @@
         <!--Assert product name in the Mini Cart-->
         <see selector="{{StorefrontMinicartSection.productName}}" userInput="{{prodNameWithSpecChars.trademark_without_quotes}}" stepKey="assertProductNameOnMiniCartPage"/>
         <!--Click 'View and Edit Cart'-->
-        <click selector="{{StorefrontMinicartSection.viewAndEditCart}}" stepKey="clickViewAndEditCart"/>
-        <waitForPageLoad stepKey="waitForMiniCartPage"/>
+        <actionGroup ref="StorefrontCartPageOpenActionGroup" stepKey="openCartPage"/>
+        <comment userInput="BIC workaround" stepKey="clickViewAndEditCart"/>
+        <comment userInput="BIC workaround" stepKey="waitForMiniCartPage"/>
         <!--Assert product name on the Shopping Cart page-->
         <waitForElementVisible selector="{{CheckoutCartProductSection.productName}}" stepKey="waitForProductOnCartPage"/>
         <see selector="{{CheckoutCartProductSection.productName}}" userInput="{{prodNameWithSpecChars.trademark_without_quotes}}" stepKey="assertProductNameOnShoppingCartPage"/>

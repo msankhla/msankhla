@@ -5,7 +5,13 @@
  */
 namespace Magento\GoogleTagManager\Observer;
 
+use Magento\Checkout\Model\Session;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
+use Magento\Framework\Serialize\SerializerInterface;
+use Magento\GoogleTagManager\Block\ListJson;
+use Magento\GoogleTagManager\Helper\Data;
 
 /**
  * Set Gtag on checkout observer
@@ -14,12 +20,12 @@ use Magento\Framework\Event\ObserverInterface;
 class SetGoogleAnalyticsOnCheckoutObserver implements ObserverInterface
 {
     /**
-     * @var \Magento\GoogleTagManager\Helper\Data
+     * @var Data
      */
     protected $helper;
 
     /**
-     * @var \Magento\Checkout\Model\Session
+     * @var Session
      */
     protected $checkoutSession;
 
@@ -29,34 +35,26 @@ class SetGoogleAnalyticsOnCheckoutObserver implements ObserverInterface
     protected $jsonHelper;
 
     /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     * @var ScopeConfigInterface
      */
     protected $scopeConfig;
 
     /**
-     * @var \Magento\Framework\App\ViewInterface
-     */
-    protected $view;
-
-    /**
-     * @param \Magento\GoogleTagManager\Helper\Data $helper
-     * @param \Magento\Checkout\Model\Session $checkoutSession
+     * @param Data $helper
+     * @param Session $checkoutSession
      * @param \Magento\Framework\Json\Helper\Data $jsonHelper
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Magento\Framework\App\ViewInterface $view
+     * @param ScopeConfigInterface $scopeConfig
      */
     public function __construct(
-        \Magento\GoogleTagManager\Helper\Data $helper,
-        \Magento\Checkout\Model\Session $checkoutSession,
-        \Magento\Framework\Json\Helper\Data $jsonHelper,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Framework\App\ViewInterface $view
+        Data $helper,
+        Session $checkoutSession,
+        SerializerInterface $jsonHelper,
+        ScopeConfigInterface $scopeConfig
     ) {
         $this->helper = $helper;
         $this->checkoutSession = $checkoutSession;
         $this->jsonHelper = $jsonHelper;
         $this->scopeConfig = $scopeConfig;
-        $this->view = $view;
     }
 
     /**
@@ -64,11 +62,11 @@ class SetGoogleAnalyticsOnCheckoutObserver implements ObserverInterface
      *
      * Fired by controller_action_postdispatch_checkout event
      *
-     * @param \Magento\Framework\Event\Observer $observer
+     * @param Observer $observer
      * @return $this
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    public function execute(Observer $observer)
     {
         if (!$this->helper->isTagManagerAvailable()) {
             return $this;
@@ -81,18 +79,18 @@ class SetGoogleAnalyticsOnCheckoutObserver implements ObserverInterface
             case 'saveBilling':
                 $encodedBody = $controllerAction->getResponse()->getBody();
                 if ($encodedBody) {
-                    $body = $this->jsonHelper->jsonDecode($encodedBody);
+                    $body = $this->jsonHelper->unserialize($encodedBody);
                 }
 
                 if ($body['goto_section'] == 'shipping') {
                     $shippingBlock = $controllerAction->getLayout()
-                        ->createBlock(\Magento\GoogleTagManager\Block\ListJson::class)
+                        ->createBlock(ListJson::class)
                         ->setTemplate('Magento_GoogleTagManager::checkout/step.phtml')
                         ->setStepName('shipping');
                     $body['update_section']['name'] = 'shipping';
                     $body['update_section']['html'] = '<div id="checkout-shipping-load"></div>'
                         . $shippingBlock->toHtml();
-                    $controllerAction->getResponse()->setBody($this->jsonHelper->jsonEncode($body));
+                    $controllerAction->getResponse()->setBody($this->jsonHelper->serialize($body));
                 }
                 break;
         }

@@ -7,6 +7,11 @@
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
+        <referenceBlock name="top.search">
+            <arguments>
+                <argument name="additionalSearchFormData" xsi:type="object">Magento\SearchStaging\ViewModel\AdditionalSearchFormData</argument>
+            </arguments>
+        </referenceBlock>
         <referenceContainer name="header-wrapper">
             <block class="Magento\Staging\Block\Preview\RequireInjector" name="top.search.staging" template="Magento_Staging::js/require-injector.phtml">
                 <arguments>

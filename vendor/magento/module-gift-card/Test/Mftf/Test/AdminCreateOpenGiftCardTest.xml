@@ -26,6 +26,7 @@
             <actionGroup ref="DeleteProductBySkuActionGroup" stepKey="deleteGiftCard">
                 <argument name="sku" value="{{GiftCard.sku}}"/>
             </actionGroup>
+            <actionGroup ref="ResetAdminDataGridToDefaultViewActionGroup" stepKey="clearFilters"/>
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logOut"/>
         </after>
 

@@ -21,7 +21,7 @@ class FeedContentProvider
     /**
      * Path to NEWS
      */
-    public const URN_NEWS = 'cdn.amasty.com/feed-news-segments.xml';//do not use https:// or http
+    public const URN_NEWS = 'feed.amasty.net/feed-news-segments.xml';//do not use https:// or http
 
     /**
      * Path to ADS
@@ -31,7 +31,7 @@ class FeedContentProvider
     /**
      * Path to EXTENSIONS
      */
-    public const URN_EXTENSIONS = 'cdn.amasty.com/feed-extensions-m2.xml';
+    public const URN_EXTENSIONS = 'feed.amasty.net/feed-extensions-m2.xml';
 
     /**
      * @var CurlFactory

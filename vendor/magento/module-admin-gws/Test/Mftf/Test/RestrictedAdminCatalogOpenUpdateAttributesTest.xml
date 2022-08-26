@@ -43,6 +43,7 @@
                 <argument name="StoreGroup" value="SecondStoreGroupUnique"/>
                 <argument name="customStore" value="SecondStoreUnique"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
 
             <!-- Open SimpleProduct1 and assigned to custom website -->
             <amOnPage url="{{AdminProductEditPage.url($$createSimpleProduct1.id$$)}}" stepKey="goToProductEditPage1"/>
@@ -85,6 +86,7 @@
             <actionGroup ref="AdminDeleteWebsiteActionGroup" stepKey="deleteWebsite">
                 <argument name="websiteName" value="$createCustomWebsite2.website[name]$"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
 
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutAsAdmin3"/>
         </after>

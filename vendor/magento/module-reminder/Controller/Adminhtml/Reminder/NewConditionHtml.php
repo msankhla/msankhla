@@ -6,6 +6,8 @@
  */
 namespace Magento\Reminder\Controller\Adminhtml\Reminder;
 
+use Magento\Rule\Model\Condition\ConditionInterface;
+
 class NewConditionHtml extends \Magento\Reminder\Controller\Adminhtml\Reminder
 {
     /**
@@ -18,6 +20,12 @@ class NewConditionHtml extends \Magento\Reminder\Controller\Adminhtml\Reminder
         $id = $this->getRequest()->getParam('id');
         $typeArr = explode('|', str_replace('-', '/', $this->getRequest()->getParam('type')));
         $type = $typeArr[0];
+
+        if (class_exists($type) && !in_array(ConditionInterface::class, class_implements($type))) {
+            $html = '';
+            $this->getResponse()->setBody($html);
+            return;
+        }
 
         $model = $this->_conditionFactory->create(
             $type

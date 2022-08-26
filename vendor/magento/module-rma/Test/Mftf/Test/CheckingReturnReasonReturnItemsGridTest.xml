@@ -57,9 +57,9 @@
 
         <actionGroup ref="GoToCheckoutFromMinicartActionGroup" stepKey="checkoutProductFromCart"/>
 
-        <click selector="{{CheckoutShippingSection.next}}" stepKey="clickNext"/>
-        <click selector="{{CheckoutPaymentSection.placeOrder}}" stepKey="clickPlaceOrder"/>
-        <waitForPageLoad stepKey="waitForPlaceOrder"/>
+        <actionGroup ref="StorefrontCheckoutClickNextButtonActionGroup" stepKey="clickNext"/>
+        <actionGroup ref="ClickPlaceOrderActionGroup" stepKey="clickPlaceOrder"/>
+        <comment userInput="BIC workaround" stepKey="waitForPlaceOrder"/>
         <see stepKey="seeSuccessMessage" userInput="Thank you for your purchase!"/>
         <grabTextFrom selector="{{CheckoutSuccessMainSection.orderNumber22}}" stepKey="grabOrderIncrementNumber"/>
 

@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * FedEx Cross Border component
+ *
+ * @category    FedEx
+ * @package     FedEx_CrossBorder
+ * @author      Andrey Rapshtynsky <andrey.bh@gmail.com>
+ * @copyright   FedEx (https://crossborder.fedex.com/)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="FedEx_CrossBorder::css/main.css" />
+    </head>
+    <body>
+        <referenceContainer name="header.panel">
+            <block class="FedEx\CrossBorder\Block\WelcomeMat" name="fedex.crossborder.welcomemat" template="FedEx_CrossBorder::welcome_mat.phtml" before="currency"/>
+        </referenceContainer>
+
+        <referenceBlock name="store.settings">
+            <block class="FedEx\CrossBorder\Block\WelcomeMat" name="fedex.crossborder.welcomemat.settings" template="FedEx_CrossBorder::welcome_mat_settings.phtml" before="store.settings.currency"/>
+        </referenceBlock>
+
+        <referenceContainer name="header-wrapper">
+            <block class="FedEx\CrossBorder\Block\Checkout\Widget" name="fedex.crossborder.checkout.widget" after="-"/>
+        </referenceContainer>
+
+        <referenceBlock name="bml.right.logo">
+            <action method="setTemplate">
+                <argument name="template" xsi:type="string">FedEx_CrossBorder::paypal/bml.phtml</argument>
+            </action>
+        </referenceBlock>
+
+        <referenceBlock name="bml.center.logo">
+            <action method="setTemplate">
+                <argument name="template" xsi:type="string">FedEx_CrossBorder::paypal/bml.phtml</argument>
+            </action>
+        </referenceBlock>
+
+        <referenceBlock name="minicart">
+            <arguments>
+                <argument name="jsLayout" xsi:type="array">
+                    <item name="types" xsi:type="array"/>
+                    <item name="components" xsi:type="array">
+                        <item name="minicart_content" xsi:type="array">
+                            <item name="component" xsi:type="string">FedEx_CrossBorder/js/view/minicart</item>
+                            <item name="config" xsi:type="array">
+                                <item name="template" xsi:type="string">FedEx_CrossBorder/minicart/content</item>
+                            </item>
+                        </item>
+                    </item>
+                </argument>
+            </arguments>
+        </referenceBlock>
+    </body>
+</page>

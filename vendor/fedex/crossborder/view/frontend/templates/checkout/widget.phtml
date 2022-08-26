@@ -1,0 +1,30 @@
+<?php
+/**
+ * FedEx Cross Border component
+ *
+ * @category    FedEx
+ * @package     FedEx_CrossBorder
+ * @author      Andrey Rapshtynsky <andrey.bh@gmail.com>
+ * @copyright   FedEx (https://crossborder.fedex.com/)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+/** @var \FedEx\CrossBorder\Block\Checkout\Widget $block */
+?>
+<div class="checkout-widget-container fcb_web_app" data-bind="scope: 'section'">
+    <span data-bind="html: getWidget()"></span>
+</div>
+
+<script type="text/x-magento-init">
+{
+    "*": {
+        "Magento_Ui/js/core/app": {
+            "components": {
+                "section": {
+                    "component": "FedEx_CrossBorder/js/checkout-widget"
+                }
+            }
+        }
+    }
+}
+</script>

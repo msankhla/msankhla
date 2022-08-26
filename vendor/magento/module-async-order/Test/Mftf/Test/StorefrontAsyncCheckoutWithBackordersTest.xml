@@ -16,9 +16,10 @@
             <severity value="CRITICAL"/>
             <testCaseId value="MC-42906"/>
             <group value="checkout"/>
+            <group value="async_checkout"/>
         </annotations>
         <before>
-            <magentoCLI command="setup:config:set {{AsyncCheckoutConfigData.enable_option}}" stepKey="enableAsyncCheckout"/>
+            <comment userInput="BIC workaround" stepKey="enableAsyncCheckout"/>
             <magentoCLI command="config:set cataloginventory/item_options/backorders 1" stepKey="EnableBackorders"/>
             <createData entity="_defaultCategory" stepKey="createCategory"/>
             <createData entity="ApiSimpleProduct" stepKey="createProductY">
@@ -28,7 +29,7 @@
         <after>
             <magentoCLI command="config:set cataloginventory/item_options/backorders 0" stepKey="EnableBackorders"/>
             <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
-            <magentoCLI command="setup:config:set {{AsyncCheckoutConfigData.disable_option}}" stepKey="disableAsyncCheckout"/>
+            <comment userInput="BIC workaround" stepKey="disableAsyncCheckout"/>
             <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
             <actionGroup ref="DeleteCustomerByEmailActionGroup" stepKey="deleteCustomer">
                 <argument name="email" value="{{CustomerEntityOne.email}}"/>

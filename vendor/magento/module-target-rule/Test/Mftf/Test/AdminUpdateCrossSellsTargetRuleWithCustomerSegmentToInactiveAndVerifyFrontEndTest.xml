@@ -42,6 +42,7 @@
             <actionGroup ref="DeleteTargetRuleByNameActionGroup" stepKey="deleteUpdatedTargetRule">
                 <argument name="ruleName" value="CrossSellsTargetRuleUpdatedToInactive.ruleName"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
         </after>
 

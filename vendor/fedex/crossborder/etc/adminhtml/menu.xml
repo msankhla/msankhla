@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * FedEx Cross Border component
+ *
+ * @category    FedEx
+ * @package     FedEx_CrossBorder
+ * @author      Andrey Rapshtynsky <andrey.bh@gmail.com>
+ * @copyright   FedEx (https://crossborder.fedex.com/)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="FedEx_CrossBorder::menu" title="FedEx Cross Border" module="FedEx_CrossBorder" sortOrder="51" resource="FedEx_CrossBorder::menu" parent="Magento_Backend::stores"/>
+        <add id="FedEx_CrossBorder::scheduler" title="API Scheduler" module="FedEx_CrossBorder" sortOrder="10" action="fdxcb/scheduler" resource="FedEx_CrossBorder::scheduler" parent="FedEx_CrossBorder::menu"/>
+        <add id="FedEx_CrossBorder::available_countries" title="Available Countries/Territories" module="FedEx_CrossBorder" sortOrder="20" action="fdxcb/availableCountries" resource="FedEx_CrossBorder::available_countries" parent="FedEx_CrossBorder::menu"/>
+    </menu>
+</config>

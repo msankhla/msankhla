@@ -7,10 +7,14 @@ declare(strict_types=1);
 
 namespace Magento\CustomerSegment\Model;
 
+use Magento\CustomerSegment\Test\Fixture\ProductCondition as ProductConditionFixture;
+use Magento\CustomerSegment\Test\Fixture\ProductHistoryCondition as ProductHistoryConditionFixture;
+use Magento\CustomerSegment\Test\Fixture\Segment as SegmentFixture;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Registry;
 use Magento\Sales\Model\OrderRepository;
 use Magento\Store\Model\Website;
+use Magento\TestFramework\Fixture\DataFixture;
 use PHPUnit\Framework\TestCase;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\TestFramework\MessageQueue\PublisherConsumerController;
@@ -22,6 +26,7 @@ use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\CustomerSegment\Model\Customer as CustomerSegment;
 use Magento\CustomerSegment\Model\ResourceModel\Segment as SegmentResource;
 use Magento\CustomerSegment\Model\ResourceModel\Segment\Report\Detail\Collection;
+use Magento\TestFramework\Fixture\DataFixtureStorageManager;
 
 /**
  * Test matched customers segment with queue
@@ -51,6 +56,11 @@ class SegmentMatchConsumerTest extends TestCase
     private $consumers = ['matchCustomerSegmentProcessor'];
 
     /**
+     * @var \Magento\TestFramework\Fixture\DataFixtureStorage
+     */
+    private $fixtures;
+
+    /**
      * @inheritdoc
      */
     protected function setUp(): void
@@ -68,6 +78,7 @@ class SegmentMatchConsumerTest extends TestCase
                 'appInitParams' => Bootstrap::getInstance()->getAppInitParams()
             ]
         );
+        $this->fixtures = DataFixtureStorageManager::getStorage();
         try {
             $this->publisherConsumerController->startConsumers();
         } catch (EnvironmentPreconditionException $e) {
@@ -223,7 +234,7 @@ class SegmentMatchConsumerTest extends TestCase
         /** @var Collection $gridCollection */
         $gridCollection = $this->objectManager->get(Collection::class);
         $gridCollection->loadData();
-        $this->assertCustomerCollectionData($gridCollection->getData());
+        $this->assertCustomerCollectionData($gridCollection->getData(), $customer);
 
         // Emulate other customer login event is processed
         $customerSegment->processCustomerEvent('customer_login', 2);
@@ -233,7 +244,7 @@ class SegmentMatchConsumerTest extends TestCase
         $gridCollection->resetData();
         $gridCollection->loadData();
 
-        $this->assertCustomerCollectionData($gridCollection->getData());
+        $this->assertCustomerCollectionData($gridCollection->getData(), $customer);
 
         // Process invalid customer login
         $customerSegment->processCustomerEvent('customer_login', null);
@@ -241,7 +252,7 @@ class SegmentMatchConsumerTest extends TestCase
         $gridCollection->resetData();
         $gridCollection->loadData();
 
-        $this->assertCustomerCollectionData($gridCollection->getData());
+        $this->assertCustomerCollectionData($gridCollection->getData(), $customer);
     }
 
     /**
@@ -352,13 +363,61 @@ class SegmentMatchConsumerTest extends TestCase
      * @param $data
      * @return void
      */
-    protected function assertCustomerCollectionData($data): void
+    protected function assertCustomerCollectionData($data, $customer): void
     {
         $this->assertNotEmpty($data, 'Segment customer matching result is empty');
-        $this->assertCount(1, $data, 'Segment should match only 1 costomer');
+        $this->assertCount(1, $data, 'Segment should match only 1 customer');
         $customerData = $data[0];
-        $this->assertEquals('1', $customerData['entity_id'], 'Customer ID is not matching.');
-        $this->assertEquals('1', $customerData['website_id'], 'Customer Website is not matching');
-        $this->assertEquals('customer@example.com', $customerData['email'], 'Customer email is not matching');
+        $this->assertEquals($customer->getId(), $customerData['entity_id'], 'Customer ID is not matching.');
+        $this->assertEquals($customer->getWebsiteId(), $customerData['website_id'], 'Customer Website is not matching');
+        $this->assertEquals($customer->getEmail(), $customerData['email'], 'Customer email is not matching');
+    }
+
+    /**
+     * Test segment with was not ordered condition
+     * matches only customers that have not-ordered matching these conditions
+     *
+     * @magentoDataFixture Magento/Sales/_files/order.php
+     * @magentoDataFixture Magento/Customer/_files/two_customers.php
+     * @return void
+     */
+    #[
+        DataFixture(ProductConditionFixture::class, ['attribute' => 'sku', 'value' => 'simple'], 'cond11'),
+        DataFixture(ProductHistoryConditionFixture::class, ['operator' => '!=', 'conditions' => ['$cond11$']], 'cond1'),
+        DataFixture(SegmentFixture::class, ['conditions' => ['$cond1$']], 'segment1')
+    ]
+    public function testCustomerMatchByNotOrderedProducts(): void
+    {
+        $segmentId = $this->fixtures->get('segment1')->getId();
+        $segment = $this->objectManager->create(Segment::class)->load($segmentId);
+        $customerSegment = $this->objectManager->create(CustomerSegment::class);
+
+        // Create order
+        $orderRepository = $this->objectManager->get(OrderRepository::class);
+        $orders = $orderRepository->getList($this->objectManager->get(SearchCriteriaInterface::class))->getItems();
+        $order = array_pop($orders);
+        $order->setCustomerId(1)->setCustomerIsGuest(false);
+        $orderRepository->save($order);
+        $segment->matchCustomers();
+        $customer = $this->customerRepository->get('customer_two@example.com');
+        $this->waitForAsynchronousResult($customer);
+
+        /** @var Registry $registry */
+        $registry = $this->objectManager->get(Registry::class);
+        $registry->register('current_customer_segment', $segment);
+
+        /** @var Collection $gridCollection */
+        $gridCollection = $this->objectManager->get(Collection::class);
+        $gridCollection->loadData();
+        $this->assertCustomerCollectionData($gridCollection->getData(), $customer);
+
+        // Emulate other customer login event is processed
+        $customerSegment->processCustomerEvent('customer_login', 2);
+
+        // recreate collection as it is loading only if isLoaded flag is reset
+        $gridCollection->resetData();
+        $gridCollection->loadData();
+
+        $this->assertCustomerCollectionData($gridCollection->getData(), $customer);
     }
 }

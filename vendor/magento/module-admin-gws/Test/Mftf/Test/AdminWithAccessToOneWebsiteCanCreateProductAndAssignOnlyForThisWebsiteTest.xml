@@ -28,6 +28,7 @@
                 <argument name="StoreGroup" value="customStoreGroup"/>
                 <argument name="customStore" value="customStoreEN"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
             <!-- Created user role Limited with access only to Website2 -->
             <actionGroup ref="AdminCreateUserRoleWithScopeActionGroup" stepKey="createRestrictedAdminRole">
                 <argument name="role" value="RestrictedAdminRole"/>
@@ -55,6 +56,7 @@
                 <argument name="websiteName" value="$createCustomWebsite.website[name]$"/>
             </actionGroup>
             <actionGroup ref="ClearFiltersAdminDataGridActionGroup" stepKey="resetWebsiteFilters"/>
+            <magentoCron groups="index" stepKey="reindex"/>
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutAsAdminUser"/>
         </after>
         <!-- 1. Login into admin panel as Test user -->

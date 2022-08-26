@@ -9,5 +9,5 @@
 @deprecated split database solution is deprecated and will be removed
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/consumer.xsd">
-    <consumer name="inventoryQtyCounter" queue="inventory_qty_counter_queue" connection="db" consumerInstance="Magento\Framework\MessageQueue\BatchConsumer" handler="Magento\ScalableInventory\Model\ResourceModel\QtyCounterConsumer::processMessage"/>
+    <consumer name="inventoryQtyCounter" queue="inventory_qty_counter_queue" consumerInstance="Magento\Framework\MessageQueue\BatchConsumer" handler="Magento\ScalableInventory\Model\ResourceModel\QtyCounterConsumer::processMessage"/>
 </config>

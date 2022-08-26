@@ -13,9 +13,13 @@ use Magento\Staging\Model\VersionManager;
 
 /** @var \Magento\TestFramework\ObjectManager $objectManager */
 $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-
 /** @var \Magento\Catalog\Api\ProductRepositoryInterface $productRepository */
 $productRepository = $objectManager->get(\Magento\Catalog\Api\ProductRepositoryInterface::class);
+$updateFactory = $objectManager->get(UpdateFactory::class);
+$updateRepository = $objectManager->get(UpdateRepositoryInterface::class);
+$productStaging = $objectManager->get(ProductStagingInterface::class);
+$versionManager = $objectManager->get(VersionManager::class);
+$currentVersionId = $versionManager->getCurrentVersion()->getId();
 
 // Create custom attribute
 /** @var $installer \Magento\Catalog\Setup\CategorySetup */
@@ -77,15 +81,11 @@ $updateData = [
     'is_campaign' => 0,
     'is_rollback' => null,
 ];
-
-$updateFactory = $objectManager->get(UpdateFactory::class);
-$updateRepository = $objectManager->get(UpdateRepositoryInterface::class);
-$productStaging = $objectManager->get(ProductStagingInterface::class);
-$versionManager = $objectManager->get(VersionManager::class);
 $update = $updateFactory->create(['data' => $updateData]);
 $updateRepository->save($update);
-$product = $productRepository->get('simple');
 
+$product = $productRepository->get('simple');
 $versionManager->setCurrentVersionId($update->getId());
 $product->setName('Updated A Simple Product2 Name')->setPrice(6);
 $productStaging->schedule($product, $update->getId());
+$versionManager->setCurrentVersionId($currentVersionId);

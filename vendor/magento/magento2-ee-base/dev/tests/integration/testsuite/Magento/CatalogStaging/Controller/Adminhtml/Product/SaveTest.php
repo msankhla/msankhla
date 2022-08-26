@@ -48,6 +48,16 @@ class SaveTest extends \Magento\TestFramework\TestCase\AbstractController
     protected $productRepository;
 
     /**
+     * @var \Magento\Staging\Model\VersionManager
+     */
+    private $versionManager;
+
+    /**
+     * @var int
+     */
+    private $currentVersionId;
+
+    /**
      * @var int
      */
     protected $updateVersion;
@@ -78,6 +88,8 @@ class SaveTest extends \Magento\TestFramework\TestCase\AbstractController
         $this->_objectManager->get(\Magento\Backend\Model\UrlInterface::class)->turnOffSecretKey();
 
         $this->productRepository = $this->_objectManager->get(ProductRepository::class);
+        $this->versionManager = $this->_objectManager->get(\Magento\Staging\Model\VersionManager::class);
+        $this->currentVersionId = $this->versionManager->getCurrentVersion()->getId();
         $this->auth = $this->_objectManager->get(\Magento\Backend\Model\Auth::class);
         $this->session = $this->auth->getAuthStorage();
         $credentials = $this->getAdminCredentials();
@@ -116,6 +128,7 @@ class SaveTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     protected function tearDown(): void
     {
+        $this->versionManager->setCurrentVersionId($this->currentVersionId);
         $this->auth->getAuthStorage()->destroy(['send_expire_cookie' => false]);
         $this->auth = null;
         $this->session = null;

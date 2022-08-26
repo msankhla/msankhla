@@ -17,6 +17,7 @@ use Magento\Logging\Model\Handler\ControllersFactory as LoggingHandlerFactory;
  *
  * @SuppressWarnings(PHPMD.TooManyFields)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.CookieAndSessionMisuse)
  */
 class Processor
 {
@@ -110,8 +111,6 @@ class Processor
     protected $messageManager;
 
     /**
-     * Object manager
-     *
      * @var \Magento\Framework\ObjectManagerInterface
      */
     protected $_objectManager;
@@ -131,8 +130,6 @@ class Processor
     protected $_eventFactory;
 
     /**
-     * Request
-     *
      * @var \Magento\Framework\App\RequestInterface
      */
     protected $_request;
@@ -304,7 +301,7 @@ class Processor
             $additionalData = array_diff($additionalData, $skipData);
 
             if (!$model instanceof $className) {
-                return false;
+                continue;
             }
 
             $callback = sprintf('model%sAfter', ucfirst($action));
@@ -328,11 +325,13 @@ class Processor
     /**
      * Post-dispatch action handler
      *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      * @return $this|bool
      */
     public function logAction()
     {
-        if (!$this->_initAction) {
+        if (!$this->_initAction || !$this->_eventConfig) {
             return false;
         }
 
@@ -502,7 +501,9 @@ class Processor
         $ids = [];
         foreach ($this->_collectedIds as $className => $classIds) {
             $uniqueIds = array_unique($classIds);
-            $ids = array_merge($ids, $uniqueIds);
+            foreach ($uniqueIds as $uniqueId) {
+                $ids[] = $uniqueId;
+            }
             $this->_collectedIds[$className] = $uniqueIds;
         }
         return $ids;
@@ -606,6 +607,7 @@ class Processor
          */
         $expectedModels = $this->_eventConfig['expected_models'] ?? [];
 
+        /** @phpstan-ignore-next-line */
         if (empty($expectedModels) && empty($groupExpectedModels)) {
             return false;
         }

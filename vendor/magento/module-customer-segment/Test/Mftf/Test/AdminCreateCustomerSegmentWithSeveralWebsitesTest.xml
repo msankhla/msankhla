@@ -43,6 +43,7 @@
                 <argument name="StoreGroup" value="customStoreGroup"/>
                 <argument name="customStore" value="customStoreGroup"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
 
             <actionGroup ref="AdminCreateCustomerWithWebsiteAndStoreViewActionGroup" stepKey="createCustomerWithCustomWebsiteAndStoreView">
                 <argument name="customerData" value="Simple_US_CA_Customer"/>
@@ -62,6 +63,7 @@
             <actionGroup ref="AdminDeleteWebsiteActionGroup" stepKey="deleteCustomWebsite">
                 <argument name="websiteName" value="{{customWebsite.name}}"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
         </after>
 

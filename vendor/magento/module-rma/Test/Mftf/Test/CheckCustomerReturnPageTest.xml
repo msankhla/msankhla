@@ -24,6 +24,7 @@
                 <requiredEntity createDataKey="defaultCategory"/>
             </createData>
             <createData entity="Simple_US_Customer" stepKey="customer"/>
+            <magentoCron groups="index" stepKey="reindex"/>
             <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
         </before>
 

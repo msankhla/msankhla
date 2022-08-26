@@ -114,6 +114,7 @@
         <!-- 23. Run cron twice -->
         <magentoCLI command="cron:run" arguments="--group staging" stepKey="cronRun"/>
         <magentoCLI command="cron:run" arguments="--group staging" stepKey="cronRunTwice"/>
+        <magentoCLI command="queue:consumers:start" arguments="staging.synchronize_entity_period" stepKey="consumerRun"/>
         <actionGroup ref="StagingDashboardVerifyHoverContentActionGroup" stepKey="verifyHoverContentForS18">
             <argument name="staging" value="S18UpdateNameStaging"/>
             <argument name="objectsQty" value="2"/>

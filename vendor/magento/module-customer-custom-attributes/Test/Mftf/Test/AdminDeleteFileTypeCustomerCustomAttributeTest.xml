@@ -26,8 +26,10 @@
             <actionGroup ref="AdminCreateCustomerCustomAttribute" stepKey="createAttribute">
                 <argument name="customerAttribute" value="AttributeFileData"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
         </before>
         <after>
+            <magentoCron groups="index" stepKey="reindex"/>
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
         </after>
 

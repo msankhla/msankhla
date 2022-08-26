@@ -3,7 +3,7 @@
     "description": "Shipping Table Rates by Amasty",
     "require": {
         "php": ">=7.3",
-        "amasty/base": ">=1.13.4",
+        "amasty/base": ">=1.13.5",
         "magento/module-checkout": ">=100.1.0"
     },
     "suggest": {
@@ -11,7 +11,7 @@
         "amasty/module-shippingtablerates-mftf-3": "Install module-shippingtablerates-mftf-3 module to be able to run Shipping Table Rates MFTF tests for Magento 2.4.1 and higher."
     },
     "type": "magento2-module",
-    "version": "1.10.6",
+    "version": "1.10.7",
     "license": [
         "Commercial"
     ],

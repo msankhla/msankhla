@@ -29,6 +29,7 @@
                 <field key="quantity">1000</field>
                 <requiredEntity createDataKey="createCategory"/>
             </createData>
+            <magentoCron groups="index" stepKey="reindex"/>
             <!-- Set store credit for customer 100 -->
             <actionGroup ref="OpenEditCustomerFromAdminActionGroup" stepKey="openEditCustomer">
                 <argument name="customer" value="$createCustomer$"/>
@@ -47,6 +48,7 @@
             <actionGroup ref="FindAndDeleteCustomerSegmentActionGroup" stepKey="deleteSegment">
                 <argument name="segmentName" value="{{CustomerSegmentDefault.name}}"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
         </after>
 

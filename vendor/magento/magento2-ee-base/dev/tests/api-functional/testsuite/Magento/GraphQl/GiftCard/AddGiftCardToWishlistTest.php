@@ -369,6 +369,7 @@ query {
         gift_card_options {
           title
           required
+          uid
           ... on CustomizableFieldOption {
             value: value {
               uid
@@ -415,7 +416,7 @@ QUERY;
             foreach ($this->giftCardOptionDataProvider() as $optionKey => $optionData) {
                 if ($optionKey === $key) {
                     $giftCardInformation[Giftcard::TYPE_GIFTCARD . '_' . $key] = [
-                        'uid' => $giftCardOption['value']['uid'],
+                        'uid' => $giftCardOption['uid'],
                         'value' => $optionData
                     ];
                 }

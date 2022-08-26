@@ -40,6 +40,7 @@
                 <argument name="StoreGroup" value="customStoreGroup"/>
                 <argument name="customStore" value="customStore"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
         </before>
         <after>
             <magentoCLI command="config:set web/url/use_store 0" stepKey="turnOffStoreUrlUsage"/>
@@ -48,6 +49,7 @@
             <actionGroup ref="DeleteCustomWebsiteActionGroup" stepKey="deleteWebsite">
                 <argument name="websiteName" value="$createCustomWebsite.website[name]$"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
             <actionGroup ref="DeleteBannerActionGroup" stepKey="deleteDynamicBlock">
                 <argument name="bannerName" value="$$createDynamicBlock.name$$"/>
             </actionGroup>

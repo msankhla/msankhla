@@ -23,6 +23,7 @@ $updateRepository = $objectManager->get(UpdateRepositoryInterface::class);
 $productStaging = $objectManager->get(ProductStagingInterface::class);
 $versionManager = $objectManager->get(VersionManager::class);
 $productRepository = $objectManager->get(ProductRepositoryInterface::class);
+$currentVersionId = $versionManager->getCurrentVersion()->getId();
 
 /** @var CategoryLinkManagementInterface $categoryLinkManagement */
 $categoryLinkManagement = $objectManager->create(CategoryLinkManagementInterface::class);
@@ -37,7 +38,6 @@ $category->setName('Category For Disabled Product')
     ->setIncludeInMenu(true)
     ->setDefaultSortBy('name')
     ->setIsActive(true);
-
 /** @var CategoryRepositoryInterface $categoryRepository */
 $categoryRepository = $objectManager->get(CategoryRepositoryInterface::class);
 $categoryRepository->save($category);
@@ -61,7 +61,6 @@ $product->setTypeId(Type::TYPE_SIMPLE)
     ->setCategoryIds([$category->getEntityId()])
     ->setHasOptions(true);
 $productRepository->save($product);
-
 $categoryLinkManagement->assignProductToCategories(
     $product->getSku(),
     [$category->getEntityId()]
@@ -77,11 +76,11 @@ $updateData = [
     'is_campaign' => 0,
     'is_rollback' => null,
 ];
-
 $update = $updateFactory->create(['data' => $updateData]);
 $updateRepository->save($update);
-$product = $productRepository->get('disabled-simple');
 
+$product = $productRepository->get('disabled-simple');
 $versionManager->setCurrentVersionId($update->getId());
 $product->setName('Enabled Simple Product 1')->setPrice(45)->setStatus(Status::STATUS_ENABLED);
 $productStaging->schedule($product, $update->getId());
+$versionManager->setCurrentVersionId($currentVersionId);

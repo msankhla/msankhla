@@ -37,6 +37,9 @@
             <actionGroup ref="AdminPayPalExpressCheckoutDisableBillingAgreementActionGroup" stepKey="disableBillingAgreement">
                 <argument name="countryCode" value="us"/>
             </actionGroup>
+            <actionGroup ref="CliCacheCleanActionGroup" stepKey="cleanCache">
+                <argument name="tags" value="config full_page"/>
+            </actionGroup>
         </before>
 
         <after>
@@ -58,11 +61,14 @@
             <actionGroup ref="DeleteProductBySkuActionGroup" stepKey="deleteProduct">
                 <argument name="sku" value="{{OpenMultipleVirtualGiftCard.sku}}"/>
             </actionGroup>
+            <actionGroup ref="ResetAdminDataGridToDefaultViewActionGroup" stepKey="clearFilters"/>
 
             <!--Admin Logout -->
             <actionGroup ref="AdminLogoutActionGroup" stepKey="adminLogout"/>
-            <!-- Reindex invalidated indexes -->
-<!--            <magentoCron groups="index" stepKey="reindexInvalidatedIndices"/>-->
+
+            <actionGroup ref="CliCacheCleanActionGroup" stepKey="cleanCache">
+                <argument name="tags" value="config full_page"/>
+            </actionGroup>
         </after>
 
         <!-- Create a gift card with multiple and open amount -->
@@ -86,15 +92,12 @@
         <click selector="{{AdminProductFormActionSection.saveButton}}" stepKey="clickSave"/>
         <waitForPageLoad stepKey="wait2"/>
 
-        <!-- Reindex and clear cache -->
-        <!--<magentoCron groups="index" stepKey="reindexInvalidatedIndices"/>
-        <magentoCLI command="cache:flush" arguments="config" stepKey="flushConfigCache"/>-->
-
         <!-- Storefront validate selected amount in paypal banner -->
         <amOnPage url="{{StorefrontProductPage.url(OpenMultipleVirtualGiftCard.name)}}" stepKey="goToGiftCardProductPageOnStorefront"/>
         <waitForPageLoad stepKey="wait3" time="30" />
         <selectOption selector="{{StorefrontProductInfoMainSection.giftCardAmountSelect}}" userInput="100" stepKey="selectCardAmount" />
         <waitForPageLoad stepKey="wait4" time="30"/>
+        <waitForElementVisible selector="#pay-later span iframe" stepKey="waitForIframe"/>
         <executeJS function="document.querySelector('#pay-later span iframe').id = 'paylater-iframe'" stepKey="setPayLaterFrameId"/>
         <switchToIFrame userInput="paylater-iframe" stepKey="switchToPayLaterFrame"/>
         <waitForPageLoad time="30" stepKey="waitForIFrameContentLoad"/>

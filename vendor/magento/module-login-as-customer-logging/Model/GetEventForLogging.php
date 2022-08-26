@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace Magento\LoginAsCustomerLogging\Model;
 
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\HTTP\PhpEnvironment\RemoteAddress;
 use Magento\Logging\Model\Event;
@@ -23,14 +24,14 @@ class GetEventForLogging
     private const EVENT_CODE = 'login_as_customer';
 
     /**
-     * @var EventFactory
-     */
-    private $eventFactory;
-
-    /**
      * @var RemoteAddress
      */
     private $remoteAddress;
+
+    /**
+     * @var EventFactory
+     */
+    private $eventFactory;
 
     /**
      * @var RequestInterface
@@ -38,14 +39,14 @@ class GetEventForLogging
     private $request;
 
     /**
-     * @var UserInterfaceFactory
-     */
-    private $userFactory;
-
-    /**
      * @var User
      */
     private $userResource;
+
+    /**
+     * @var UserInterfaceFactory
+     */
+    private $userFactory;
 
     /**
      * @var StoreManagerInterface
@@ -68,11 +69,11 @@ class GetEventForLogging
         User $userResource,
         StoreManagerInterface $storeManager
     ) {
-        $this->eventFactory = $eventFactory;
         $this->remoteAddress = $remoteAddress;
+        $this->eventFactory = $eventFactory;
         $this->request = $request;
-        $this->userFactory = $userFactory;
         $this->userResource = $userResource;
+        $this->userFactory = $userFactory;
         $this->storeManager = $storeManager;
     }
 
@@ -89,12 +90,12 @@ class GetEventForLogging
 
         return $this->eventFactory->create([
             'data' => [
+                'info' => __('store = %1', $this->storeManager->getStore()->getCode()),
                 'ip' => $this->remoteAddress->getRemoteAddress(),
                 'x_forwarded_ip' => $this->request->getServer('HTTP_X_FORWARDED_FOR'),
                 'user' => $user->getUserName(),
-                'info' => __('store = %1', $this->storeManager->getStore()->getCode()),
-                'is_success' => 1,
                 'user_id' => $userId,
+                'is_success' => 1,
                 'fullaction' => "{$this->request->getRouteName()}_{$this->request->getControllerName()}" .
                     "_{$this->request->getActionName()}",
                 'event_code' => self::EVENT_CODE,

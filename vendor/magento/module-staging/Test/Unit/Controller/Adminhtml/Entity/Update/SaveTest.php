@@ -117,7 +117,7 @@ class SaveTest extends TestCase
     {
         $generalData = [
             'id' => 123,
-            'end_time' => '2017-01-31 16:22:09',
+            'end_time' => '2030-01-31 16:22:09',
             'start_time' => '2029-12-12 16:22:09',
         ];
 
@@ -147,6 +147,39 @@ class SaveTest extends TestCase
         $this->resultRedirectFactoryMock->expects($this->once())
             ->method('create')
             ->willReturn($this->redirectMock);
+        $this->redirectMock->expects($this->once())
+            ->method('setPath')
+            ->willReturnSelf();
+
+        $this->assertEquals($this->redirectMock, $this->save->execute());
+    }
+
+    public function testExecuteWithPastStartDate()
+    {
+        $generalData = [
+            'id' => 124,
+            'end_time' => '2017-01-31 16:22:09',
+            'start_time' => '2016-12-12 16:22:09',
+        ];
+
+        $this->requestMock->expects($this->once())
+            ->method('getParam')
+            ->with('general')
+            ->willReturn($generalData);
+        $updateMock = $this->getMockBuilder(Update::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $updateMock->expects($this->exactly(1))
+            ->method('getStartTime')
+            ->willReturn('2016-12-12 16:22:09');
+        $this->updateRepositoryMock->expects($this->once())
+            ->method('get')
+            ->willReturn($updateMock);
+        $this->resultRedirectFactoryMock->expects($this->once())
+            ->method('create')
+            ->willReturn($this->redirectMock);
+
         $this->redirectMock->expects($this->once())
             ->method('setPath')
             ->willReturnSelf();

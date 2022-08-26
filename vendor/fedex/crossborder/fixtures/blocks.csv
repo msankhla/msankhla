@@ -1,0 +1,7 @@
+"title","identifier","content"
+"Welcome Mat Greeting","welcome-mat-greeting","<h1>Welcome!</h1>
+ <div>It looks like you're shopping from <strong>{{widget type=""FedEx\CrossBorder\Block\Widget\WelcomeMat\SelectedCountry""}}</strong>.&nbsp;We're displaying prices in <strong>{{widget type=""FedEx\CrossBorder\Block\Widget\WelcomeMat\SelectedCurrency""}}</strong> to match your location.&nbsp;To confirm this, click the <strong>""Save Changes""</strong> button below.</div>
+ <div>&nbsp;</div>
+ <div>You can also choose to continue as a US shopper.</div>
+ <p>{{widget type=""FedEx\CrossBorder\Block\Widget\WelcomeMat\SelectorContainer"" show_country=""1"" country_title=""Select your Country/Territory"" show_currency=""1"" currency_title=""Select your Currency"" save_button_title=""UPDATE PREFERENCES"" show_default=""1"" default_type=""button"" default_title=""Continue as a US user""}}</p>"
+"Welcome Mat - Country/Territory Info — Default","welcome-mat-info-default","<p>COUNTRY-SPECIFIC SHIPPING METHODS/COSTS, OR ANY OTHER INFORMATION HELPFUL FOR SELECTED COUNTRY</p>"

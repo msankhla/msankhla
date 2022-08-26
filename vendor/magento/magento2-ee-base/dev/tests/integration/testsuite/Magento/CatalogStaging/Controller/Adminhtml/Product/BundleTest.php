@@ -13,6 +13,16 @@ namespace Magento\CatalogStaging\Controller\Adminhtml\Product;
 class BundleTest extends \Magento\TestFramework\TestCase\AbstractController
 {
     /**
+     * @var \Magento\Staging\Model\VersionManager
+     */
+    private $versionManager;
+
+    /**
+     * @var int
+     */
+    private $currentVersionId;
+
+    /**
      * @var \Magento\Backend\Model\Auth\Session
      */
     protected $session;
@@ -61,6 +71,8 @@ class BundleTest extends \Magento\TestFramework\TestCase\AbstractController
 
         $this->_objectManager->get(\Magento\Backend\Model\UrlInterface::class)->turnOffSecretKey();
 
+        $this->versionManager = $this->_objectManager->get(\Magento\Staging\Model\VersionManager::class);
+        $this->currentVersionId = $this->versionManager->getCurrentVersion()->getId();
         $this->auth = $this->_objectManager->get(\Magento\Backend\Model\Auth::class);
         $this->session = $this->auth->getAuthStorage();
         $credentials = $this->getAdminCredentials();
@@ -102,6 +114,7 @@ class BundleTest extends \Magento\TestFramework\TestCase\AbstractController
      */
     protected function tearDown(): void
     {
+        $this->versionManager->setCurrentVersionId($this->currentVersionId);
         $this->auth->getAuthStorage()->destroy(['send_expire_cookie' => false]);
         $this->auth = null;
         $this->session = null;

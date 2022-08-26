@@ -28,11 +28,13 @@ class CatalogProductSetup
     /**#@+
      * Endpoint types
      */
-    const ENDPOINT_FROM = 0;
-    const ENDPOINT_TO = 1;
+    public const ENDPOINT_FROM = 0;
+    public const ENDPOINT_TO = 1;
     /**#@-*/
 
-    /**#@-*/
+    /**
+     * @var Config
+     */
     protected $eavConfig;
 
     /**
@@ -167,6 +169,8 @@ class CatalogProductSetup
     }
 
     /**
+     * Executes staging content data patch
+     *
      * @param ModuleDataSetupInterface $setup
      * @return void
      */
@@ -182,6 +186,8 @@ class CatalogProductSetup
     }
 
     /**
+     * Initialize product attributes and process updates for staging content data patch
+     *
      * @return void
      */
     public function process()
@@ -297,7 +303,7 @@ class CatalogProductSetup
 
             $date = new \DateTime($attribute['value'], new \DateTimeZone('UTC'));
             $timestamp = $date->format('U');
-
+            // phpcs:ignore Magento2.Performance.ForeachArrayMerge
             $this->attributesList[$entityId][$storeId][$attributeId] = array_merge(
                 $attribute,
                 ['timestamp' => $timestamp]
@@ -556,6 +562,16 @@ class CatalogProductSetup
         foreach (array_keys($this->metadata) as $attributeCode) {
             $this->productEntity->setData($attributeCode, false);
         }
+
+        $optionsOriginal = $this->productEntity->getData('options');
+        if (!is_array($optionsOriginal)) {
+            return;
+        }
+        $options = [];
+        foreach ($optionsOriginal as $originalOption) {
+            $options[] = clone $originalOption;
+        }
+        $this->productEntity->setOptions($options);
     }
 
     /**

@@ -3,6 +3,8 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
+
 namespace Magento\Enterprise\Model\Plugin;
 
 use Magento\Theme\Model\Favicon\Favicon as DefaultFavicon;
@@ -20,7 +22,7 @@ class Favicon
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function afterGetDefaultFavicon(DefaultFavicon $subject)
+    public function afterGetDefaultFavicon(DefaultFavicon $subject): string
     {
         return 'Magento_Enterprise::favicon.ico';
     }

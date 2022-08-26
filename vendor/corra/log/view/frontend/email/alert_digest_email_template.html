@@ -1,0 +1,24 @@
+<!--@subject {{trans "Email notification: %subject" subject=$data.alerts_subject|raw}} @-->
+<!--@vars {
+"var data.comment":"Test",
+"var data.email":"Sender Email",
+"var data.name":"Sender Name"
+} @-->
+<style type="text/css" data-hse-inline-css="true">
+    .tg  {border-collapse:collapse;border-spacing:0;}
+    .tg td{font-family:Arial, sans-serif;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
+    .tg th{font-family:Arial, sans-serif;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
+    .tg .tg-2ktp{font-size:16px;vertical-align:top}
+    .tg .tg-pry8{font-weight:bold;font-size:16px;background-color:#efefef;color:#000000;vertical-align:top}
+</style>
+<table class="tg" style="border-collapse:collapse;border-spacing:0;" border="1">
+    <tr>
+        <th class="tg-pry8" style="font-family:Arial, sans-serif;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;font-weight:bold;font-size:16px;background-color:#efefef;color:#000000;vertical-align:top">Id</th>
+        <th class="tg-pry8" style="font-family:Arial, sans-serif;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;font-weight:bold;font-size:16px;background-color:#efefef;color:#000000;vertical-align:top">{{trans "Time (Timezone: %timezone)" timezone=$data.local_timezone|raw}}</th>
+        <th class="tg-pry8" style="font-family:Arial, sans-serif;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;font-weight:bold;font-size:16px;background-color:#efefef;color:#000000;vertical-align:top">Type</th>
+        <th class="tg-pry8" style="font-family:Arial, sans-serif;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;font-weight:bold;font-size:16px;background-color:#efefef;color:#000000;vertical-align:top">Message</th>
+        <th class="tg-pry8" style="font-family:Arial, sans-serif;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;font-weight:bold;font-size:16px;background-color:#efefef;color:#000000;vertical-align:top">LogId</th>
+    </tr>
+    {{var data.alerts_messages|raw}}
+</table>
+<br/>

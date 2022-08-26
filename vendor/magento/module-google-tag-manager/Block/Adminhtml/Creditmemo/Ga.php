@@ -53,7 +53,7 @@ class Ga extends \Magento\GoogleTagManager\Block\Ga
     public function getOrderId()
     {
         $orderId = $this->backendSession->getData('googleanalytics_creditmemo_order', true);
-        if ($orderId) {
+        if ($orderId && $this->_googleAnalyticsData->isGoogleAnalyticsAvailable()) {
             return $orderId;
         }
         return '';

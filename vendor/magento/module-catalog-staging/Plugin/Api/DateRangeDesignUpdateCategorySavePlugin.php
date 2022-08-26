@@ -55,13 +55,17 @@ class DateRangeDesignUpdateCategorySavePlugin
         $updatedIn = $category->getUpdatedIn();
 
         if (null != $createdIn && $createdIn != VersionManager::MIN_VERSION) {
+            $designUpdate = $this->updateRepository->get($createdIn);
             $category->setCustomAttribute(
                 self::$designFromKey,
-                $this->updateRepository->get($createdIn)->getStartTime()
+                $designUpdate->getStartTime()
             );
         }
 
         if (null != $updatedIn && $updatedIn != VersionManager::MAX_VERSION) {
+            if (isset($designUpdate) && $designUpdate->getRollbackId() != $updatedIn) {
+                return;
+            }
             $category->setCustomAttribute(
                 self::$designToKey,
                 $this->updateRepository->get($updatedIn)->getStartTime()

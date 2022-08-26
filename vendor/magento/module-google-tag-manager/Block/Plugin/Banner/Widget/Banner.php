@@ -3,33 +3,40 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
+
 namespace Magento\GoogleTagManager\Block\Plugin\Banner\Widget;
+
+use Magento\GoogleTagManager\Helper\Data;
+use Magento\GoogleTagManager\Model\Banner\Collector;
 
 class Banner
 {
     /**
-     * @var \Magento\GoogleTagManager\Helper\Data
+     * @var Data
      */
     protected $helper;
 
     /**
-     * @var \Magento\GoogleTagManager\Model\Banner\Collector
+     * @var Collector
      */
     protected $bannerCollector;
 
     /**
-     * @param \Magento\GoogleTagManager\Helper\Data $helper
-     * @param \Magento\GoogleTagManager\Model\Banner\Collector $bannerCollector
+     * @param Data $helper
+     * @param Collector $bannerCollector
      */
     public function __construct(
-        \Magento\GoogleTagManager\Helper\Data $helper,
-        \Magento\GoogleTagManager\Model\Banner\Collector $bannerCollector
+        Data $helper,
+        Collector $bannerCollector
     ) {
         $this->helper = $helper;
         $this->bannerCollector = $bannerCollector;
     }
 
     /**
+     * Before plugin
+     *
      * @param \Magento\Banner\Block\Widget\Banner $subject
      * @return void
      */

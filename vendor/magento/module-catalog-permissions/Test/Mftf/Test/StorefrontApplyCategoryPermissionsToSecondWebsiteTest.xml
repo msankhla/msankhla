@@ -44,6 +44,7 @@
             </actionGroup>
 
             <actionGroup ref="EnableCatalogCategoryPermissionActionGroup" stepKey="enableCatalogCategoryPermission"/>
+            <magentoCron groups="index" stepKey="reindex"/>
         </before>
         <after>
             <!--Default WebUrlOptionsConfig-->
@@ -57,6 +58,7 @@
             </actionGroup>
             <actionGroup ref="ClearFiltersAdminDataGridActionGroup" stepKey="resetWebsiteFilters2"/>
             <actionGroup ref="DisableCatalogCategoryPermissionActionGroup" stepKey="disableCatalogCategoryPermission"/>
+            <magentoCron groups="index" stepKey="reindex"/>
             <!--Delete Category and Product-->
             <actionGroup ref="DeleteCategoryActionGroup" stepKey="deleteCategory">
                 <argument name="categoryEntity" value="SimpleSubCategory"/>
@@ -64,7 +66,7 @@
             <actionGroup ref="DeleteProductBySkuActionGroup" stepKey="deleteProduct">
                 <argument name="sku" value="{{SimpleProduct.sku}}"/>
             </actionGroup>
-            <actionGroup ref="ClearFiltersAdminDataGridActionGroup" stepKey="clearFilters"/>
+            <actionGroup ref="ResetAdminDataGridToDefaultViewActionGroup" stepKey="clearFilters"/>
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutOfAdmin"/>
         </after>
         <!--Add new category and fill all necessary fields-->

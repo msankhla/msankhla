@@ -1,0 +1,83 @@
+<!--
+/**
+ * FedEx Cross Border component
+ *
+ * @category    FedEx
+ * @package     FedEx_CrossBorder
+ * @author      Andrey Rapshtynsky <andrey.bh@gmail.com>
+ * @copyright   FedEx (https://crossborder.fedex.com/)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+ -->
+<widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Widget:etc/widget.xsd">
+    <widget class="FedEx\CrossBorder\Block\Widget\WelcomeMat\SelectorContainer" id="fedex_welcome_mat_selector_container_widget">
+        <label>FedEx - Welcome Mat - Selector Container</label>
+        <description>Shows selector container with available country/territory and currency list</description>
+        <parameters>
+            <parameter name="show_country" xsi:type="select" visible="true" sort_order="10"
+                       source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Display Country/Territory Selector</label>
+            </parameter>
+            <parameter name="country_title" xsi:type="text" visible="true" sort_order="20" required="false">
+                <label>Country/Territory Label</label>
+                <depends>
+                    <parameter name="show_country" value="1" />
+                </depends>
+                <value>Select your Country/Territory</value>
+            </parameter>
+
+            <parameter name="show_currency" xsi:type="select" visible="true" sort_order="30"
+                       source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Display Currency Selector</label>
+            </parameter>
+            <parameter name="currency_title" xsi:type="text" visible="true" sort_order="40" required="false">
+                <label>Currency Label</label>
+                <depends>
+                    <parameter name="show_currency" value="1" />
+                </depends>
+                <value>Select your Currency</value>
+            </parameter>
+
+            <parameter name="save_button_title" xsi:type="text" visible="true" sort_order="50" required="true">
+                <label>Save Button Label</label>
+                <value>UPDATE PREFERENCES</value>
+            </parameter>
+
+            <parameter name="show_default" xsi:type="select" visible="true" sort_order="60"
+                       source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Display Default Country/Territory Selector</label>
+            </parameter>
+            <parameter name="default_type" xsi:type="select" visible="true" sort_order="70" required="true">
+                <label>Default Country/Territory Selector Type</label>
+                <depends>
+                    <parameter name="show_default" value="1" />
+                </depends>
+                <options>
+                    <option name="button" value="button">
+                        <label translate="true">Button</label>
+                    </option>
+                    <option name="link" value="link" selected="true">
+                        <label translate="true">Link</label>
+                    </option>
+                </options>
+            </parameter>
+            <parameter name="default_title" xsi:type="text" visible="true" sort_order="80" required="true">
+                <label>Default Country/Territory Label</label>
+                <depends>
+                    <parameter name="show_default" value="1" />
+                </depends>
+                <value>Continue as a US user</value>
+            </parameter>
+        </parameters>
+    </widget>
+
+    <widget class="FedEx\CrossBorder\Block\Widget\WelcomeMat\SelectedCountry" id="fedex_welcome_mat_selected_country_widget">
+        <label>FedEx - Welcome Mat - Selected Country/Territory</label>
+        <description>Shows selected country/territory</description>
+    </widget>
+
+    <widget class="FedEx\CrossBorder\Block\Widget\WelcomeMat\SelectedCurrency" id="fedex_welcome_mat_selected_currency_widget">
+        <label>FedEx - Welcome Mat - Selected Currency</label>
+        <description>Shows selected currency</description>
+    </widget>
+</widgets>

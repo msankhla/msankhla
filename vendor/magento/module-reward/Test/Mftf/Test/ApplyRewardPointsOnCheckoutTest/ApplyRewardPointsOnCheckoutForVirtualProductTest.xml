@@ -80,8 +80,8 @@
         </actionGroup>
 
         <!--Click Place Order button-->
-        <waitForLoadingMaskToDisappear stepKey="waitForLoadingMaskAfterUsingPoints"/>
-        <click selector="{{CheckoutPaymentSection.placeOrder}}" stepKey="clickPlaceOrder"/>
+        <comment userInput="BIC workaround" stepKey="waitForLoadingMaskAfterUsingPoints"/>
+        <actionGroup ref="ClickPlaceOrderActionGroup" stepKey="clickPlaceOrder"/>
         <waitForElement selector="{{CheckoutSuccessMainSection.success}}" time="30" stepKey="waitForLoadSuccessPage"/>
         <grabTextFrom selector="{{CheckoutSuccessMainSection.orderLink}}" stepKey="grabOrderNumber"/>
 

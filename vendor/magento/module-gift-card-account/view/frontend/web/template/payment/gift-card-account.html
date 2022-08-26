@@ -28,7 +28,7 @@
                                id="giftcard-code"
                                name="giftcard_code"
                                data-validate="{'required-entry':true}"
-                               data-bind="value: giftCartCode, attr:{placeholder: $t('Enter the gift card code')} "/>
+                               data-bind="value: giftCartCode, attr:{placeholder: $t('Enter the gift card code')}">
                     </div>
                 </div>
                 <!-- ko if: giftCardAccount.isChecked-->
@@ -51,6 +51,9 @@
                     <!-- /ko -->
                 <!-- /ko -->
             </div>
+            <!-- ko foreach: getRegion('additional-info') -->
+            <!-- ko template: getTemplate() --><!-- /ko -->
+            <!-- /ko -->
             <div class="actions-toolbar">
                 <div class="primary">
                     <button class="action action-add primary" type="submit" data-bind="'value': $t('Apply'), click: setGiftCard">

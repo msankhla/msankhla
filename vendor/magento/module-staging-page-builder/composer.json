@@ -8,7 +8,7 @@
     "config": {
         "sort-packages": true
     },
-    "version": "2.2.2",
+    "version": "2.2.3",
     "require": {
         "magento/framework": "*",
         "php": "~7.4.0||~8.1.0"

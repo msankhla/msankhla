@@ -7,16 +7,18 @@
 namespace Magento\SalesRuleStaging\Model\Operation\Update;
 
 use Magento\Framework\App\ObjectManager;
+use Magento\SalesRule\Model\ResourceModel\Rule;
 use Magento\Framework\EntityManager\EntityManager;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Staging\Model\ResourceModel\Db\ReadEntityVersion;
-use Magento\Staging\Model\VersionManager\Proxy as VersionManager;
+use Magento\Staging\Model\VersionManager;
 use Magento\Framework\EntityManager\TypeResolver;
 use Magento\Staging\Model\Operation\Update\CreateEntityVersion;
 use Magento\SalesRule\Model\RuleFactory;
 
 /**
- * Class TemporaryUpdateProcessor
+ * Processes temporary updates for sales rule
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class TemporaryUpdateProcessor implements \Magento\Staging\Model\Operation\Update\UpdateProcessorInterface
@@ -57,6 +59,11 @@ class TemporaryUpdateProcessor implements \Magento\Staging\Model\Operation\Updat
     protected $ruleFactory;
 
     /**
+     * @var Rule
+     */
+    private $ruleResource;
+
+    /**
      * @param TypeResolver $typeResolver
      * @param CreateEntityVersion $createEntityVersion
      * @param ReadEntityVersion $entityVersion
@@ -64,6 +71,7 @@ class TemporaryUpdateProcessor implements \Magento\Staging\Model\Operation\Updat
      * @param EntityManager $entityManager
      * @param MetadataPool $metadataPool
      * @param RuleFactory $ruleFactory
+     * @param Rule $ruleResource
      */
     public function __construct(
         TypeResolver $typeResolver,
@@ -72,7 +80,8 @@ class TemporaryUpdateProcessor implements \Magento\Staging\Model\Operation\Updat
         VersionManager $versionManager,
         EntityManager $entityManager,
         MetadataPool $metadataPool,
-        RuleFactory $ruleFactory
+        RuleFactory $ruleFactory,
+        Rule $ruleResource = null
     ) {
         $this->typeResolver = $typeResolver;
         $this->createEntityVersion = $createEntityVersion;
@@ -81,10 +90,11 @@ class TemporaryUpdateProcessor implements \Magento\Staging\Model\Operation\Updat
         $this->entityManager = $entityManager;
         $this->metadataPool = $metadataPool;
         $this->ruleFactory = $ruleFactory;
+        $this->ruleResource = $ruleResource ?: ObjectManager::getInstance()->get(Rule::class);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function process($entity, $versionId, $rollbackId = null)
     {
@@ -100,6 +110,7 @@ class TemporaryUpdateProcessor implements \Magento\Staging\Model\Operation\Updat
 
         $previousEntity = $this->ruleFactory->create();
         $previousEntity = $this->entityManager->load($previousEntity, $entity->getId());
+        $labels = $previousEntity->getStoreLabels();
 
         $this->versionManager->setCurrentVersionId($rollbackId);
         $arguments = [
@@ -108,6 +119,7 @@ class TemporaryUpdateProcessor implements \Magento\Staging\Model\Operation\Updat
             'origin_in' => $previousVersionId
         ];
         $this->createEntityVersion->execute($previousEntity, $arguments);
+        $this->ruleResource->saveStoreLabels($previousEntity->getRowId(), $labels);
         $this->versionManager->setCurrentVersionId($versionId);
         return $entity;
     }

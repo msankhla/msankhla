@@ -3,17 +3,22 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
+
 namespace Magento\AdvancedRule\Model\Condition;
+
+use Magento\Framework\DataObject;
 
 /**
  * Interface \Magento\AdvancedRule\Model\Condition\FilterTextGeneratorInterface
  *
+ * @api
  */
 interface FilterTextGeneratorInterface
 {
     /**
-     * @param \Magento\Framework\DataObject $input
+     * @param DataObject $input
      * @return string[]
      */
-    public function generateFilterText(\Magento\Framework\DataObject $input);
+    public function generateFilterText(DataObject $input);
 }

@@ -73,7 +73,7 @@
         <actionGroup ref="NavigateToCreatedDynamicBlockActionGroup" stepKey="navigateToCreatedDynamicBlock">
             <argument name="Banner" value="$$createDynamicBlock$$"/>
         </actionGroup>
-        <seeElement selector="{{TinyMCESection.TinyMCE}}" stepKey="seeTinyMCEVisible"/>
+        <waitForElementVisible selector="{{TinyMCESection.TinyMCE}}" stepKey="seeTinyMCEVisible"/>
         <executeJS function="return (function() {var div = document.createElement('div'); div.innerHTML = tinymce.activeEditor.getContent(); return div.querySelector('[data-content-type=&quot;text&quot;]').innerText;}())" stepKey="textFromPageBuilder"/>
         <assertEquals stepKey="assertEquals1" message="pass">
             <expectedResult type="string">Hello Dynamic Block from PageBuilder</expectedResult>

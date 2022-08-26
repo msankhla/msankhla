@@ -15,5 +15,6 @@ define([
         if (config.isReadonly !== '') {
             segmentConditionsFieldset.setReadonly(true);
         }
+        window[config.jsObjectName] = segmentConditionsFieldset;
     };
 });

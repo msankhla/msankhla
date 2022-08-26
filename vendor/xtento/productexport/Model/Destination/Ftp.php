@@ -3,7 +3,7 @@
 /**
  * Product:       Xtento_ProductExport
  * ID:            %!uniqueid!%
- * Last Modified: 2019-11-25T10:41:50+00:00
+ * Last Modified: 2022-08-19T14:04:42+00:00
  * File:          Model/Destination/Ftp.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -140,7 +140,7 @@ class Ftp extends AbstractClass
             }
             if (!$uploadResult) {
                 $logEntry->setResult(\Xtento\ProductExport\Model\Log::RESULT_WARNING);
-                $message = sprintf("Could not save file %1 in directory %2 on FTP server %3. You can try enabling passive mode in the configuration. Please make sure the directory is writable. Also please make sure that there is no firewall blocking the outgoing connection to the FTP server. If this error keeps occurring, please get in touch with your server hoster / server administrator AND with the server hoster / server administrator of the remote FTP server, so they can adjust the firewall. %4", $filename, $this->getDestination()->getPath(), $this->getDestination()->getHostname(), $warning);
+                $message = sprintf("Could not save file %s in directory %s on FTP server %s. You can try enabling passive mode in the configuration. Please make sure the directory is writable. Also please make sure that there is no firewall blocking the outgoing connection to the FTP server. If this error keeps occurring, please get in touch with your server hoster / server administrator AND with the server hoster / server administrator of the remote FTP server, so they can adjust the firewall. %s", $filename, $this->getDestination()->getPath(), $this->getDestination()->getHostname(), $warning);
                 $logEntry->addResultMessage(__('Destination "%1" (ID: %2): %3', $this->getDestination()->getName(), $this->getDestination()->getId(), $message));
                 if (!$this->getDestination()->getBackupDestination()) {
                     $this->getDestination()->setLastResultMessage(__($message));

@@ -9,10 +9,12 @@ namespace Magento\CatalogPermissions\Plugin\Catalog;
 
 use Magento\CatalogPermissions\App\ConfigInterface;
 use Magento\CatalogPermissions\Model\Indexer\AbstractAction;
+use Magento\CatalogPermissions\Model\Indexer\TableMaintainer;
 use Magento\CatalogPermissions\Model\Permission;
 use Magento\CatalogPermissions\Helper\Data as Helper;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\Customer\Model\Session;
+use Magento\Framework\App\ObjectManager;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\DB\Select;
 use Magento\Framework\Exception\LocalizedException;
@@ -21,6 +23,8 @@ use Magento\Framework\App\ResourceConnection;
 
 /**
  * Add catalog permissions for count query
+ *
+ * @SuppressWarnings(PHPMD.CookieAndSessionMisuse)
  */
 class AddPermissionsToCountSql
 {
@@ -52,24 +56,32 @@ class AddPermissionsToCountSql
     private $resource;
 
     /**
+     * @var TableMaintainer
+     */
+    private $tableMaintainer;
+
+    /**
      * @param ConfigInterface $permissionsConfig
      * @param Session $customerSession
      * @param StoreManagerInterface $storeManager
      * @param Helper $helper
      * @param ResourceConnection $resource
+     * @param TableMaintainer|null $tableMaintainer
      */
     public function __construct(
         ConfigInterface $permissionsConfig,
         Session $customerSession,
         StoreManagerInterface $storeManager,
         Helper $helper,
-        ResourceConnection $resource
+        ResourceConnection $resource,
+        TableMaintainer $tableMaintainer = null
     ) {
         $this->permissionsConfig = $permissionsConfig;
         $this->customerSession = $customerSession;
         $this->storeManager = $storeManager;
         $this->helper = $helper;
         $this->resource = $resource;
+        $this->tableMaintainer = $tableMaintainer ?? ObjectManager::getInstance()->get(TableMaintainer::class);
     }
 
     /**
@@ -80,6 +92,8 @@ class AddPermissionsToCountSql
      * @return Select
      * @throws LocalizedException
      * @throws NoSuchEntityException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function afterGetSelectCountSql(Collection $subject, $result)
     {
@@ -100,8 +114,7 @@ class AddPermissionsToCountSql
             $conditions[] = 'perm.product_id = cat_index.product_id';
             $conditions[] = sprintf('perm.store_id = %s', $storeId);
             $joinConditions = join(' AND ', $conditions);
-
-            $productTable = $this->resource->getTableName(self::TABLE_NAME . AbstractAction::PRODUCT_SUFFIX);
+            $productTable = $this->tableMaintainer->resolveMainTableNameProduct($customerGroupId);
 
             if (!isset($fromPart['perm'])) {
                 $result->joinLeft(
@@ -111,7 +124,7 @@ class AddPermissionsToCountSql
                 );
             }
         } else {
-            $tableName = $this->resource->getTableName(self::TABLE_NAME);
+            $tableName = $this->tableMaintainer->resolveMainTableNameCategory($customerGroupId);
 
             $conditions[] = 'perm.category_id = cat_index.category_id';
             $websiteId = (int) $this->storeManager->getStore($storeId)->getWebsiteId();
@@ -128,7 +141,7 @@ class AddPermissionsToCountSql
         }
 
         if (isset($fromPart['perm'])) {
-            $fromPart['perm']['tableName'] = $tableName;
+            $fromPart['perm']['tableName'] = $tableName; /** @phpstan-ignore-line */
             $fromPart['perm']['joinCondition'] = $joinConditions;
             $result->setPart(Select::FROM, $fromPart);
             return $result;

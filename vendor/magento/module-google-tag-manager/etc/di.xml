@@ -10,7 +10,11 @@
         <arguments>
             <argument name="sensitive" xsi:type="array">
                 <item name="google/analytics/container_id" xsi:type="string">1</item>
+                <item name="google/gtag/analytics4/container_id" xsi:type="string">1</item>
             </argument>
         </arguments>
+    </type>
+    <type name="Magento\GoogleTagManager\Helper\Data">
+        <plugin name="tagManagerHelperplugin" type="Magento\GoogleTagManager\Plugin\Helper\Data"/>
     </type>
 </config>

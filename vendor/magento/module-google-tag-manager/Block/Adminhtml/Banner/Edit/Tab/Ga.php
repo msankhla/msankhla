@@ -5,6 +5,9 @@
  */
 namespace Magento\GoogleTagManager\Block\Adminhtml\Banner\Edit\Tab;
 
+use Magento\Framework\App\ObjectManager;
+use Magento\GoogleTagManager\Model\Config\TagManagerConfig;
+
 /**
  * @api
  * @since 100.0.2
@@ -15,17 +18,22 @@ class Ga extends \Magento\Backend\Block\Widget\Form\Generic implements
     /**
      * Representation value of enabled banner
      */
-    const STATUS_ENABLED = 1;
+    public const STATUS_ENABLED = 1;
 
     /**
      * Representation value of disabled banner
      */
-    const STATUS_DISABLED  = 0;
+    public const STATUS_DISABLED  = 0;
 
     /**
-     * @var \Magento\GoogleTagManager\Helper\Data
+     * @var Data
      */
     protected $helper;
+
+    /**
+     * @var TagManagerConfig
+     */
+    private $tagManagerConfig;
 
     /**
      * @param \Magento\Backend\Block\Template\Context $context
@@ -33,15 +41,20 @@ class Ga extends \Magento\Backend\Block\Widget\Form\Generic implements
      * @param \Magento\Framework\Data\FormFactory $formFactory
      * @param \Magento\GoogleTagManager\Helper\Data $helper
      * @param array $data
+     * @param TagManagerConfig|null $tagManagerConfig
      */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Framework\Registry $registry,
         \Magento\Framework\Data\FormFactory $formFactory,
         \Magento\GoogleTagManager\Helper\Data $helper,
-        array $data = []
+        array $data = [],
+        TagManagerConfig $tagManagerConfig = null
     ) {
         $this->helper = $helper;
+        $this->tagManagerConfig = $tagManagerConfig ?? ObjectManager::getInstance()->get(
+            TagManagerConfig::class
+        );
         parent::__construct($context, $registry, $formFactory, $data);
     }
 
@@ -52,7 +65,7 @@ class Ga extends \Magento\Backend\Block\Widget\Form\Generic implements
      */
     protected function _prepareForm()
     {
-        if (!$this->helper->isGoogleAnalyticsAvailable()) {
+        if (!$this->helper->isGoogleAnalyticsAvailable() && !$this->tagManagerConfig->isGoogleAnalyticsAvailable()) {
             return $this;
         }
 

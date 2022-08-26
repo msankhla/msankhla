@@ -31,18 +31,11 @@ $productRepository->delete($product);
 
 $update = $updateFactory->create();
 $updateResourceModel->load($update, 'Product Update Second Store', 'name');
-$versionManager->setCurrentVersionId($update->getId());
-try {
-    $productRepository->deleteById('simplep1');
-} catch (NoSuchEntityException $e) {
-    //Product already deleted
-}
 $updateRepository->delete($update);
 
 /** @var Website $website */
 $website = $objectManager->create(\Magento\Store\Model\Website::class);
 $website->load('test_secondwebsite');
-
 if ($website->getId()) {
     $website->delete();
 }
@@ -50,7 +43,6 @@ if ($website->getId()) {
 /** @var Magento\Store\Model\Store $store */
 $store = $objectManager->create(\Magento\Store\Model\Store::class);
 $store->load('fixture_second_store');
-
 if ($store->getId()) {
     $store->delete();
 }

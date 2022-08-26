@@ -128,46 +128,55 @@ class SqlBuilderTest extends TestCase
         $this->attributesMock->setValue($attributesValue);
         $bind = [];
         $linkField = 'row_id';
-        $this->indexResourceMock
-            ->method('getConnection')
+        $this->indexResourceMock->method('getConnection')
             ->willReturn($this->connectionMock);
-        $this->indexResourceMock
-            ->method('getTable')
+        $this->indexResourceMock->method('getTable')
             ->withConsecutive(['catalog_product_entity'], [$relationTable])
             ->willReturnOnConsecutiveCalls('catalog_product_entity', $relationTable);
-        $this->indexResourceMock
-            ->method('getOperatorCondition')
+        $this->indexResourceMock->method('getOperatorCondition')
             ->with('table.value', $attributesOperator, $attributesValue)
             ->willReturn('table.value=' . $attributesValue);
+        $mainSelect = $this->createPartialMock(
+            Select::class,
+            ['from', 'assemble', 'where', 'joinLeft', 'joinInner', 'union']
+        );
+        $childrenSelect = $this->createPartialMock(
+            Select::class,
+            ['from', 'assemble', 'where', 'joinLeft', 'joinInner', 'union']
+        );
+        $unionSelect = $this->createPartialMock(
+            Select::class,
+            ['from', 'assemble', 'where', 'joinLeft', 'joinInner', 'union']
+        );
         $this->connectionMock->expects($this->atLeast(3))
             ->method('select')
-            ->willReturnCallback(
-                function () {
-                    return clone $this->selectMock;
-                }
+            ->willReturnOnConsecutiveCalls(
+                $mainSelect,
+                $childrenSelect,
+                $unionSelect
             );
-        $mainSelect  = clone $this->selectMock;
-        $this->selectMock
-            ->method('from')
+        $mainSelect->method('from')
             ->willReturnSelf();
-        $this->selectMock->expects($this->atLeastOnce())
+        $mainSelect->expects($this->once())
             ->method('joinLeft')
             ->with(['cpe' => 'catalog_product_entity'], "cpe.$linkField = table.$linkField", [])
             ->willReturnSelf();
-        $this->selectMock
+        $mainSelect->expects($this->once())
             ->method('joinInner')
             ->with(['relation' => 'catalog_product_relation'], "cpe.entity_id = relation.child_id", [])
             ->willReturnSelf();
-        $this->selectMock->method('where')
+        $mainSelect->method('where')
             ->willReturnMap(
                 [
-                    ['table.attribute_id=?', $attributeId, null, $this->selectMock],
-                    ['table.store_id=?', 0, null, $this->selectMock],
-                    ['table.value=:targetrule_bind_0', null, null, $this->selectMock]
+                    ['relation.parent_id = e.' . $linkField, null, null, $mainSelect],
+                    ['table.attribute_id=?', $attributeId, null, $mainSelect],
+                    ['table.store_id=?', 0, null, $mainSelect],
+                    ['table.value=:targetrule_bind_0', null, null, $mainSelect]
                 ]
             );
-        $mainSelect->expects($this->atLeastOnce())
+        $unionSelect->expects($this->once())
             ->method('union')
+            ->with([$mainSelect, $childrenSelect])
             ->willReturnSelf();
         $this->attributesMock->method('getAttributeObject')
             ->willReturn($this->eavAttributeMock);
@@ -177,11 +186,9 @@ class SqlBuilderTest extends TestCase
         $this->eavAttributeMock->expects($this->once())
             ->method('isStatic')
             ->willReturn(false);
-        $this->eavAttributeMock
-            ->method('getId')
+        $this->eavAttributeMock->method('getId')
             ->willReturn($attributeId);
-        $this->eavAttributeMock
-            ->method('getBackendTable')
+        $this->eavAttributeMock->method('getBackendTable')
             ->willReturn($attributeTable);
         $this->metadataPoolMock->expects($this->once())
             ->method('getMetadata')
@@ -190,21 +197,22 @@ class SqlBuilderTest extends TestCase
         $this->entityMetadataMock->expects($this->once())
             ->method('getLinkField')
             ->willReturn($linkField);
-        $this->selectMock->method('from')
+        $childrenSelect->method('from')
             ->willReturnSelf();
-        $this->selectMock->method('where')
+        $childrenSelect->method('where')
             ->willReturnMap(
                 [
-                    ['table.attribute_id=?', $attributeId, null, $this->selectMock],
-                    ['table.store_id=?', 0, null, $this->selectMock],
-                    ["table.value={$attributesValue}", null, null, $this->selectMock]
+                    ["table.$linkField = e.$linkField", null, null, $childrenSelect],
+                    ['table.attribute_id=?', $attributeId, null, $childrenSelect],
+                    ['table.store_id=?', 0, null, $childrenSelect],
+                    ["table.value={$attributesValue}", null, null, $childrenSelect]
                 ]
             );
         $resultClause = $this->sqlBuilder->generateWhereClause(
             $this->attributesMock,
             $bind
         );
-        $this->assertEquals("e.{$linkField} IN ()", $resultClause);
+        $this->assertEquals("EXISTS ()", $resultClause);
     }
 
     /**

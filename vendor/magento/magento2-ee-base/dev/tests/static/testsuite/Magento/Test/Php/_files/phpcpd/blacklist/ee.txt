@@ -50,3 +50,5 @@ app/code/Magento/Staging/Model/Entity/DataProvider/
 app/code/Magento/AdvancedSalesRule/Model/Rule/Condition/Product/
 app/code/Magento/CmsStaging/Controller/Adminhtml/Block/Update/
 app/code/Magento/Staging/Model/Select/FromRenderer
+app/code/Magento/GoogleTagManager/Block/GtagGa
+app/code/Magento/GoogleTagManager/Block/Adminhtml/Creditmemo/GtagGa

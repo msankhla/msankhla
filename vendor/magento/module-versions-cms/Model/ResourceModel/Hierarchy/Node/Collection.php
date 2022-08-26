@@ -118,7 +118,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         $this->getSelect()->joinLeft(
             ['cmsps' => $this->getTable('cms_page_store')],
             $this->getConnection()->quoteInto(
-                'cmsps.' . $linkField . ' = main_table.page_id AND cmsps.store_id IN (?)',
+                'cmsps.' . $linkField . ' = page_table.' . $linkField . ' AND cmsps.store_id IN (?)',
                 $storeIds,
                 \Zend_Db::INT_TYPE
             ),
@@ -141,12 +141,13 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         $linkField = $entityMetadata->getLinkField();
 
         if (!$this->getFlag('cms_page_in_stores_data_joined')) {
+            $this->joinCmsPage();
             $subSelect = $this->getConnection()->select();
             $subSelect->from(
                 ['cps' => $this->getTable('cms_page_store')],
                 []
             )->where(
-                'cps.' . $linkField . ' = main_table.page_id'
+                'cps.' . $linkField . ' = page_table.' . $linkField
             );
             $subSelect = $this->_resourceHelper->addGroupConcatColumn($subSelect, 'store_id', 'store_id');
             $this->getSelect()->columns(['page_in_stores' => new \Zend_Db_Expr('(' . $subSelect . ')')]);

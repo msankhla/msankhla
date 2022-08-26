@@ -10,7 +10,7 @@
         "magento/module-catalog": "^103.0||^104.0"
     },
     "type": "magento2-module",
-    "version": "2.15.4",
+    "version": "2.15.6",
     "license": [
         "proprietary"
     ],

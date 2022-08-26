@@ -10,7 +10,7 @@
 $refundJson = $block->getRefundJson();
 if ($refundJson !== null): ?>
     <?php $scriptString = <<<script
-        dataLayer.push(<?= /* @noEscape */ $refundJson ?>);
+        dataLayer.push($refundJson);
 script;
     ?>
     <?= /* @noEscape */ $secureRenderer->renderTag('script', [], $scriptString, false); ?>

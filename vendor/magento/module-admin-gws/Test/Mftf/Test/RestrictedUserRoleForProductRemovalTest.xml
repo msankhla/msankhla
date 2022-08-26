@@ -36,6 +36,7 @@
             <actionGroup ref="AdminDeleteWebsiteActionGroup" stepKey="deleteSecondWebsite">
                 <argument name="websiteName" value="{{customWebsite.name}}"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
             <actionGroup ref="AdminDeleteUserRoleActionGroup" stepKey="deleteRestrictedRole">
                 <argument name="roleName" value="$$restrictedAdminRoleMainWebsite.rolename$$"/>
             </actionGroup>
@@ -58,6 +59,7 @@
             <argument name="StoreGroup" value="customStoreGroup"/>
             <argument name="customStore" value="customStore"/>
         </actionGroup>
+        <magentoCron groups="index" stepKey="reindex"/>
 
         <amOnPage url="{{AdminUsersPage.url}}" stepKey="amOnAdminUsersPage"/>
         <fillField stepKey="fillUsernameSearch" selector="{{AdminUserGridSection.usernameFilterTextField}}" userInput="$$restrictedAdminUserMainWebsite.username$$"/>

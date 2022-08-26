@@ -40,6 +40,7 @@
                 <argument name="StoreGroup" value="customStoreGroup"/>
                 <argument name="customStore" value="customStore"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
 
             <actionGroup ref="CreateNewPageWithAllValuesActionGroup" stepKey="createNewPage">
                 <argument name="PageTitle" value="{{_newDefaultCmsPage.title}}"/>
@@ -70,6 +71,7 @@
             <actionGroup ref="AdminDeleteWebsiteActionGroup" stepKey="deleteWebsite">
                 <argument name="websiteName" value="{{customWebsite.name}}"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
             <actionGroup ref="AdminClearFiltersActionGroup" stepKey="clearFilters"/>
 
             <actionGroup ref="AdminLogoutActionGroup" stepKey="adminLogout"/>

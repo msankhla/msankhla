@@ -16,10 +16,10 @@
             <severity value="AVERAGE"/>
             <testCaseId value="MC-43254"/>
             <group value="checkout"/>
+            <group value="async_checkout"/>
         </annotations>
         <before>
-            <!-- Enable Async Checkout for Order placement -->
-            <magentoCLI command="setup:config:set {{AsyncCheckoutConfigData.enable_option}}" stepKey="enableAsyncCheckout"/>
+            <comment userInput="BIC workaround" stepKey="enableAsyncCheckout"/>
 
             <!-- Create Product and Category for Order placement -->
             <createData entity="_defaultCategory" stepKey="createCategory"/>
@@ -31,7 +31,7 @@
             <actionGroup ref="AdminLogoutActionGroup" stepKey="adminLogout"/>
             <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
             <deleteData createDataKey="createProduct" stepKey="deleteProduct"/>
-            <magentoCLI command="setup:config:set {{AsyncCheckoutConfigData.disable_option}}" stepKey="disableAsyncCheckout"/>
+            <comment userInput="BIC workaround" stepKey="disableAsyncCheckout"/>
         </after>
 
         <!-- Guest Checkout Process-->

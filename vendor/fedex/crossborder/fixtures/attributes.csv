@@ -1,0 +1,11 @@
+"label","input","type","backend","source","required","option","default","attribute_code","global","user_defined","default_value_text","default_value_yesno","default_value_date","default_value_textarea","unique","visible","is_searchable","is_visible_in_advanced_search","is_comparable","is_filterable","is_filterable_in_search","position","is_used_for_promo_rules","is_html_allowed_on_front","is_visible_on_front","used_in_product_listing","used_for_sort_by","attribute_set","group"
+"Country/Territory of Origin","select","varchar",,"FedEx\CrossBorder\Model\Product\Attribute\Source\CountryList",1,,,"fdx_country_of_origin",1,0,,,,,0,1,0,0,0,0,0,,1,0,0,1,0,,"FedEx Cross Border"
+"HS Code","text",,,,0,,,"fdx_hs_code",1,1,,,,,0,1,0,0,0,0,0,,1,0,0,0,0,,"FedEx Cross Border"
+"ECCN","text",,,,0,,,"fdx_eccn",1,1,,,,,0,1,0,0,0,0,0,,1,0,0,0,0,,"FedEx Cross Border"
+"Hazardous","boolean",,,,0,,,"fdx_haz_flag",1,0,,0,,,0,1,0,0,0,1,0,,1,1,0,1,0,,"FedEx Cross Border"
+"Product Type","select",,,,0,,,"fdx_product_type",1,1,,,,,0,0,0,0,0,0,0,,0,1,0,0,0,,"FedEx Cross Border"
+"List of countries/territories that require a license","multiselect",,,"FedEx\CrossBorder\Model\Product\Attribute\Source\CountryList",0,,,"fdx_license_flag",1,0,,0,,,0,1,0,0,0,0,0,,1,1,0,0,0,,"FedEx Cross Border"
+"List of countries/territories to which the product cannot enter","multiselect",,,"FedEx\CrossBorder\Model\Product\Attribute\Source\CountryList",0,,,"fdx_import_flag",1,0,,0,,,0,1,0,0,0,0,0,,1,1,0,1,0,,"FedEx Cross Border"
+"Multi Country/Territory of Origin","boolean",,,,0,,,"fdx_multi_country_of_origin",1,1,,0,,,0,0,0,0,0,0,0,,0,1,0,0,0,,"FedEx Cross Border"
+"Callback Url","text",,,,0,,,"fdx_callback_url",1,1,,,,,0,0,0,0,0,0,0,,0,0,0,0,0,,"FedEx Cross Border"
+"Item Dimensions & Weights","textarea","text","FedEx\CrossBorder\Model\Product\Attribute\Backend\Carton",,0,,,"fdx_carton",1,0,,,,,0,0,0,0,0,0,0,,0,0,0,0,0,,

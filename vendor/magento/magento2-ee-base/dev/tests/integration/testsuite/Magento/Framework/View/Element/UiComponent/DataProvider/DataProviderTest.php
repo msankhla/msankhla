@@ -34,6 +34,16 @@ class DataProviderTest extends \PHPUnit\Framework\TestCase
     private $request;
 
     /**
+     * @var VersionManager
+     */
+    private $versionManager;
+
+    /**
+     * @var int
+     */
+    private $currentVersionId;
+
+    /**
      * @var \Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider
      */
     private $dataProvider;
@@ -43,8 +53,9 @@ class DataProviderTest extends \PHPUnit\Framework\TestCase
         $objectManager = Bootstrap::getObjectManager();
         $this->request = $objectManager->get(Request::class);
         $this->request->setParams(['id' => '1']);
-        $versionManager = $objectManager->get(VersionManager::class);
-        $versionManager->setCurrentVersionId(101);
+        $this->versionManager = $objectManager->get(VersionManager::class);
+        $this->currentVersionId = $this->versionManager->getCurrentVersion()->getId();
+        $this->versionManager->setCurrentVersionId(101);
         $this->collectionFactory = $objectManager->create(CollectionFactory::class);
 
         $this->reporting = $objectManager->create(
@@ -59,6 +70,14 @@ class DataProviderTest extends \PHPUnit\Framework\TestCase
                 'requestFieldName' => 'id',
             ]
         );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function tearDown(): void
+    {
+        $this->versionManager->setCurrentVersionId($this->currentVersionId);
     }
 
     /**

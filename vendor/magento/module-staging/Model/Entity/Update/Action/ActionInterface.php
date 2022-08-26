@@ -8,6 +8,7 @@ namespace Magento\Staging\Model\Entity\Update\Action;
 /**
  * Interface \Magento\Staging\Model\Entity\Update\Action\ActionInterface
  *
+ * @api
  */
 interface ActionInterface
 {

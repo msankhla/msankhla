@@ -46,9 +46,7 @@
 
             <!--Log out-->
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logOut"/>
-            <actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindexAfterTest">
-                <argument name="indices" value="customer_grid"/>
-            </actionGroup>
+            <magentoCron groups="index" stepKey="reindexAfterTest"/>
         </after>
 
         <!-- Navigate to Stores -> Customers -> select 'AddNewAttribute' button and  Create Date Customer Custom Attribute -->
@@ -57,9 +55,7 @@
             <argument name="generateMinDate" value="-3 day"/>
             <argument name="generateMaxDate" value="now"/>
         </actionGroup>
-        <actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindex">
-            <argument name="indices" value="customer_grid"/>
-        </actionGroup>
+        <magentoCron groups="index" stepKey="reindex"/>
         <actionGroup ref="AdminClearCustomersFiltersActionGroup" stepKey="GoToCustomerPageAndResetFilters"/>
 
         <actionGroup ref="AdminAddColumnToAdminGridActionGroup"  stepKey="addColumnInGrid">

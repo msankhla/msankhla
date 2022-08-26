@@ -49,6 +49,12 @@ class UpdateRepositoryTest extends TestCase
     /** @var Product */
     private $productResource;
 
+    /** @var VersionManager */
+    private $versionManager;
+
+    /** @var int */
+    private $currentVersionId;
+
     /**
      * @inheritdoc
      */
@@ -61,6 +67,16 @@ class UpdateRepositoryTest extends TestCase
         $this->sortOrderBuilder = $objectManager->get(SortOrderBuilder::class);
         $this->dateTime = Bootstrap::getObjectManager()->create(DateTime::class);
         $this->productResource = Bootstrap::getObjectManager()->create(Product::class);
+        $this->versionManager = Bootstrap::getObjectManager()->get(VersionManager::class);
+        $this->currentVersionId = $this->versionManager->getCurrentVersion()->getId();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function tearDown(): void
+    {
+        $this->versionManager->setCurrentVersionId($this->currentVersionId);
     }
 
     /**

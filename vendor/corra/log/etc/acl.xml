@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author CORRA
+*/
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+    <acl>
+        <resources>
+            <resource id="Magento_Backend::admin">
+                <resource id="Corra_Log::menu" title="Corra Log" translate="title">
+                    <resource id="Corra_Log::log" title="Log" translate="title"/>
+                    <resource id="Corra_Log::log_archive" title="Log Archive" translate="title"/>
+                </resource>
+            </resource>
+        </resources>
+    </acl>
+</config>

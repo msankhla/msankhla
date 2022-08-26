@@ -17,6 +17,7 @@
             <testCaseId value="MC-41055"/>
             <useCaseId value="MC-40999"/>
             <group value="targetRule"/>
+            <group value="cloud_smoke"/>
         </annotations>
         <before>
             <!-- Create products -->
@@ -68,6 +69,7 @@
                 <argument name="ruleName" value="SimpleTargetRuleGeneralInformation.ruleName"/>
             </actionGroup>
             <actionGroup ref="ClearFiltersAdminDataGridActionGroup" stepKey="clearTargetRuleGridFilters"/>
+            <magentoCron groups="index" stepKey="reindex"/>
             <!-- Logout from Admin page -->
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdmin"/>
         </after>

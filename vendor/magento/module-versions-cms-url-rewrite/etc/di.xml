@@ -13,4 +13,10 @@
             </argument>
         </arguments>
     </type>
+    <type name="Magento\Cms\Model\PageRepository">
+        <plugin name="versions_cms_url_rewrite_plugin" type="Magento\VersionsCmsUrlRewrite\Plugin\Cms\Model\PageRepositoryPlugin"/>
+    </type>
+    <type name="Magento\Cms\ViewModel\Page\Grid\UrlBuilder">
+        <plugin name="versions_cms_page_grid_url_builder_plugin" type="Magento\VersionsCmsUrlRewrite\Plugin\Cms\ViewModel\Page\Grid\UrlBuilderPlugin"/>
+    </type>
 </config>

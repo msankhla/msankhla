@@ -9,7 +9,7 @@
 @deprecated split database solution is deprecated and will be removed
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/topology.xsd">
-    <exchange name="magento-db" type="topic" connection="db">
-        <binding id="defaultBinding" topic="inventory.counter.updated" destinationType="queue" destination="inventory_qty_counter_queue"/>
+    <exchange name="magento">
+        <binding id="updateInventoryQtyBinding" topic="inventory.counter.updated" destination="inventory_qty_counter_queue"/>
     </exchange>
 </config>

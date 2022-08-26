@@ -1,0 +1,30 @@
+{
+    "name": "corra/log",
+    "description": "Corra Log",
+    "require": {
+        "magento/framework": ">=101.0.0",
+        "magento/framework-message-queue": ">=100.2.1",
+        "magento/module-backend": ">=100.2.0",
+        "magento/module-config": ">=101.0.0",
+        "psr/log": ">=1.0",
+        "graylog2/gelf-php": "~1.0"
+    },
+    "type": "magento2-module",
+    "license": [
+        "OSL-3.0",
+        "AFL-3.0"
+    ],
+    "authors": [
+        {
+            "name": "CORRA"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Corra\\Log\\": ""
+        },
+        "files": [
+            "registration.php"
+        ]
+    }
+}

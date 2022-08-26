@@ -1,0 +1,94 @@
+<?php
+/**
+ * FedEx Cross Border component
+ *
+ * @category    FedEx
+ * @package     FedEx_CrossBorder
+ * @author      Andrey Rapshtynsky <andrey.bh@gmail.com>
+ * @copyright   FedEx (https://crossborder.fedex.com/)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+/** @var \FedEx\CrossBorder\Block\Adminhtml\Order\View\Info $block*/
+?>
+<?php if ($block->canShow()): ?>
+    <?php
+        $fxcbOrderNumber = $block->getOrderLink()->getFxcbOrderNumber();
+        $link = $block->getOrderLink()->getTrackingLink();
+        $monitorAppHtml = $block->getMonitorAppHtml();
+        $originalShippingAddress = $block->getOrderLink()->getOriginalShippingAddress();
+    ?>
+    <?php if (!empty($fxcbOrderNumber) || !empty($link)): ?>
+        <section class="admin__page-section order-view-tracking-link">
+            <div class="admin__page-section-title">
+                <span class="title"><?= $block->escapeHtml(__('FedEx Cross Border Information')) ?></span>
+        </div>
+        <div class="admin__page-section-content">
+            <div class="admin__page-section-item">
+                <div class="admin__page-section-item-content fdxcb-info">
+                    <?php if (!empty($fxcbOrderNumber)): ?>
+                        <div class="order-number">
+                            <div><b><?= $block->escapeHtml(__('Order Number')) ?>:</b> #<?= $fxcbOrderNumber ?></div>
+                            <div><b><?= $block->escapeHtml(__('Status')) ?>:</b> <?= $block->escapeHtml(__($block->getOrderLink()->getStatusName())) ?></div>
+                        </div>
+                    <?php endif; ?>
+                    <?php if (!empty($link) || !empty($monitorAppHtml)): ?>
+                        <div class="tracking-link">
+                            <?php if (!empty($link)): ?>
+                                <a href="<?= $link ?>" target="_blank"><?= $block->escapeHtml(__('Click here to track')) ?></a>
+                            <?php endif;?>
+                            <?php if (!empty($link) && !empty($monitorAppHtml)): ?>
+                                &nbsp;&nbsp;|&nbsp;&nbsp;
+                            <?php endif; ?>
+                            <?php if (!empty($monitorAppHtml)): ?>
+                                <a href="#" class="monitoring_web_app"><?= $block->escapeHtml(__('Monitor App')) ?></a>
+                                <div class="widget-fcb-button-container"><?= $monitorAppHtml ?></div>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <?php if ($originalShippingAddress && $originalShippingAddress->getId()): ?>
+                    <div class="admin__page-section-item original-shipping-address">
+                        <div class="admin__page-section-item-title">
+                            <span class="title"><?= $block->escapeHtml(__('Original Shipping Method')) ?></span>
+                        </div>
+                        <address class="admin__page-section-item-content">
+                            <?php if ($originalShippingAddress->getFullName()): ?>
+                                <?= $originalShippingAddress->getFullName() ?><br>
+                            <?php endif; ?>
+
+                            <?php if ($originalShippingAddress->getCompany()): ?>
+                                <?= $originalShippingAddress->getCompany() ?><br>
+                            <?php endif; ?>
+
+                            <?php if ($originalShippingAddress->getStreet()): ?>
+                                <?= $originalShippingAddress->getStreet() ?><br>
+                            <?php endif; ?>
+
+                            <?php
+                                $value = $originalShippingAddress->getCity();
+                                $value .= (!empty($value) ? ', ' : '') . $originalShippingAddress->getRegion();
+                                $value .= (!empty($value) ? ', ' : '') . $originalShippingAddress->getPostcode();
+                            ?>
+                            <?php if (!empty($value)): ?>
+                                <?= $value ?><br>
+                            <?php endif; ?>
+
+                            <?php if ($originalShippingAddress->getCountryId()): ?>
+                                <?= $originalShippingAddress->getCountry() ?><br>
+                            <?php endif; ?>
+
+                            <?php if ($originalShippingAddress->getTelephone()): ?>
+                                <?= $block->escapeHtml(__('T')) . ': ' . $originalShippingAddress->getTelephone() ?><br>
+                            <?php endif; ?>
+
+                            <?php if ($originalShippingAddress->getFax()): ?>
+                                <?= $block->escapeHtml(__('F')) . ': ' . $originalShippingAddress->getFax() ?><br>
+                            <?php endif; ?>
+                        </address>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+        </section>
+    <?php endif; ?>
+<?php endif; ?>

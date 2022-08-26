@@ -89,6 +89,12 @@
         <action id="create">
             <label translate="true">Create</label>
         </action>
+        <action id="save_address">
+            <label translate="true">Save Customer Address</label>
+        </action>
+        <action id="delete_address">
+            <label translate="true">Delete Customer Address</label>
+        </action>
     </actions>
     <groups>
         <group name="catalog_products">
@@ -287,6 +293,28 @@
                     <skip_on_back>
                         <controller_action name="customer_index_edit" />
                     </skip_on_back>
+                </event>
+                <event controller_action="customer_address_save" action_alias="save_address">
+                    <expected_models>
+                        <expected_model class="Magento\Customer\Model\Address">
+                            <skip_fields>
+                                <field name="id" />
+                                <field name="customer_id" />
+                                <field name="region_code" />
+                                <field name="default_shipping" />
+                                <field name="default_billing" />
+                                <field name="is_default_billing" />
+                                <field name="is_default_shipping" />
+                                <field name="store_id" />
+                                <field name="attribute_set_id" />
+                            </skip_fields>
+                        </expected_model>
+                    </expected_models>
+                </event>
+                <event controller_action="customer_address_delete" action_alias="delete_address">
+                    <expected_models>
+                        <expected_model class="Magento\Customer\Model\Address" />
+                    </expected_models>
                 </event>
                 <event controller_action="customer_index_validate"
                        action_alias="save"

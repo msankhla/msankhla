@@ -16,6 +16,7 @@
             <severity value="CRITICAL"/>
             <testCaseId value="MAGETWO-42691"/>
             <group value="reward"/>
+            <group value="cloud_smoke"/>
         </annotations>
         <before>
             <!-- Creating Virtual Product-->
@@ -75,9 +76,9 @@
         <actionGroup ref="GoToCheckoutFromMinicartActionGroup" stepKey="goToCheckoutFromMinicart2"/>
         <see userInput="$5.00 Fixed Flat Rate" selector="{{CheckoutShippingMethodsSection.shippingMethodRowByName('Flat Rate')}}" stepKey="seeShippingMethod"/>
         <click selector="{{CheckoutShippingMethodsSection.checkShippingMethodByName('Flat Rate')}}" stepKey="selectFlatShippingMethod"/>
-        <waitForLoadingMaskToDisappear stepKey="waitForLoadingMask2"/>
-        <waitForElement selector="{{CheckoutShippingMethodsSection.next}}" time="30" stepKey="waitForNextButton"/>
-        <click selector="{{CheckoutShippingMethodsSection.next}}" stepKey="clickNext"/>
+        <waitForPageLoad stepKey="waitForLoadingMask2"/>
+        <comment userInput="BIC workaround" stepKey="waitForNextButton"/>
+        <actionGroup ref="StorefrontCheckoutClickNextButtonActionGroup" stepKey="clickNext"/>
         <waitForElement selector="{{CheckoutPaymentSection.paymentSectionTitle}}" time="30" stepKey="waitForPaymentSectionLoadedTest2"/>
 
         <actionGroup ref="StorefrontCheckoutUsingRewardPointsActionGroup" stepKey="checkoutUseRewardPoints">
@@ -88,8 +89,8 @@
         <see userInput="No Payment Information Required" selector="{{CheckoutPaymentSection.paymentMethodTitle}}" stepKey="seePaymentMethod"/>
 
         <!--Click Place Order button-->
-        <waitForLoadingMaskToDisappear stepKey="waitForLoadingMaskAfterUsingPoints"/>
-        <click selector="{{CheckoutPaymentSection.placeOrder}}" stepKey="clickPlaceOrder"/>
+        <comment userInput="BIC workaround" stepKey="waitForLoadingMaskAfterUsingPoints"/>
+        <actionGroup ref="ClickPlaceOrderActionGroup" stepKey="clickPlaceOrder"/>
         <waitForElement selector="{{CheckoutSuccessMainSection.success}}" time="30" stepKey="waitForLoadSuccessPage"/>
         <grabTextFrom selector="{{CheckoutSuccessMainSection.orderLink}}" stepKey="grabOrderNumber"/>
 

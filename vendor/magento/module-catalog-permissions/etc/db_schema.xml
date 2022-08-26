@@ -84,17 +84,16 @@
                 identity="false" comment="Grant Catalog Product Price"/>
         <column xsi:type="smallint" name="grant_checkout_items" unsigned="false" nullable="true"
                 identity="false" comment="Grant Checkout Items"/>
-        <constraint xsi:type="primary" referenceId="MAGENTO_CATPERMISSIONS_IDX_PRD_PRD_ID_STORE_ID_CSTR_GROUP_ID">
+        <column xsi:type="int" name="index_id" unsigned="true" nullable="false" identity="true"
+                comment="Index Id"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="index_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="MAGENTO_CATPERMISSIONS_IDX_PRD_PRD_ID_STORE_ID_CSTR_GROUP_ID">
             <column name="product_id"/>
             <column name="store_id"/>
             <column name="customer_group_id"/>
         </constraint>
-        <index referenceId="MAGENTO_CATALOGPERMISSIONS_INDEX_PRODUCT_STORE_ID" indexType="btree">
-            <column name="store_id"/>
-        </index>
-        <index referenceId="MAGENTO_CATALOGPERMISSIONS_INDEX_PRODUCT_CUSTOMER_GROUP_ID" indexType="btree">
-            <column name="customer_group_id"/>
-        </index>
     </table>
     <table name="magento_catalogpermissions_index_tmp" resource="default" engine="innodb"
            comment="Catalog Category Permissions Temporary Index">
@@ -186,16 +185,15 @@
                 identity="false" comment="Grant Catalog Product Price"/>
         <column xsi:type="smallint" name="grant_checkout_items" unsigned="false" nullable="true"
                 identity="false" comment="Grant Checkout Items"/>
-        <constraint xsi:type="primary" referenceId="MAGENTO_CATPERMISSIONS_IDX_PRD_PRD_ID_STORE_ID_CSTR_GROUP_ID">
+        <column xsi:type="int" name="index_id" unsigned="true" nullable="false" identity="true"
+                comment="Index Id"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="index_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="MAGENTO_CATPERMISSIONS_IDX_PRD_PRD_ID_STORE_ID_CSTR_GROUP_ID">
             <column name="product_id"/>
             <column name="store_id"/>
             <column name="customer_group_id"/>
         </constraint>
-        <index referenceId="MAGENTO_CATALOGPERMISSIONS_INDEX_PRODUCT_STORE_ID" indexType="btree">
-            <column name="store_id"/>
-        </index>
-        <index referenceId="MAGENTO_CATALOGPERMISSIONS_INDEX_PRODUCT_CUSTOMER_GROUP_ID" indexType="btree">
-            <column name="customer_group_id"/>
-        </index>
     </table>
 </schema>

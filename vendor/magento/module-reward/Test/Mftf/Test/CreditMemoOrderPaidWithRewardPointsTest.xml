@@ -79,15 +79,15 @@
         <waitForElement selector="{{CheckoutShippingSection.isShippingStep}}" stepKey="waitForShippingSectionLoaded"/>
         <seeElement selector="{{CheckoutShippingSection.selectedShippingAddress}}" stepKey="seeSavedAddressSelected"/>
         <checkOption selector="{{CheckoutShippingMethodsSection.shippingMethodFlatRate}}" stepKey="selectFlatRateShipping"/>
-        <click selector="{{CheckoutShippingSection.next}}" stepKey="clickNextOnCheckoutShipping"/>
+        <actionGroup ref="StorefrontCheckoutClickNextButtonActionGroup" stepKey="clickNextOnCheckoutShipping"/>
         <waitForElement selector="{{CheckoutPaymentSection.paymentSectionTitle}}" time="30" stepKey="waitForPaymentSectionLoadedTest"/>
         <actionGroup ref="StorefrontCheckoutUsingRewardPointsActionGroup" stepKey="checkoutUseRewardPoints">
             <argument name="rewards" value="200"/>
             <argument name="rewardsUsing" value="105"/>
         </actionGroup>
         <!--Place order-->
-        <waitForElementVisible selector="{{CheckoutPaymentSection.placeOrder}}" stepKey="waitForPlaceOrderButton"/>
-        <click selector="{{CheckoutPaymentSection.placeOrder}}" stepKey="clickPlaceOrder"/>
+        <comment userInput="BIC workaround" stepKey="waitForPlaceOrderButton"/>
+        <actionGroup ref="ClickPlaceOrderActionGroup" stepKey="clickPlaceOrder"/>
         <waitForElement selector="{{CheckoutSuccessMainSection.success}}" time="30" stepKey="waitForLoadSuccessPage"/>
         <grabTextFrom selector="{{CheckoutSuccessMainSection.orderLink}}" stepKey="grabOrderNumber"/>
         <!--Check order reward point information from StoreFront-->

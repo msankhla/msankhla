@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * FedEx Cross Border component
+ *
+ * @category    FedEx
+ * @package     FedEx_CrossBorder
+ * @author      Andrey Rapshtynsky <andrey.bh@gmail.com>
+ * @copyright   FedEx (https://crossborder.fedex.com/)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">pack_notification_box_listing.pack_notification_box_listing_data_source</item>
+        </item>
+    </argument>
+    <settings>
+        <buttons>
+            <button name="back" class="FedEx\CrossBorder\Block\Adminhtml\PackNotification\BackButton" />
+            <button name="send_box" class="FedEx\CrossBorder\Block\Adminhtml\PackNotification\SendButton"/>
+            <button name="cancel_box" class="FedEx\CrossBorder\Block\Adminhtml\PackNotification\CancelButton"/>
+            <button name="download_box" class="FedEx\CrossBorder\Block\Adminhtml\PackNotification\DownloadButton"/>
+            <button name="add_new_box" class="FedEx\CrossBorder\Block\Adminhtml\PackNotification\NewBoxButton"/>
+        </buttons>
+        <spinner>box_columns</spinner>
+        <deps>
+            <dep>pack_notification_box_listing.pack_notification_box_listing_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="pack_notification_box_listing_data_source" component="Magento_Ui/js/grid/provider">
+        <settings>
+            <storageConfig>
+                <param name="indexField" xsi:type="string">entity_id</param>
+            </storageConfig>
+                <updateUrl path="mui/index/render"/>
+                <filterUrlParams>
+                    <param name="pack_notification_id">*</param>
+                </filterUrlParams>
+        </settings>
+        <aclResource>FedEx_CrossBorder::pack_notifications</aclResource>
+        <dataProvider class="FedEx\CrossBorder\Ui\DataProvider\PackNotification\Box" name="pack_notification_box_listing_data_source">
+            <settings>
+                <requestFieldName>id</requestFieldName>
+                <primaryFieldName>entity_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <listingToolbar name="listing_top">
+        <settings>
+            <sticky>true</sticky>
+        </settings>
+        <bookmark name="bookmarks"/>
+        <columnsControls name="columns_controls"/>
+        <filters name="listing_filters" />
+        <massaction name="listing_massaction" component="Magento_Ui/js/grid/tree-massactions">
+            <action name="delete" class="FedEx\CrossBorder\Ui\Component\PackNotification\Action">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="type" xsi:type="string">delete</item>
+                        <item name="label" translate="true" xsi:type="string">Delete</item>
+                        <item name="confirm" xsi:type="array">
+                            <item name="title" translate="true" xsi:type="string">Delete boxes</item>
+                            <item name="message" translate="true" xsi:type="string">Delete selected boxes?</item>
+                        </item>
+                        <item name="urlPath" xsi:type="string">fdxcb/packNotification/massDeleteBoxes</item>
+                        <item name="urlParams" xsi:type="array">
+                            <item name="pack_id" xsi:type="string">*</item>
+                        </item>
+                    </item>
+                </argument>
+            </action>
+        </massaction>
+        <paging name="listing_paging"/>
+    </listingToolbar>
+    <columns name="box_columns">
+        <settings>
+            <childDefaults>
+                <param name="fieldAction" xsi:type="array">
+                    <item name="provider" xsi:type="string">pack_notification_box_listing.pack_notification_box_listing.box_columns.actions</item>
+                    <item name="target" xsi:type="string">applyAction</item>
+                    <item name="params" xsi:type="array">
+                        <item name="0" xsi:type="string">edit</item>
+                        <item name="1" xsi:type="string">${ $.$data.rowIndex }</item>
+                    </item>
+                </param>
+            </childDefaults>
+        </settings>
+        <selectionsColumn name="ids" sortOrder="0">
+            <settings>
+                <indexField>entity_id</indexField>
+            </settings>
+        </selectionsColumn>
+        <column name="entity_id" sortOrder="10">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">ID</label>
+                <sorting>asc</sorting>
+            </settings>
+        </column>
+        <column name="width" sortOrder="20">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Width</label>
+            </settings>
+        </column>
+        <column name="height" sortOrder="30">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Height</label>
+            </settings>
+        </column>
+        <column name="length" sortOrder="40">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Length</label>
+            </settings>
+        </column>
+        <column name="weight" sortOrder="50">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Weight</label>
+            </settings>
+        </column>
+        <actionsColumn name="actions" class="FedEx\CrossBorder\Ui\Component\PackNotification\Listing\Column\Actions" sortOrder="100">
+            <settings>
+                <indexField>entity_id</indexField>
+            </settings>
+        </actionsColumn>
+    </columns>
+</listing>

@@ -3,17 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
+
+namespace Magento\MultipleWishlist\Model\Search\Strategy;
+
+use Magento\Wishlist\Model\ResourceModel\Wishlist\Collection;
 
 /**
  * Wishlist search strategy interface
  *
- * @author      Magento Core Team <core@magentocommerce.com>
- */
-namespace Magento\MultipleWishlist\Model\Search\Strategy;
-
-/**
  * Interface \Magento\MultipleWishlist\Model\Search\Strategy\StrategyInterface
  *
+ * @api
  */
 interface StrategyInterface
 {
@@ -21,8 +22,8 @@ interface StrategyInterface
      * Filter given wishlist collection
      *
      * @abstract
-     * @param \Magento\Wishlist\Model\ResourceModel\Wishlist\Collection $collection
-     * @return \Magento\Wishlist\Model\ResourceModel\Wishlist\Collection
+     * @param Collection $collection
+     * @return Collection
      */
-    public function filterCollection(\Magento\Wishlist\Model\ResourceModel\Wishlist\Collection $collection);
+    public function filterCollection(Collection $collection);
 }

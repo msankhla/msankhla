@@ -21,23 +21,23 @@ class Shell extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * File that contains paths to shell commands
      */
-    const PATHS_FILE        = 'Paths.php';
+    public const PATHS_FILE        = 'Paths.php';
 
     /**#@+
      * Shell commands
      */
-    const UTILITY_NICE      = 'nice';
-    const UTILITY_TAR       = 'tar';
-    const UTILITY_MYSQLDUMP = 'mysqldump';
-    const UTILITY_GZIP      = 'gzip';
-    const UTILITY_LSOF      = 'lsof';
-    const UTILITY_PHP       = 'php';
-    const UTILITY_SED       = 'sed';
-    const UTILITY_BASH      = 'bash';
-    const UTILITY_MYSQL     = 'mysql';
+    public const UTILITY_NICE      = 'nice';
+    public const UTILITY_TAR       = 'tar';
+    public const UTILITY_MYSQLDUMP = 'mysqldump';
+    public const UTILITY_GZIP      = 'gzip';
+    public const UTILITY_LSOF      = 'lsof';
+    public const UTILITY_PHP       = 'php';
+    public const UTILITY_SED       = 'sed';
+    public const UTILITY_BASH      = 'bash';
+    public const UTILITY_MYSQL     = 'mysql';
     /**#@-*/
 
-    const XML_OUTPUT_PATH   = 'support/output_path';
+    public const XML_OUTPUT_PATH   = 'support/output_path';
 
     /**
      * @var \Magento\Framework\ShellInterface
@@ -121,7 +121,7 @@ class Shell extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getPathsFileName()
     {
-        return $this->getOutputPath() . '/' . self::PATHS_FILE;
+        return $this->getAbsoluteOutputPath() . '/' . self::PATHS_FILE;
     }
 
     /**

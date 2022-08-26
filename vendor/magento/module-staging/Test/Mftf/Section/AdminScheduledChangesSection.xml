@@ -23,6 +23,8 @@
         <element name="scheduleEndDateByIndex" type="text" selector=".schedule-table>.schedule-item:nth-child({{index}})> tr.schedule-end > td.schedule-date > time" parameterized="true"/>
         <element name="scheduleEndTimeByIndex" type="text" selector=".schedule-table>.schedule-item:nth-child({{index}})> tr.schedule-end > td.schedule-time > time" parameterized="true"/>
         <element name="scheduleNameByIndex" type="text" selector=".schedule-table>.schedule-item:nth-child({{index}})>  tr.schedule-start > td.schedule-details>div.schedule-name" parameterized="true"/>
+        <element name="scheduleItemName" type="text" selector=".schedule-table>.schedule-item>  tr.schedule-start > td.schedule-details>div.schedule-name"/>
         <element name="scheduleDescriptionByIndex" type="text" selector=".schedule-table>.schedule-item:nth-child({{index}})>  tr.schedule-start > td.schedule-details>div.limited-text" parameterized="true"/>
+        <element name="scheduleItemDescription" type="text" selector=".schedule-table>.schedule-item>  tr.schedule-start > td.schedule-details>div.limited-text"/>
     </section>
 </sections>

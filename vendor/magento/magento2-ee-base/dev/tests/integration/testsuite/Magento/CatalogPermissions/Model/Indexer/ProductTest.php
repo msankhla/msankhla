@@ -5,11 +5,8 @@
  */
 namespace Magento\CatalogPermissions\Model\Indexer;
 
-use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
-use Magento\Catalog\Model\Product\Visibility;
-use Magento\CatalogPermissions\Model\Indexer\Category as IndexerCategory;
 use Magento\CatalogPermissions\Model\Indexer\Product as IndexerProduct;
 use Magento\CatalogPermissions\Model\ResourceModel\Permission\Index;
 use Magento\Indexer\Model\Indexer;
@@ -61,14 +58,32 @@ class ProductTest extends TestCase
      */
     public function testReindexAll()
     {
-        $product = $this->getProduct();
         /** @var  $indexer \Magento\Framework\Indexer\IndexerInterface */
         $indexer = $this->objectManager->create(Indexer::class);
         $indexer->load(IndexerProduct::INDEXER_ID);
         $indexer->reindexAll();
+        $product = $this->getProduct();
 
-        $productData = array_merge(['product_id' => $product->getId()], $this->getProductData());
-        $this->assertContainsEquals($productData, $this->indexTable->getIndexForProduct($product->getId(), 1, 1));
+        $productData = array_merge(
+            ['product_id' => $product->getId(), 'store_id' => $product->getStoreId()],
+            $this->getProductData()
+        );
+
+        $reindexProductData = $this->indexTable->getIndexForProduct($product->getId(), 1, 1);
+        $this->assertEquals($productData['product_id'], $reindexProductData[$product->getId()]['product_id']);
+        $this->assertEquals($productData['store_id'], $reindexProductData[$product->getId()]['store_id']);
+        $this->assertEquals(
+            $productData['grant_catalog_category_view'],
+            $reindexProductData[$product->getId()]['grant_catalog_category_view']
+        );
+        $this->assertEquals(
+            $productData['grant_catalog_product_price'],
+            $reindexProductData[$product->getId()]['grant_catalog_product_price']
+        );
+        $this->assertEquals(
+            $productData['grant_checkout_items'],
+            $reindexProductData[$product->getId()]['grant_checkout_items']
+        );
 
         $product->setStatus(Status::STATUS_DISABLED);
         $product->save();
@@ -86,7 +101,8 @@ class ProductTest extends TestCase
             'grant_catalog_category_view' => '-2',
             'grant_catalog_product_price' => '-2',
             'grant_checkout_items' => '-2',
-            'customer_group_id' => 1
+            'customer_group_id' => 1,
+            'index_id' => 2
         ];
     }
 

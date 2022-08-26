@@ -5,6 +5,8 @@
  */
 namespace Magento\CustomerBalance\Block\Checkout\Onepage\Payment;
 
+use Magento\Payment\Model\Method\Free;
+
 /**
  * Customer balance as an additional payment option during checkout
  *
@@ -134,6 +136,10 @@ class Additional extends \Magento\Framework\View\Element\Template
      */
     public function isAllowed()
     {
+        if (!$this->_scopeConfig->isSetFlag(Free::XML_PATH_PAYMENT_FREE_ACTIVE)) {
+            return false;
+        }
+
         if (!$this->isDisplayContainer()) {
             return false;
         }

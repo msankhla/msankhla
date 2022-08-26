@@ -48,14 +48,12 @@ class CRUDTest extends AbstractBackendController
      */
     public function testCreateProductOnStoreLevel(array $postData): void
     {
-        $this->markTestSkipped('https://github.com/magento/partners-magento2ee/issues/149');
-
         $this->getRequest()->setPostValue($postData);
         $this->getRequest()->setMethod(Http::METHOD_POST);
         $this->dispatch('backend/catalog/product/save/');
 
         $this->assertEquals('noroute', $this->getRequest()->getControllerName());
-        $this->assertContains('Page not found.', $this->getResponse()->getBody());
+        $this->assertStringContainsString('Page not found.', $this->getResponse()->getBody());
     }
 
     /**

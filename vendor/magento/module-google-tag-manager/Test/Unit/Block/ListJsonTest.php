@@ -28,6 +28,7 @@ use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Magento\GoogleTagManager\Model\Config\TagManagerConfig;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -73,6 +74,11 @@ class ListJsonTest extends TestCase
     /** @var ScopeConfigInterface|MockObject */
     protected $scopeConfig;
 
+    /**
+     * @var TagManagerConfig|MockObject
+     */
+    private $tagManagerConfig;
+
     protected function setUp(): void
     {
         $this->googleTagManagerHelper = $this->createMock(Data::class);
@@ -85,6 +91,9 @@ class ListJsonTest extends TestCase
         $this->layout = $this->getMockForAbstractClass(LayoutInterface::class);
         $this->storeManager = $this->getMockForAbstractClass(StoreManagerInterface::class);
         $this->scopeConfig = $this->getMockForAbstractClass(ScopeConfigInterface::class);
+        $this->tagManagerConfig = $this->getMockBuilder(TagManagerConfig::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->createListJson(false);
     }
 
@@ -110,7 +119,8 @@ class ListJsonTest extends TestCase
                 'request' => $this->http,
                 'layout' => $this->layout,
                 'storeManager' => $this->storeManager,
-                'scopeConfig' => $this->scopeConfig
+                'scopeConfig' => $this->scopeConfig,
+                'tagManagerConfig' => $this->tagManagerConfig
             ]
         );
     }

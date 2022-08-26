@@ -85,7 +85,7 @@ class CreditmemoSaveAfterObserverTest extends TestCase
     }
 
     /**
-     * Checks a case when the entered Customer Balance or Reward Points greater then allowed Balance.
+     * Checks a case when the entered Customer Balance or Reward Points greater than allowed Balance.
      *
      * @return void
      */
@@ -100,7 +100,10 @@ class CreditmemoSaveAfterObserverTest extends TestCase
         $creditMemo = $this->getCreditMemo('100000001');
         $creditMemo->setBaseCustomerBalanceReturnMax($maxAllowedBalance)
             ->setBsCustomerBalTotalRefunded($customerBalance)
-            ->setRewardPointsBalanceRefund($rewardPoints);
+            ->setRewardPointsBalanceRefund($rewardPoints)
+            ->setBsCustomerBalTotalRefunded($customerBalance)
+            ->setCustomerBalanceRefundFlag(true);
+
         $observer = $this->getObserver($creditMemo);
         $this->observer->execute($observer);
     }

@@ -61,6 +61,9 @@
                 <argument name="path">import_export/import_export/history/{$currentYear}/{$currentMonth}/</argument>
                 <argument name="message">import_export/import_export/history/{$currentYear}/{$currentMonth}/ is not empty.</argument>
             </helper>
+            <actionGroup ref="CliCacheFlushActionGroup" stepKey="flushCache" after="assertImportHistoryFileDeleted">
+                <argument name="tags" value=""/>
+            </actionGroup>
 
             <!-- Disable AWS S3 Remote Storage & Delete Local Data -->
             <magentoCLI command="setup:config:set {{RemoteStorageAwsS3ConfigData.disable_options}}" stepKey="disableRemoteStorage" after="logoutFromAdmin"/>

@@ -102,26 +102,13 @@ class ValidatorTest extends TestCase
         $this->expectException('Magento\Framework\Exception\ValidatorException');
         $this->entityMock->expects($this->once())->method('getName')->willReturn('Test Update');
         $startDateTime = (new \DateTime())->modify('+ 35 years');
-        $this->entityMock->expects($this->exactly(4))
+        $this->entityMock->expects($this->exactly(3))
             ->method('getStartTime')
             ->willReturn($startDateTime->format("m/d/Y H:i:s"));
-
-        $maxDate = new \DateTime();
-        $dateTimeMock = $this->getMockBuilder(DateTime::class)
-            ->addMethods(['modify'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->dateTimeFactory->expects($this->once())
-            ->method('create')
-            ->willReturn($dateTimeMock);
-        $dateTimeMock->expects($this->once())
-            ->method('modify')
-            ->with('+ 30 years')
-            ->willReturn($maxDate->modify('+ 30 years'));
         $this->model->validateCreate($this->entityMock);
 
         $this->expectExceptionMessage(
-            "The Future Update Start Time is invalid. It can't be later than current time + 30 years."
+            "The Future Update Start Time is invalid. It can't be later than current time + 16 years."
         );
     }
 
@@ -139,22 +126,37 @@ class ValidatorTest extends TestCase
             ->method('getEndTime')
             ->willReturn($endTime->format("m/d/Y H:i:s"));
 
-        $maxDate = new \DateTime();
-        $dateTimeMock = $this->getMockBuilder(DateTime::class)
-            ->addMethods(['modify'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->dateTimeFactory->expects($this->once())
-            ->method('create')
-            ->willReturn($dateTimeMock);
-        $dateTimeMock->expects($this->once())
-            ->method('modify')
-            ->with('+ 30 years')
-            ->willReturn($maxDate->modify('+ 30 years'));
         $this->model->validateCreate($this->entityMock);
 
         $this->expectExceptionMessage(
-            "The Future Update End Time is invalid. It can't be later than current time + 30 years."
+            "The Future Update End Time is invalid. It can't be later than current time + 16 years."
+        );
+    }
+
+    /**
+     * Test validate Update staging with beyond maximum limit of end time.
+     *
+     * @throws \Exception
+     * @throws ValidatorException
+     */
+    public function testValidateUpdateWithInvalidEndTime()
+    {
+        $this->expectException('Magento\Framework\Exception\ValidatorException');
+        $this->entityMock->expects($this->once())->method('getName')->willReturn('Test Update');
+        $startDateTime = new \DateTime();
+        $endTime = (new \DateTime())->modify('+ 20 years');
+        $this->entityMock->expects($this->atLeastOnce())
+            ->method('getStartTime')
+            ->willReturn($startDateTime->format("m/d/Y H:i:s"));
+
+        $this->entityMock->expects($this->atLeastOnce())
+            ->method('getEndTime')
+            ->willReturn($endTime->format("m/d/Y H:i:s"));
+
+        $this->model->validateUpdate($this->entityMock);
+
+        $this->expectExceptionMessage(
+            "The Future Update End Time is invalid. It can't be later than current time + 16 years."
         );
     }
 
@@ -173,18 +175,6 @@ class ValidatorTest extends TestCase
             ->method('getStartTime')
             ->willReturn($startDateTime->format("m/d/Y H:i:s"));
 
-        $maxDate = new \DateTime();
-        $dateTimeMock = $this->getMockBuilder(DateTime::class)
-            ->addMethods(['modify'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->dateTimeFactory->expects($this->once())
-            ->method('create')
-            ->willReturn($dateTimeMock);
-        $dateTimeMock->expects($this->once())
-            ->method('modify')
-            ->with('+ 30 years')
-            ->willReturn($maxDate->modify('+ 30 years'));
         $this->model->validateCreate($this->entityMock);
     }
 
@@ -201,9 +191,7 @@ class ValidatorTest extends TestCase
         $this->entityMock->expects($this->any())
             ->method('getStartTime')
             ->willReturn($startDateTime->format("m/d/Y H:i:s"));
-
         $startDateTime->add(new \DateInterval('PT60S'));
-
         $this->entityMock->expects($this->any())
             ->method('getEndTime')
             ->willReturn($startDateTime->format('m/d/Y H:i:s'));

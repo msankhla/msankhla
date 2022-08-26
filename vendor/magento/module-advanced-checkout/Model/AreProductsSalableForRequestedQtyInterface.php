@@ -9,6 +9,8 @@ namespace Magento\AdvancedCheckout\Model;
 
 /**
  * Service which detects whether given products quantities are salable for a given stock for a given Website id
+ *
+ * @api
  */
 interface AreProductsSalableForRequestedQtyInterface
 {

@@ -216,9 +216,9 @@ class ShellTest extends TestCase
      */
     public function testGetPathsFileName()
     {
-        $this->initTestOutputPath($this->path);
+        $this->initTestOutputPath($this->absolutePath);
 
-        $this->assertSame($this->path . '/' . ShellHelper::PATHS_FILE, $this->shellHelper->getPathsFileName());
+        $this->assertSame($this->absolutePath . '/' . ShellHelper::PATHS_FILE, $this->shellHelper->getPathsFileName());
     }
 
     /**

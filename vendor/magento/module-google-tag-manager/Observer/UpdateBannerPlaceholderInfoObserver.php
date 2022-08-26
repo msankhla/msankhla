@@ -5,6 +5,7 @@
  */
 namespace Magento\GoogleTagManager\Observer;
 
+use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 
 class UpdateBannerPlaceholderInfoObserver implements ObserverInterface
@@ -33,12 +34,13 @@ class UpdateBannerPlaceholderInfoObserver implements ObserverInterface
 
     /**
      * Add banner promotion code for Google Analytics
+     *
      * Fired by controller_action_postdispatch_pagecache event
      *
-     * @param \Magento\Framework\Event\Observer $observer
+     * @param Observer $observer
      * @return $this
      */
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    public function execute(Observer $observer)
     {
         if (!$this->helper->isTagManagerAvailable()) {
             return $this;

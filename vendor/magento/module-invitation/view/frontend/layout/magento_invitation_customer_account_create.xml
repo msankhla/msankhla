@@ -9,7 +9,12 @@
     <update handle="customer_account_create"/>
     <body>
         <referenceContainer name="content">
-            <block class="Magento\Invitation\Block\Customer\Form\Register" name="customer_form_register_invitation" template="Magento_Customer::form/register.phtml" cacheable="false"/>
+            <block class="Magento\Invitation\Block\Customer\Form\Register" name="customer_form_register_invitation" template="Magento_Customer::form/register.phtml" cacheable="false">
+                <container name="form.additional.info" as="form_additional_info"/>
+                <arguments>
+                    <argument name="create_account_button_view_model" xsi:type="object">Magento\Customer\ViewModel\CreateAccountButton</argument>
+                </arguments>
+            </block>
             <block class="Magento\Cookie\Block\RequireCookie" name="require-cookie" template="Magento_Cookie::require_cookie.phtml">
                 <arguments>
                     <argument name="triggers" xsi:type="array">

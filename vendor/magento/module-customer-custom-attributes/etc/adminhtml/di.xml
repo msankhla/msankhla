@@ -62,4 +62,7 @@
             </argument>
         </arguments>
     </type>
+    <type name="Magento\Catalog\Controller\Adminhtml\Product\Initialization\Helper">
+        <plugin name="update_multiselect_attributes" type="Magento\CustomerCustomAttributes\Plugin\Catalog\UpdateMultiselectAttributes"/>
+    </type>
 </config>

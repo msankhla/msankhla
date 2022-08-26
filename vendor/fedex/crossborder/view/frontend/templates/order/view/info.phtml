@@ -1,0 +1,49 @@
+<?php
+/**
+ * FedEx Cross Border component
+ *
+ * @category    FedEx
+ * @package     FedEx_CrossBorder
+ * @author      Andrey Rapshtynsky <andrey.bh@gmail.com>
+ * @copyright   FedEx (https://crossborder.fedex.com/)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+/** @var \FedEx\CrossBorder\Block\Order\View\Info $block*/
+?>
+<?php if ($block->canShow()): ?>
+    <?php
+        $fxcbOrderNumber = $block->getOrderLink()->getFxcbOrderNumber();
+        if ($block->canShowTrackingLink()) {
+            $link = $block->getOrderLink()->getTrackingLink();
+        }
+
+        if ($block->canShowMonitorApp()) {
+            $monitorAppHtml = $block->getMonitorAppHtml();
+        }
+    ?>
+    <?php if (!empty($fxcbOrderNumber) || !empty($link)): ?>
+        <div class="fdxcb-info">
+            <?php if (!empty($fxcbOrderNumber)): ?>
+                <div class="order-number">
+                    <?= $block->escapeHtml(__('FedEx Cross Border Order')) ?> #<?= $fxcbOrderNumber ?>
+                </div>
+            <?php endif; ?>
+            <?php if (!empty($link) || !empty($monitorAppHtml)): ?>
+                <div class="tracking-link">
+                    <?php if (!empty($link)): ?>
+                        <div class="link"><a href="<?= $link ?>" target="_blank"><?= $block->escapeHtml(__('Click here to track your shipment')) ?></a></div>
+                    <?php endif;?>
+                    <?php if (!empty($link) && !empty($monitorAppHtml)): ?>
+                        <div class="delimeter">|</div>
+                    <?php endif; ?>
+                    <?php if (!empty($monitorAppHtml)): ?>
+                        <div class="link">
+                            <a href="#" class="monitoring_web_app"><?= $block->escapeHtml(__('Monitor App')) ?></a>
+                            <div class="widget-fcb-button-container"><?= $monitorAppHtml ?></div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+<?php endif; ?>

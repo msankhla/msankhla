@@ -9,7 +9,9 @@
 <actionGroups xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/actionGroupSchema.xsd">
     <actionGroup name="UpdateCartBySkuFromMyAccountActionGroup" extends="AddProductToCartBySkuFromMyAccountActionGroup">
+        <comment userInput="BIC workaround" stepKey="waitForAddToCart"/>
         <remove keyForRemoval="clickAddToCart"/>
+        <waitForElementClickable selector="{{StorefrontCustomerOrderBySkuSection.updateCart}}" stepKey="waitForUpdateCart" before="clickUpdateCart"/>
         <click selector="{{StorefrontCustomerOrderBySkuSection.updateCart}}" stepKey="clickUpdateCart" before="waitForProductAdded"/>
     </actionGroup>
 </actionGroups>

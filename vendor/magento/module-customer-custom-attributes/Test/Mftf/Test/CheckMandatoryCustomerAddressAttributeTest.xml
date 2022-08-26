@@ -24,6 +24,7 @@
             <actionGroup ref="AdminLoginActionGroup" stepKey="LoginAsAdmin"/>
             <!--Create new Customer-->
             <createData entity="Simple_US_Customer_CA" stepKey="createCustomer"/>
+            <magentoCron groups="index" stepKey="reindex"/>
         </before>
         <!--Go To Customer Address page-->
         <actionGroup ref="GoToCustomerAddress" stepKey="GoToCustomerAddress"/>

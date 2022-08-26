@@ -16,11 +16,8 @@
         <action id="place_order">
             <label translate="true">Place Order</label>
         </action>
-        <action id="save_address">
-            <label translate="true">Save Customer Address</label>
-        </action>
-        <action id="delete_address">
-            <label translate="true">Delete Customer Address</label>
+        <action id="logout">
+            <label translate="true">Logout</label>
         </action>
     </actions>
     <groups>
@@ -30,9 +27,6 @@
                 <event controller_action="checkout_cart_add" action_alias="add_to_cart" />
                 <event controller_action="wishlist_index_add" action_alias="add_to_wishlist" />
                 <event controller_action="wishlist_index_fromcart" action_alias="add_to_wishlist" />
-                <event controller_action="loginascustomer_login_index" action_alias="login" />
-                <event controller_action="customer_address_formPost" action_alias="save_address" />
-                <event controller_action="customer_address_delete" action_alias="delete_address" />
             </events>
         </group>
     </groups>

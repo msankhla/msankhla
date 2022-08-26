@@ -39,6 +39,7 @@ namespace ShipperHQ\Shipper\Model\Carrier\Processor;
 use Magento\Bundle\Model\Product\Price as Price;
 use ShipperHQ\WS;
 use ShipperHQ\WS\Rate\Request;
+use ShipperHQ\Shipper\Model\Carrier\Processor\StockHandler\StockHandlerInterface;
 
 class ShipperMapper
 {
@@ -177,7 +178,7 @@ class ShipperMapper
     private $shipDetailsFactory;
 
     /**
-     * @var StockHandler
+     * @var StockHandlerInterface
      */
     private $stockHandler;
 
@@ -219,7 +220,7 @@ class ShipperMapper
      * @param Request\CustomerDetailsFactory $customerDetailsFactory
      * @param \Magento\Backend\Block\Template\Context $context
      * @param Request\ShipDetailsFactory $shipDetailsFactory
-     * @param StockHandler $stockHandler
+     * @param StockHandlerFactory $stockHandlerFactory
      * @param Request\Checkout\PhysicalBuildingDetailFactory $physicalBuildingDetailFactory
      * @param Request\Checkout\StockDetailFactory $stockDetailFactory
      * @param \Magento\Tax\Helper\Data $taxHelper
@@ -242,7 +243,7 @@ class ShipperMapper
         \ShipperHQ\WS\Rate\Request\CustomerDetailsFactory $customerDetailsFactory,
         \Magento\Backend\Block\Template\Context $context,
         \ShipperHQ\WS\Rate\Request\ShipDetailsFactory $shipDetailsFactory,
-        StockHandler $stockHandler,
+        StockHandlerFactory $stockHandlerFactory,
         \ShipperHQ\WS\Rate\Request\Checkout\PhysicalBuildingDetailFactory $physicalBuildingDetailFactory,
         \ShipperHQ\WS\Rate\Request\Checkout\StockDetailFactory $stockDetailFactory,
         \Magento\Tax\Helper\Data $taxHelper,
@@ -264,18 +265,25 @@ class ShipperMapper
         $this->customerDetailsFactory = $customerDetailsFactory;
         $this->storeManager = $context->getStoreManager();
         $this->shipDetailsFactory = $shipDetailsFactory;
-        $this->stockHandler = $stockHandler;
         $this->physicalBuildingDetailFactory = $physicalBuildingDetailFactory;
         $this->stockDetailFactory = $stockDetailFactory;
         $this->taxHelper = $taxHelper;
         self::$prodAttributes = $this->shipperDataHelper->getProductAttributes();
         $this->httpHeader = $httpHeader;
+
+        $this->stockHandler = $stockHandlerFactory->create();
+
+        $this->shipperLogger->postDebug(
+            'ShipperHQ_Shipper',
+            'StockHandler selected based on installed modules',
+            get_class($this->stockHandler)
+        );
     }
 
     /**
      * Set up values for ShipperHQ Rates Request
      *
-     * @param $magentoRequest
+     * @param \Magento\Quote\Model\Quote\Address\RateRequest $magentoRequest
      * @return \ShipperHQ\WS\Rate\Request\RateRequest
      */
     public function getShipperTranslation($magentoRequest)
@@ -316,7 +324,7 @@ class ShipperMapper
     /**
      * Format cart for from shipper for Magento
      *
-     * @param $request
+     * @param \Magento\Quote\Model\Quote\Address\RateRequest $request
      * @return array
      */
     public function getCartDetails($request)
@@ -332,7 +340,7 @@ class ShipperMapper
     /**
      * Get values for items
      *
-     * @param $request
+     * @param \Magento\Quote\Model\Quote\Address\RateRequest $request
      * @param $magentoItems
      * @param bool $childItems
      * @return array
@@ -658,7 +666,7 @@ class ShipperMapper
     /**
      * Get values for destination
      *
-     * @param $request
+     * @param \Magento\Quote\Model\Quote\Address\RateRequest $request
      * @return array
      */
     public function getDestination($request)
@@ -699,32 +707,39 @@ class ShipperMapper
         return $destination;
     }
 
-    /*
-    * Return pickup location selected
-    *
-    */
-
+    /**
+     * Return pickup location selected
+     *
+     * @param \Magento\Quote\Model\Quote\Address\RateRequest $request
+     *
+     * @return Request\Shipping\SelectedOptions
+     */
     public function getSelectedOptions($request)
     {
         $shippingOptions = $request->getSelectedOptions();
         return $this->selectedOptionsFactory->create(['options' => $shippingOptions]);
     }
 
-    /*
+    /**
      * Return selected carrierGroup id
+     *
+     * @param \Magento\Quote\Model\Quote\Address\RateRequest $request
+     *
+     * @return mixed
      */
-
     public function getCartType($request)
     {
         $cartType = $request->getCartType();
         return $cartType;
     }
 
-    /*
-   * Return selected carrier id
-   *
-   */
-
+    /**
+     * Return selected carrier id
+     *
+     * @param \Magento\Quote\Model\Quote\Address\RateRequest $request
+     *
+     * @return Request\CustomerDetails
+     */
     public function getCustomerGroupDetails($request)
     {
         $code = $this->getCustomerGroupId($request->getAllItems());

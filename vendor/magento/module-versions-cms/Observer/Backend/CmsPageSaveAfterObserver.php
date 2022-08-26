@@ -24,6 +24,8 @@ use Magento\Framework\Serialize\Serializer\Json;
 
 /**
  * Create and delete nodes after cms page save
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class CmsPageSaveAfterObserver implements ObserverInterface
 {
@@ -127,6 +129,8 @@ class CmsPageSaveAfterObserver implements ObserverInterface
      * @param Page $page
      * @return $this
      * @throws LocalizedException
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     private function appendPageToNodes(Page $page)
     {
@@ -163,7 +167,8 @@ class CmsPageSaveAfterObserver implements ObserverInterface
             }
             if (!$this->isNodeExist($requestUrl, $nodeScopeId, (int)$parentNode->getId())) {
                 $sortOrder = $nodes[$parentNode->getId()];
-                $isPageNodeExist = $page->getId() && $this->isPageNodeExist($nodeScopeId, (int)$parentNode->getId(), $page->getId());
+                $isPageNodeExist = $page->getId()
+                    && $this->isPageNodeExist($nodeScopeId, (int)$parentNode->getId(), $page->getId());
                 if (!$isPageNodeExist) {
                     $this->createNewNode($pageData, $sortOrder, $page->getIdentifier(), $parentNode);
                 }
@@ -316,7 +321,7 @@ class CmsPageSaveAfterObserver implements ObserverInterface
             ->addFieldToFilter('parent_node_id', $parentNodeId);
 
         if ($currentPageId !== null) {
-            $nodeCollection->addFieldToFilter('page_id', ['neq' => $currentPageId]);
+            $nodeCollection->addFieldToFilter('main_table.page_id', ['neq' => $currentPageId]);
         }
         return $nodeCollection->getSize() ? true : false;
     }
@@ -334,7 +339,7 @@ class CmsPageSaveAfterObserver implements ObserverInterface
         $nodeCollection = $this->nodeCollectionFactory->create();
         $nodeCollection->addFieldToFilter('scope_id', $scopeId)
             ->addFieldToFilter('parent_node_id', $parentNodeId)
-            ->addFieldToFilter('page_id', $currentPageId);
+            ->addFieldToFilter('main_table.page_id', $currentPageId);
 
         return (bool) $nodeCollection->getSize();
     }

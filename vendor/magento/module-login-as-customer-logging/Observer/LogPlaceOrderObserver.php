@@ -13,6 +13,7 @@ use Magento\Framework\Event\ObserverInterface;
 use Magento\Logging\Model\ResourceModel\Event;
 use Magento\LoginAsCustomerApi\Api\GetLoggedAsCustomerAdminIdInterface;
 use Magento\LoginAsCustomerLogging\Model\GetEventForLogging;
+use Magento\LoginAsCustomerLogging\Model\LogValidation;
 
 /**
  * Login as customer log place order observer.
@@ -39,6 +40,10 @@ class LogPlaceOrderObserver implements ObserverInterface
     private $eventResource;
 
     /**
+     * @var LogValidation
+     */
+    private LogValidation $logValidation;
+    /**
      * @var GetLoggedAsCustomerAdminIdInterface
      */
     private $getLoggedAsCustomerAdminId;
@@ -48,25 +53,27 @@ class LogPlaceOrderObserver implements ObserverInterface
      * @param Session $session
      * @param Event $eventResource
      * @param GetLoggedAsCustomerAdminIdInterface $getLoggedAsCustomerAdminId
+     * @param LogValidation $logValidation
      */
     public function __construct(
         GetEventForLogging $getEventForLogging,
         Session $session,
         Event $eventResource,
-        GetLoggedAsCustomerAdminIdInterface $getLoggedAsCustomerAdminId
+        GetLoggedAsCustomerAdminIdInterface $getLoggedAsCustomerAdminId,
+        LogValidation $logValidation
     ) {
         $this->getEventForLogging = $getEventForLogging;
         $this->session = $session;
         $this->eventResource = $eventResource;
         $this->getLoggedAsCustomerAdminId = $getLoggedAsCustomerAdminId;
+        $this->logValidation = $logValidation;
     }
-
     /**
      * @inheritDoc
      */
     public function execute(Observer $observer): void
     {
-        if (!$this->getLoggedAsCustomerAdminId->execute()) {
+        if (!$this->logValidation->shouldBeLogged()) {
             return;
         }
         $event = $this->getEventForLogging->execute($this->getLoggedAsCustomerAdminId->execute());

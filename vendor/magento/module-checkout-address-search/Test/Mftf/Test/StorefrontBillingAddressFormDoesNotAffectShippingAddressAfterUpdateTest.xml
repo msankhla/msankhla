@@ -74,11 +74,11 @@
         </actionGroup>
         <actionGroup ref="GoToCheckoutFromMinicartActionGroup" stepKey="goToCheckout"/>
         <click selector="{{CheckoutShippingMethodsSection.shipHereButton}}" stepKey="changeShippingAddressButton"/>
-        <waitForElement selector="{{CheckoutShippingMethodsSection.next}}" time="30" stepKey="waitForNext"/>
+        <comment userInput="BIC workaround" stepKey="waitForNext"/>
         <!-- Click next button to open payment section -->
         <comment userInput="Click next button to open payment section" stepKey="commentClickToNextButton"/>
-        <click selector="{{CheckoutShippingGuestInfoSection.next}}" stepKey="clickNext"/>
-        <waitForPageLoad stepKey="waitForShipmentPageLoad"/>
+        <actionGroup ref="StorefrontCheckoutClickNextButtonActionGroup" stepKey="clickNext"/>
+        <comment userInput="BIC workaround" stepKey="waitForShipmentPageLoad"/>
         <!-- Uncheck My billing and shipping address are the same  -->
         <comment userInput="Uncheck My billing and shipping address are the same" stepKey="commentUncheckOption"/>
         <uncheckOption selector="{{CheckoutPaymentSection.billingAddressNotSameCheckbox}}" stepKey="uncheckSameBillingAndShippingAddress"/>
@@ -97,8 +97,8 @@
         <waitForPageLoad stepKey="waitForProcessing"/>
         <see selector="{{CheckoutPaymentSection.shipToInformation}}" userInput="{{US_Address_NY.city}}" stepKey="seeNewYorkInShipToSection"/>
         <!-- Click "Place order" button -->
-        <comment userInput="Click 'Place order' button" stepKey="commentPlaceOrder"/>
-        <click selector="{{CheckoutPaymentSection.placeOrder}}" stepKey="clickToPlaceOrder"/>
+        <comment userInput="BIC workaround" stepKey="commentPlaceOrder"/>
+        <actionGroup ref="ClickPlaceOrderActionGroup" stepKey="clickToPlaceOrder"/>
         <see userInput="Thank you for your purchase!" stepKey="seeSuccessMessage"/>
         <waitForPageLoad stepKey="waitForSuccess"/>
         <grabTextFrom selector="{{CheckoutSuccessMainSection.orderNumber22}}" stepKey="grabOrderNumber"/>
@@ -138,9 +138,9 @@
         <!-- Change Address link again and selected another address -->
         <comment userInput="Change Address link again and selected another address" stepKey="commentSelectAnotherAddress"/>
         <click selector="{{CheckoutShippingMethodsSection.shipHereButton}}" stepKey="changeShippingAddress"/>
-        <waitForElementVisible selector="{{CheckoutShippingMethodsSection.next}}" stepKey="waitForNextButton"/>
-        <click selector="{{CheckoutShippingMethodsSection.next}}" stepKey="clickToNextButtonSecond"/>
-        <waitForPageLoad stepKey="waitForNextPageLoadSecond"/>
+        <comment userInput="BIC workaround" stepKey="waitForNextButton"/>
+        <actionGroup ref="StorefrontCheckoutClickNextButtonActionGroup" stepKey="clickToNextButtonSecond"/>
+        <comment userInput="BIC workaround" stepKey="waitForNextPageLoadSecond"/>
         <click selector="{{CheckoutBillingAddressSection.changeAddressButton}}" stepKey="clickToChangePaymentAddress"/>
         <waitForPageLoad stepKey="waitForPaymentAddressPopupLoad"/>
         <fillField selector="{{CheckoutShippingAddressSearchSection.shippingAddressSearch}}" userInput="{{US_Address_NY.city}}" stepKey="fillPaymentAddressSearchField"/>
@@ -151,9 +151,9 @@
         <see selector="{{CheckoutPaymentSection.billingAddress}}" userInput="{{US_Address_NY.city}}" stepKey="seeBillingAddress"/>
         <see selector="{{CheckoutPaymentSection.shippingInformationSection}}" userInput="{{US_Address_CA.city}}" stepKey="seeShippingAddress"/>
         <!-- Click Place order  -->
-        <comment userInput="Click Place Order" stepKey="commentClickPlaceOrder"/>
-        <click selector="{{CheckoutPaymentSection.placeOrder}}" stepKey="clickToPlaceOrderButton"/>
-        <waitForPageLoad stepKey="waitForSuccessMessage"/>
+        <comment userInput="BIC workaround" stepKey="commentClickPlaceOrder"/>
+        <actionGroup ref="ClickPlaceOrderActionGroup" stepKey="clickToPlaceOrderButton"/>
+        <comment userInput="BIC workaround" stepKey="waitForSuccessMessage"/>
         <grabTextFrom selector="{{CheckoutSuccessMainSection.orderNumber22}}" stepKey="grabOrderId"/>
         <!-- Go to my Orders page -->
         <comment userInput="Go to my Orders page" stepKey="commentGoToMyOrders"/>

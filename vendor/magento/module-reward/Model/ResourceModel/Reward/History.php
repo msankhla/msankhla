@@ -59,6 +59,9 @@ class History extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      */
     public function isExistHistoryUpdate($customerId, $action, $websiteId, $entity)
     {
+        if ($entity === null) {
+            return false;
+        }
         $select = $this->getConnection()->select()->from(
             ['reward_table' => $this->getTable('magento_reward')],
             []
@@ -73,10 +76,10 @@ class History extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         )->where(
             'history_table.entity = :entity'
         )->columns(
-            ['history_table.history_id']
+            ['COUNT(history_table.history_id)']
         );
         $bind = ['action' => $action, 'website_id' => $websiteId, 'entity' => $entity];
-        if ($this->getConnection()->fetchRow($select, $bind)) {
+        if ((int)$this->getConnection()->fetchOne($select, $bind) > 0) {
             return true;
         }
         return false;
@@ -107,11 +110,12 @@ class History extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             'history_table.website_id=:website_id'
         );
         $bind = ['action' => $action, 'customer_id' => $customerId, 'website_id' => $websiteId];
-        return intval($this->getConnection()->fetchOne($select, $bind));
+        return (int)$this->getConnection()->fetchOne($select, $bind);
     }
 
     /**
      * Retrieve actual history records that have unused points, i.e. points_delta-points_used > 0
+     *
      * Update points_used field for non-used points
      *
      * @param ModelRewardHistory $history

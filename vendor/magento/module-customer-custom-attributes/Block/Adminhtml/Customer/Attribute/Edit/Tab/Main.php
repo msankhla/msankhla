@@ -9,6 +9,8 @@
  */
 namespace Magento\CustomerCustomAttributes\Block\Adminhtml\Customer\Attribute\Edit\Tab;
 
+use Magento\Customer\Model\Config\Source\FilterConditionType;
+
 /**
  * Main tab class
  *
@@ -21,8 +23,6 @@ class Main extends \Magento\Eav\Block\Adminhtml\Attribute\Edit\Main\AbstractMain
     \Magento\Backend\Block\Widget\Tab\TabInterface
 {
     /**
-     * Customer data
-     *
      * @var \Magento\CustomerCustomAttributes\Helper\Data
      */
     protected $_customerData;
@@ -31,6 +31,11 @@ class Main extends \Magento\Eav\Block\Adminhtml\Attribute\Edit\Main\AbstractMain
      * @var \Magento\MediaStorage\Model\File\Validator\NotProtectedExtension
      */
     private $extensionValidator;
+
+    /**
+     * @var FilterConditionType
+     */
+    private $filterConditionType;
 
     /**
      * @param \Magento\Backend\Block\Template\Context $context
@@ -43,6 +48,7 @@ class Main extends \Magento\Eav\Block\Adminhtml\Attribute\Edit\Main\AbstractMain
      * @param \Magento\CustomerCustomAttributes\Helper\Data $customerData
      * @param array $data
      * @param \Magento\MediaStorage\Model\File\Validator\NotProtectedExtension|null $extensionValidator
+     * @param FilterConditionType|null $filterConditionType
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -55,7 +61,8 @@ class Main extends \Magento\Eav\Block\Adminhtml\Attribute\Edit\Main\AbstractMain
         \Magento\Eav\Block\Adminhtml\Attribute\PropertyLocker $propertyLocker,
         \Magento\CustomerCustomAttributes\Helper\Data $customerData,
         array $data = [],
-        \Magento\MediaStorage\Model\File\Validator\NotProtectedExtension $extensionValidator = null
+        \Magento\MediaStorage\Model\File\Validator\NotProtectedExtension $extensionValidator = null,
+        ?FilterConditionType $filterConditionType = null
     ) {
         $this->_customerData = $customerData;
         parent::__construct(
@@ -71,6 +78,9 @@ class Main extends \Magento\Eav\Block\Adminhtml\Attribute\Edit\Main\AbstractMain
         $this->extensionValidator = $extensionValidator
             ?: \Magento\Framework\App\ObjectManager::getInstance()
                 ->get(\Magento\MediaStorage\Model\File\Validator\NotProtectedExtension::class);
+        $this->filterConditionType = $filterConditionType
+            ?: \Magento\Framework\App\ObjectManager::getInstance()
+            ->get(FilterConditionType::class);
     }
 
     /**
@@ -319,6 +329,20 @@ class Main extends \Magento\Eav\Block\Adminhtml\Attribute\Edit\Main\AbstractMain
                 'values' => $yesnoSource,
                 'value' => $attribute->getData('is_searchable_in_grid') ?: 0,
                 'note' => __('Select "Yes" to add this attribute to the list of search options in the customer grid.'),
+            ]
+        );
+
+        $fieldset->addField(
+            'grid_filter_condition_type',
+            !$attribute->getId()
+            || in_array($attribute->getFrontendInput(), ['text', 'textarea']) ? 'select' : 'hidden',
+            [
+                'name' => 'grid_filter_condition_type',
+                'label' => __('Grid Filter Condition Type'),
+                'title' => __('Grid Filter Condition Type'),
+                'values' => $this->filterConditionType->toOptionArray(),
+                'value' => $attribute->getData('grid_filter_condition_type') ?: FilterConditionType::PARTIAL_MATCH,
+                'note' => __('Select "Full Match" to equally compare the filter value with the attribute value.'),
             ]
         );
 

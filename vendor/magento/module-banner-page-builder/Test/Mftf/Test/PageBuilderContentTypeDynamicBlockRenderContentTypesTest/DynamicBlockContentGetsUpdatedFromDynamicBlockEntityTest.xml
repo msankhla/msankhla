@@ -72,6 +72,7 @@
             <actionGroup ref="FindAndDeleteCustomerSegmentActionGroup" stepKey="deleteCustomerSegment">
                 <argument name="segmentName" value="$$createCustomerSegment.name$$"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
             <closeTab stepKey="closeOpenedTab"/>
         </after>

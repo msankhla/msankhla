@@ -28,6 +28,7 @@
             <actionGroup ref="AdminCreateCustomerCustomAttributeWithCustomerAccountEditForm" stepKey="createTextAreaCustomAttribute">
                 <argument name="customerAttribute" value="AttributeTextFieldData"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
         </before>
         <after>
             <deleteData createDataKey="simpleCustomer" stepKey="deleteCustomer"/>
@@ -35,6 +36,10 @@
             <amOnPage url="{{CustomerAttributesPage.url}}" stepKey="navigateToCustomerAttributePage"/>
             <actionGroup ref="DeleteCustomerAttribute" stepKey="adminDeleteFileAttribute">
                 <argument name="defaultLabel" value="{{AttributeTextFieldData.label}}"/>
+            </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
+            <actionGroup ref="CliCacheFlushActionGroup" stepKey="cliCacheFlushActionGroup">
+                <argument name="tags" value="" />
             </actionGroup>
             <!--Log out-->
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logOut"/>

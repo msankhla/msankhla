@@ -9,10 +9,13 @@ namespace Magento\CatalogStaging\Model\ResourceModel\Product\Price;
 
 use Magento\Catalog\Api\Data\SpecialPriceInterfaceFactory;
 use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\Catalog\Model\Product\Price\Validation\Result as ValidationResult;
+use Magento\Staging\Api\UpdateRepositoryInterface;
 use Magento\Store\Api\StoreRepositoryInterface;
 
 /**
  * @magentoAppArea webapi_rest
+ * @magentoAppIsolation enabled
  * @magentoDataFixture Magento/Catalog/_files/category_product.php
  * @magentoDataFixture Magento/Catalog/_files/product_special_price.php
  * @magentoDataFixture Magento/Store/_files/second_store.php
@@ -136,6 +139,48 @@ class SpecialPriceTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($result);
         $pricesData = $this->specialPrice->get([$productSku2]);
         $this->assertCount(2, $pricesData);
+    }
+
+    public function testConsequentUpdate(): void
+    {
+        $sku = 'simple';
+        $priceFrom = (new \DateTime())->modify('+3 days');
+        $priceTo = (new \DateTime())->modify('+6 days');
+        $storeIds = [
+            $this->storeRepository->get('default')->getId(),
+            $this->storeRepository->get('fixture_second_store')->getId(),
+        ];
+        $prices = [];
+        foreach ($storeIds as $storeId) {
+            $prices[] = $this->specialPriceFactory->create()
+                ->setSku($sku)
+                ->setStoreId($storeId)
+                ->setPrice(3)
+                ->setPriceFrom($priceFrom->format('Y-m-d H:i:s'))
+                ->setPriceTo($priceTo->format('Y-m-d H:i:s'));
+        }
+        $result = $this->specialPrice->update($prices);
+        self::assertTrue($result);
+
+        $updateRepository = $this->objectManager->get(UpdateRepositoryInterface::class);
+        $update = $updateRepository->get($priceFrom->getTimestamp());
+        self::assertNotEmpty($update->getId());
+        $newEndTime = (clone $priceTo)->modify('-2 days');
+        $update->setEndTime($newEndTime->format('Y-m-d H:i:s'));
+        $updateRepository->save($update);
+
+        $prices = [];
+        foreach ($storeIds as $storeId) {
+            $prices[] = $this->specialPriceFactory->create()
+                ->setSku($sku)
+                ->setStoreId($storeId)
+                ->setPrice(3)
+                ->setPriceFrom($newEndTime->format('Y-m-d H:i:s'))
+                ->setPriceTo($priceTo->format('Y-m-d H:i:s'));
+        }
+        $this->specialPrice->update($prices);
+        $validationResult = $this->objectManager->get(ValidationResult::class);
+        $this->assertEmpty($validationResult->getFailedItems());
     }
 
     /**

@@ -100,6 +100,7 @@
             <argument name="StoreGroup" value="SecondStoreGroupUnique"/>
             <argument name="customStore" value="storeViewData2"/>
         </actionGroup>
+        <magentoCron groups="index" stepKey="reindex"/>
 
         <!-- 2. Create 3 user role: admin (access to all websites) / limited (access to Website2) / restricted (access to Store 1) -->
         <actionGroup ref="AdminAddNewUserRoleWithCustomRoleScopesActionGroup" stepKey="createRestrictedRole">

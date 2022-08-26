@@ -10,7 +10,7 @@
         <arguments>
             <argument name="themes" xsi:type="array">
                 <item name="frontend" xsi:type="string">Magento/luma</item>
-                <item name="adminhtml" xsi:type="string">Magento/backend</item>
+                <item name="adminhtml" xsi:type="string">Magento/spectrum</item>
             </argument>
         </arguments>
     </type>

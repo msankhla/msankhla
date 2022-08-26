@@ -22,6 +22,7 @@ define([
             updatedImpressions: window.updatedImpressions || [],
             updatedPromotions: window.updatedPromotions || [],
             cookieAddToCart: '',
+            advancedAddToCart: '',
             cookieRemoveFromCart: window.cookieRemoveFromCart || '',
             temporaryEventStorage: [],
             blockNames: [],
@@ -42,6 +43,7 @@ define([
                 dlCurrencyCode: this.options.dlCurrencyCode,
                 dataLayer: this.options.dataLayer,
                 cookieAddToCart: this.options.cookieAddToCart,
+                advancedAddToCart: this.options.advancedAddToCart,
                 cookieRemoveFromCart: this.options.cookieRemoveFromCart
             });
             this.googleAnalyticsUniversal = new GoogleAnalyticsUniversal({
@@ -60,6 +62,7 @@ define([
             this.googleAnalyticsUniversal.updatePromotions();
             this.googleAnalyticsUniversal.updateImpressions();
             this.googleAnalyticsUniversalCart.parseAddToCartCookies();
+            this.googleAnalyticsUniversalCart.parseAddToCartAdvanced();
             this.googleAnalyticsUniversalCart.parseRemoveFromCartCookies();
             this.googleAnalyticsUniversalCart.subscribeProductsUpdateInCart();
             this.googleAnalyticsUniversalCart.listenMinicartReload();

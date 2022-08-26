@@ -56,7 +56,7 @@
         <seeElementInDOM selector="{{DynamicBlockOnStage.title('1', $$createDynamicBlock.name$$)}}" stepKey="seeCreatedDynamicBlockTitleOnStage"/>
         <comment userInput="Add Column to Stage" stepKey="commentAddColumnToStage"/>
         <actionGroup ref="dragContentTypeToStage" stepKey="dragColumnIntoStage">
-            <argument name="contentType" value="PageBuilderColumnContentType"/>
+            <argument name="contentType" value="PageBuilderColumnGroupContentType"/>
         </actionGroup>
         <comment userInput="Drag and Move Dynamic Block on Stage to Column" stepKey="commentDragAndMoveDynamicBlockOnStageToColumn"/>
         <actionGroup ref="dragContentTypeToContainer" stepKey="dragDynamicBlockToColumn">

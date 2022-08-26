@@ -26,6 +26,7 @@
 
             <!-- Create a Website -->
             <createData entity="customWebsite" stepKey="createWebsite"/>
+            <magentoCron groups="index" stepKey="reindex"/>
 
             <!-- Login as admin -->
             <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
@@ -35,11 +36,13 @@
             <actionGroup ref="DeleteProductUsingProductGridActionGroup" stepKey="deleteProduct">
                 <argument name="product" value="VirtualGiftCard"/>
             </actionGroup>
+            <actionGroup ref="ResetAdminDataGridToDefaultViewActionGroup" stepKey="clearFilters"/>
 
             <!-- Delete created Website -->
             <actionGroup ref="AdminDeleteWebsiteActionGroup" stepKey="deleteWebsite">
                 <argument name="websiteName" value="$createWebsite.website[name]$"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
 
             <!-- Delete related products -->
             <deleteData createDataKey="createFirstRelatedProduct" stepKey="deleteFirstRelatedProduct"/>

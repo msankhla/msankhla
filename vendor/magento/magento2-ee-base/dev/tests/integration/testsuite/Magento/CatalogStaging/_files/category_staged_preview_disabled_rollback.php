@@ -4,9 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Registry;
-use Magento\Staging\Model\VersionManager;
 use Magento\TestFramework\Helper\Bootstrap;
 use Magento\Staging\Api\UpdateRepositoryInterface;
 use Magento\Staging\Model\UpdateFactory;
@@ -18,7 +16,6 @@ $objectManager = Bootstrap::getObjectManager();
 $updateFactory = $objectManager->get(UpdateFactory::class);
 $updateRepository = $objectManager->get(UpdateRepositoryInterface::class);
 $updateResourceModel = $objectManager->get(Update::class);
-$versionManager = $objectManager->get(VersionManager::class);
 
 $registry = $objectManager->get(Registry::class);
 $registry->unregister('isSecureArea');
@@ -29,23 +26,11 @@ Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/category_rol
 
 $update = $updateFactory->create();
 $updateResourceModel->load($update, 'Preview Category Staging', 'name');
-$versionManager->setCurrentVersionId($update->getId());
 $updateRepository->delete($update);
-try {
-    Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/category_rollback.php');
-} catch (NoSuchEntityException $e) {
-    //category already deleted
-}
 
 $update = $updateFactory->create();
 $updateResourceModel->load($update, 'Preview Disabled Category Staging', 'name');
-$versionManager->setCurrentVersionId($update->getId());
 $updateRepository->delete($update);
-try {
-    Resolver::getInstance()->requireDataFixture('Magento/Catalog/_files/category_rollback.php');
-} catch (NoSuchEntityException $e) {
-    //category already deleted
-}
 
 /** @var AdapterInterface $conn */
 $conn = $updateResourceModel->getConnection();

@@ -32,10 +32,12 @@
 
             <!-- Create store view -->
             <actionGroup ref="AdminCreateStoreViewActionGroup" stepKey="createStoreView"/>
+            <magentoCron groups="index" stepKey="reindex"/>
         </before>
         <after>
             <!-- Delete store view -->
             <actionGroup ref="AdminDeleteStoreViewActionGroup" stepKey="deleteStoreView"/>
+            <magentoCron groups="index" stepKey="reindex"/>
 
             <!-- Delete product -->
             <deleteData createDataKey="createSimpleProduct" stepKey="deleteSimpleProduct"/>

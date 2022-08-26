@@ -81,6 +81,11 @@ class Customer extends \Magento\Framework\Model\AbstractModel
     protected $_httpContext;
 
     /**
+     * @var array
+     */
+    private $websiteVisitorSegments = [];
+
+    /**
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\CustomerSegment\Model\ResourceModel\Segment\CollectionFactory $collectionFactory
@@ -277,6 +282,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel
      */
     public function addVisitorToWebsiteSegments($visitorSession, $websiteId, $segmentIds)
     {
+        $segmentIds = array_unique(array_merge($this->getVisitorsSegmentsForWebsite($websiteId), $segmentIds));
         $visitorSegmentIds = $visitorSession->getCustomerSegmentIds();
         if (!is_array($visitorSegmentIds)) {
             $visitorSegmentIds = [];
@@ -445,23 +451,26 @@ class Customer extends \Magento\Framework\Model\AbstractModel
      */
     private function getVisitorsSegmentsForWebsite(int $websiteId): array
     {
-        $ids = [];
-
-        /** @var \Magento\CustomerSegment\Model\ResourceModel\Segment\Collection $collection */
-        $collection = $this->_collectionFactory->create();
-        $collection->addWebsiteFilter($websiteId);
-        $collection->addFieldToFilter(
-            'apply_to',
-            [Segment::APPLY_TO_VISITORS, Segment::APPLY_TO_VISITORS_AND_REGISTERED]
-        );
-        $collection->addIsActiveFilter(1);
-        foreach ($collection as $segment) {
-            $conditions = $segment->getConditions()->asArray();
-            if (empty($conditions['conditions'])) {
-                $ids[] = $segment->getId();
+        if (!isset($this->websiteVisitorSegments[$websiteId])) {
+            $ids = [];
+            /** @var \Magento\CustomerSegment\Model\ResourceModel\Segment\Collection $collection */
+            $collection = $this->_collectionFactory->create();
+            $collection->addWebsiteFilter($websiteId);
+            $collection->addFieldToFilter(
+                'apply_to',
+                [Segment::APPLY_TO_VISITORS, Segment::APPLY_TO_VISITORS_AND_REGISTERED]
+            );
+            $collection->addIsActiveFilter(1);
+            foreach ($collection as $segment) {
+                $conditions = $segment->getConditions()->asArray();
+                if (empty($conditions['conditions'])) {
+                    $ids[] = $segment->getId();
+                }
             }
+
+            $this->websiteVisitorSegments[$websiteId] = $ids;
         }
 
-        return $ids;
+        return $this->websiteVisitorSegments[$websiteId];
     }
 }

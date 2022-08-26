@@ -63,8 +63,8 @@
         <!-- Go to Shopping cart and Place Order -->
         <actionGroup ref="GoToCheckoutFromMinicartActionGroup" stepKey="goToCheckout"/>
         <actionGroup ref="CheckoutSelectFlatRateShippingMethodActionGroup" stepKey="selectFlatRateShippingMethod"/>
-        <waitForElementVisible selector="{{CheckoutShippingSection.next}}" stepKey="waitNextButtonAppears"/>
-        <click selector="{{CheckoutShippingSection.next}}" stepKey="clickNext"/>
+        <comment userInput="BIC workaround" stepKey="waitNextButtonAppears"/>
+        <actionGroup ref="StorefrontCheckoutClickNextButtonActionGroup" stepKey="clickNext"/>
         <actionGroup ref="CheckoutSelectCheckMoneyOrderPaymentActionGroup" stepKey="clickCheckMoneyOrderPayment"/>
         <actionGroup ref="ClickPlaceOrderActionGroup" stepKey="clickPlaceOrder"/>
         <grabTextFrom selector="{{CheckoutSuccessMainSection.orderNumber22}}" stepKey="grabOrderNumber"/>

@@ -3,7 +3,7 @@
 /**
  * Product:       Xtento_ProductExport
  * ID:            %!uniqueid!%
- * Last Modified: 2016-04-16T14:10:22+00:00
+ * Last Modified: 2022-08-17T07:58:17+00:00
  * File:          Model/Destination.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -198,7 +198,7 @@ class Destination extends \Magento\Framework\Model\AbstractModel
     public function getHostname()
     {
         $hostname = $this->getData('hostname');
-        $hostname = str_replace(['ftp://', 'http://'], '', $hostname);
+        $hostname = str_replace(['ftp://', 'http://'], '', (string)$hostname);
         $hostname = trim($hostname);
         return $hostname;
     }
@@ -210,8 +210,8 @@ class Destination extends \Magento\Framework\Model\AbstractModel
      */
     public function getPort()
     {
-        $port = $this->getData('port');
-        $port = preg_replace('/[^0-9]/', '', $port);
+        $port = (string)$this->getData('port');
+        $port = preg_replace('/[^0-9]/', '', (string)$port);
         return $port;
     }
 
@@ -222,8 +222,8 @@ class Destination extends \Magento\Framework\Model\AbstractModel
      */
     public function getTimeout()
     {
-        $timeout = $this->getData('timeout');
-        $timeout = preg_replace('/[^0-9]/', '', $timeout);
+        $timeout = (string)$this->getData('timeout');
+        $timeout = preg_replace('/[^0-9]/', '', (string)$timeout);
         return $timeout;
     }
 }

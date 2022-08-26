@@ -31,7 +31,6 @@ class LayoutTest extends TestCase
     protected function setUp(): void
     {
         $this->helper = $this->createMock(Data::class);
-
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->layout = $this->objectManagerHelper->getObject(
             Layout::class,

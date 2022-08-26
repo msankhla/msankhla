@@ -5,8 +5,14 @@
  */
 namespace Magento\GoogleTagManager\Observer;
 
+use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Json\Helper\Data;
+use Magento\Framework\Registry;
+use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
+use Magento\Framework\Stdlib\CookieManagerInterface;
+use Magento\GoogleTagManager\Model\Config\TagManagerConfig;
 
 /**
  * Observer for Cart Changes
@@ -26,39 +32,39 @@ class SendCookieOnCartActionCompleteObserver implements ObserverInterface
     protected $helper;
 
     /**
-     * @var \Magento\Framework\Registry
+     * @var Registry
      */
     protected $registry;
 
     /**
-     * @var \Magento\Framework\Stdlib\CookieManagerInterface
+     * @var CookieManagerInterface
      */
     protected $cookieManager;
 
     /**
-     * @var \Magento\Framework\Json\Helper\Data
+     * @var Data
      */
     protected $jsonHelper;
 
     /**
-     * @var \Magento\Framework\Stdlib\Cookie\CookieMetadataFactory
+     * @var CookieMetadataFactory
      */
     protected $cookieMetadataFactory;
 
     /**
      * @param \Magento\GoogleTagManager\Helper\Data $helper
-     * @param \Magento\Framework\Registry $registry
-     * @param \Magento\Framework\Stdlib\CookieManagerInterface $cookieManager
-     * @param \Magento\Framework\Json\Helper\Data $jsonHelper
-     * @param \Magento\Framework\Stdlib\Cookie\CookieMetadataFactory $cookieMetadataFactory
+     * @param Registry $registry
+     * @param CookieManagerInterface $cookieManager
+     * @param Data $jsonHelper
+     * @param CookieMetadataFactory $cookieMetadataFactory
      * @param RequestInterface $httpRequest
      */
     public function __construct(
         \Magento\GoogleTagManager\Helper\Data $helper,
-        \Magento\Framework\Registry $registry,
-        \Magento\Framework\Stdlib\CookieManagerInterface $cookieManager,
-        \Magento\Framework\Json\Helper\Data $jsonHelper,
-        \Magento\Framework\Stdlib\Cookie\CookieMetadataFactory $cookieMetadataFactory,
+        Registry $registry,
+        CookieManagerInterface $cookieManager,
+        Data $jsonHelper,
+        CookieMetadataFactory $cookieMetadataFactory,
         RequestInterface $httpRequest
     ) {
         $this->helper = $helper;
@@ -72,11 +78,11 @@ class SendCookieOnCartActionCompleteObserver implements ObserverInterface
     /**
      * Send cookies after cart action
      *
-     * @param \Magento\Framework\Event\Observer $observer
+     * @param Observer $observer
      * @return $this
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    public function execute(Observer $observer)
     {
         if (!$this->helper->isTagManagerAvailable()) {
             return $this;
@@ -90,7 +96,7 @@ class SendCookieOnCartActionCompleteObserver implements ObserverInterface
 
         if (!empty($productsToAdd) && !$this->request->isXmlHttpRequest()) {
             $this->cookieManager->setPublicCookie(
-                \Magento\GoogleTagManager\Helper\Data::GOOGLE_ANALYTICS_COOKIE_NAME,
+                TagManagerConfig::GOOGLE_ANALYTICS_COOKIE_NAME,
                 rawurlencode(json_encode($productsToAdd)),
                 $publicCookieMetadata
             );
@@ -98,7 +104,7 @@ class SendCookieOnCartActionCompleteObserver implements ObserverInterface
         $productsToRemove = $this->registry->registry('GoogleTagManager_products_to_remove');
         if (!empty($productsToRemove && !$this->request->isXmlHttpRequest())) {
             $this->cookieManager->setPublicCookie(
-                \Magento\GoogleTagManager\Helper\Data::GOOGLE_ANALYTICS_COOKIE_REMOVE_FROM_CART,
+                TagManagerConfig::GOOGLE_ANALYTICS_COOKIE_REMOVE_FROM_CART,
                 rawurlencode($this->jsonHelper->jsonEncode($productsToRemove)),
                 $publicCookieMetadata
             );

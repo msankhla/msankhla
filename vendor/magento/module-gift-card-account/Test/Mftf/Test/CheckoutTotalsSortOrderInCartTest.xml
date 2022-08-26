@@ -26,6 +26,9 @@
             <createData entity="ApiCartRule" stepKey="cartRule"/>
 
             <createData entity="CheckoutShippingTotalsSortOrder" stepKey="setConfigShippingTotalsSortOrder"/>
+            <actionGroup ref="CliCacheCleanActionGroup" stepKey="cleanInvalidatedCaches">
+                <argument name="tags" value="config full_page"/>
+            </actionGroup>
         </before>
 
         <actionGroup ref="VerifyDiscountAmountActionGroup" stepKey="verifyStorefront">
@@ -46,8 +49,11 @@
             <deleteData createDataKey="simpleProduct" stepKey="deleteProduct"/>
             <deleteData createDataKey="defaultCategory" stepKey="deleteCategory"/>
 
-            <actionGroup ref="CliCacheFlushActionGroup" stepKey="flushCache">
-                <argument name="tags" value=""/>
+            <actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindex">
+                <argument name="indices" value=""/>
+            </actionGroup>
+            <actionGroup ref="CliCacheCleanActionGroup" stepKey="flushCache">
+                <argument name="tags" value="config full_page"/>
             </actionGroup>
         </after>
     </test>

@@ -8,7 +8,7 @@ namespace Magento\GoogleTagManager\Model\Config\Source;
 use \Magento\GoogleTagManager\Helper\Data as Helper;
 
 /**
- * Class AccountType
+ * Class AccountType get account type
  *
  * @api
  * @since 100.0.2
@@ -16,6 +16,8 @@ use \Magento\GoogleTagManager\Helper\Data as Helper;
 class AccountType
 {
     /**
+     * Return type options
+     *
      * @return array
      */
     public function toOptionArray()

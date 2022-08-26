@@ -5,6 +5,8 @@
  */
 namespace Magento\CustomerBalance\Block\Adminhtml\Sales\Order\Create;
 
+use Magento\Payment\Model\Method\Free;
+
 /**
  * Customer balance block for order creation page
  *
@@ -53,13 +55,13 @@ class Payment extends \Magento\Framework\View\Element\Template
      * @param array $data
      */
     public function __construct(
-        \Magento\Framework\View\Element\Template\Context $context,
-        \Magento\CustomerBalance\Model\BalanceFactory $balanceFactory,
-        \Magento\Backend\Model\Session\Quote $sessionQuote,
-        \Magento\Sales\Model\AdminOrder\Create $orderCreate,
-        \Magento\CustomerBalance\Helper\Data $customerBalanceHelper,
-        \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency,
-        array $data = []
+        \Magento\Framework\View\Element\Template\Context   $context,
+        \Magento\CustomerBalance\Model\BalanceFactory      $balanceFactory,
+        \Magento\Backend\Model\Session\Quote               $sessionQuote,
+        \Magento\Sales\Model\AdminOrder\Create             $orderCreate,
+        \Magento\CustomerBalance\Helper\Data               $customerBalanceHelper,
+        \Magento\Framework\Pricing\PriceCurrencyInterface  $priceCurrency,
+        array                                              $data = []
     ) {
         $this->_balanceFactory = $balanceFactory;
         $this->_sessionQuote = $sessionQuote;
@@ -189,6 +191,10 @@ class Payment extends \Magento\Framework\View\Element\Template
      */
     public function canUseCustomerBalance()
     {
+        if (!$this->_scopeConfig->isSetFlag(Free::XML_PATH_PAYMENT_FREE_ACTIVE)) {
+            return false;
+        }
+
         $quote = $this->_orderCreate->getQuote();
         return $this->getBalance() && ($quote->getBaseGrandTotal() + $quote->getBaseCustomerBalAmountUsed() > 0);
     }

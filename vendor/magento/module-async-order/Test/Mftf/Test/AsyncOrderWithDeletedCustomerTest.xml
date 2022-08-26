@@ -16,10 +16,10 @@
             <severity value="CRITICAL"/>
             <testCaseId value="MC-43232"/>
             <group value="checkout"/>
+            <group value="async_checkout"/>
         </annotations>
         <before>
-            <!-- Enable Async Checkout for Order placement -->
-            <magentoCLI command="setup:config:set {{AsyncCheckoutConfigData.enable_option}}" stepKey="enableAsyncCheckout"/>
+            <comment userInput="BIC workaround" stepKey="enableAsyncCheckout"/>
 
             <!-- Create Customer -->
             <createData entity="Simple_US_Customer" stepKey="createCustomer"/>
@@ -38,8 +38,7 @@
             <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
             <deleteData createDataKey="createProduct" stepKey="deleteProduct"/>
 
-            <!-- Disable Async Checkout for Order placement -->
-            <magentoCLI command="setup:config:set {{AsyncCheckoutConfigData.disable_option}}" stepKey="disableAsyncCheckout"/>
+            <comment userInput="BIC workaround" stepKey="disableAsyncCheckout"/>
         </after>
 
         <!-- Login Customer Storefront -->

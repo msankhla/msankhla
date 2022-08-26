@@ -6,7 +6,9 @@
 namespace Magento\CatalogPermissions\Model\Indexer;
 
 use Magento\Catalog\Api\Data\CategoryInterface;
+use Magento\CatalogPermissions\Model\Indexer\Category\ModeSwitcher;
 use Magento\CatalogPermissions\Model\Indexer\Product\IndexFiller as ProductIndexFiller;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
@@ -20,6 +22,7 @@ use Magento\Catalog\Model\Config as CatalogConfig;
 use Magento\Framework\App\CacheInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\CatalogPermissions\Model\Indexer\Product\Action\ProductSelectDataProvider;
+use Magento\Indexer\Model\ProcessManager;
 
 /**
  * Abstract class for CatalogPermission indexers
@@ -35,42 +38,42 @@ abstract class AbstractAction
     /**
      * Grant value for allow
      */
-    const GRANT_ALLOW = 1;
+    public const GRANT_ALLOW = 1;
 
     /**
      * Grant value for deny
      */
-    const GRANT_DENY = 0;
+    public const GRANT_DENY = 0;
 
     /**
      * Category index table name
      */
-    const INDEX_TABLE = 'magento_catalogpermissions_index';
+    public const INDEX_TABLE = 'magento_catalogpermissions_index';
 
     /**
      * Product index table name suffix
      */
-    const PRODUCT_SUFFIX = '_product';
+    public const PRODUCT_SUFFIX = '_product';
 
     /**
      * Replica index table name suffix
      */
-    const REPLICA_SUFFIX = '_replica';
+    public const REPLICA_SUFFIX = '_replica';
 
     /**
      * Suffix for index table to show it is temporary
      */
-    const TMP_SUFFIX = '_tmp';
+    public const TMP_SUFFIX = '_tmp';
 
     /**
      * Category chunk size
      */
-    const CATEGORY_STEP_COUNT = 500;
+    public const CATEGORY_STEP_COUNT = 500;
 
     /**
      * Product chunk size
      */
-    const PRODUCT_STEP_COUNT = 10000;
+    public const PRODUCT_STEP_COUNT = 10000;
 
     /**
      * @var Resource
@@ -175,17 +178,35 @@ abstract class AbstractAction
     private $productIndexFiller;
 
     /**
+     * @var ProcessManager
+     */
+    private $processManager;
+
+    /**
+     * @var TableMaintainer
+     */
+    private $tableMaintainer;
+
+    /**
+     * @var ScopeConfigInterface
+     */
+    private $scopeConfig;
+
+    /**
      * @param ResourceConnection $resource
      * @param WebsiteCollectionFactory $websiteCollectionFactory
      * @param GroupCollectionFactory $groupCollectionFactory
      * @param ConfigInterface $config
      * @param StoreManagerInterface $storeManager
-     * @param \Magento\Catalog\Model\Config $catalogConfig
+     * @param CatalogConfig $catalogConfig
      * @param CacheInterface $coreCache
      * @param \Magento\Framework\EntityManager\MetadataPool $metadataPool
-     * @param Generator $batchQueryGenerator
+     * @param Generator|null $batchQueryGenerator
      * @param ProductSelectDataProvider|null $productSelectDataProvider
      * @param ProductIndexFiller|null $productIndexFiller
+     * @param ProcessManager|null $processManager
+     * @param TableMaintainer|null $tableMaintainer
+     * @param ScopeConfigInterface $scopeConfig
      * @throws \Exception
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
@@ -200,7 +221,10 @@ abstract class AbstractAction
         \Magento\Framework\EntityManager\MetadataPool $metadataPool,
         Generator $batchQueryGenerator = null,
         ProductSelectDataProvider $productSelectDataProvider = null,
-        ProductIndexFiller $productIndexFiller = null
+        ProductIndexFiller $productIndexFiller = null,
+        ProcessManager $processManager = null,
+        TableMaintainer $tableMaintainer = null,
+        ScopeConfigInterface $scopeConfig = null
     ) {
         $this->resource = $resource;
         $this->connection = $resource->getConnection();
@@ -213,12 +237,17 @@ abstract class AbstractAction
         $this->productMetadata = $metadataPool->getMetadata(ProductInterface::class);
         $this->categoryMetadata = $metadataPool->getMetadata(CategoryInterface::class);
 
+        $this->scopeConfig = $scopeConfig
+            ??ObjectManager::getInstance()->get(ScopeConfigInterface::class);
         $this->batchQueryGenerator = $batchQueryGenerator
             ?? ObjectManager::getInstance()->get(Generator::class);
         $this->productSelectDataProvider = $productSelectDataProvider
             ?? ObjectManager::getInstance()->get(ProductSelectDataProvider::class);
         $this->productIndexFiller = $productIndexFiller
             ?? ObjectManager::getInstance()->get(ProductIndexFiller::class);
+        $this->processManager = $processManager
+            ?? ObjectManager::getInstance()->get(ProcessManager::class);
+        $this->tableMaintainer = $tableMaintainer ?? ObjectManager::getInstance()->get(TableMaintainer::class);
     }
 
     /**
@@ -337,24 +366,33 @@ abstract class AbstractAction
     {
         $categoryList = $this->getCategoryList();
         foreach ($this->getCustomerGroupIds() as $customerGroupId) {
-            $this->indexCategoryPermissions = [];
+            $userFunctions[] = function () use ($customerGroupId, $categoryList) {
+                $this->indexCategoryPermissions = [];
 
-            $permissions = $this->getCategoryPermissions(array_keys($categoryList), $customerGroupId);
-            foreach ($permissions as $permission) {
-                if (isset($categoryList[$permission['category_id']])) {
-                    $this->prepareCategoryIndexPermissions($permission, $categoryList[$permission['category_id']]);
+                $permissions = $this->getCategoryPermissions(array_keys($categoryList), $customerGroupId);
+                foreach ($permissions as $permission) {
+                    if (isset($categoryList[$permission['category_id']])) {
+                        $this->prepareCategoryIndexPermissions($permission, $categoryList[$permission['category_id']]);
+                    }
                 }
-            }
 
-            foreach ($categoryList as $categoryId => $path) {
-                $this->prepareInheritedCategoryIndexPermissions($categoryId, $path);
-            }
+                foreach ($categoryList as $categoryId => $path) {
+                    $this->prepareInheritedCategoryIndexPermissions($categoryId, $path);
+                }
 
-            $this->populateCategoryIndex($customerGroupId);
+                $this->populateCategoryIndex($customerGroupId);
 
-            $this->populateProductIndex($customerGroupId);
+                $this->populateProductIndex($customerGroupId);
+                if ($this->tableMaintainer->getMode() === ModeSwitcher::DIMENSION_CUSTOMER_GROUP) {
+                    $this->fixProductPermissionsWithGroups($customerGroupId);
+                }
+            };
         }
-        $this->fixProductPermissions();
+
+        $this->processManager->execute($userFunctions); /** @phpstan-ignore-line */
+        if ($this->tableMaintainer->getMode() !== ModeSwitcher::DIMENSION_CUSTOMER_GROUP) {
+            $this->fixProductPermissions();
+        }
     }
 
     /**
@@ -580,8 +618,16 @@ abstract class AbstractAction
                 ];
             }
             if (count($data) > 0) {
+                if (str_ends_with($this->getIndexTempTable(), AbstractAction::REPLICA_SUFFIX)) {
+                    $tableName = $this->tableMaintainer->
+                    resolveReplicaTableNameCategory($customerGroupId, $this->useIndexTempTable);
+                } else {
+                    $tableName = $this->tableMaintainer->
+                    resolveMainTableNameCategory($customerGroupId);
+                }
+
                 $this->connection->insertArray(
-                    $this->getIndexTempTable(),
+                    $tableName,
                     [
                         'category_id',
                         'website_id',
@@ -668,7 +714,7 @@ abstract class AbstractAction
         $select = $this->productSelectDataProvider->getSelect(
             $customerGroupId,
             $store,
-            $this->getIndexTempTable(),
+            $this->tableMaintainer->resolveMainTableNameCategory($customerGroupId),
             $this->getProductList()
         );
 
@@ -691,12 +737,26 @@ abstract class AbstractAction
      */
     protected function populateProductIndex($customerGroupId)
     {
+        if (str_ends_with($this->getIndexTempTable(), AbstractAction::REPLICA_SUFFIX)) {
+            $tableName = $this->tableMaintainer->
+            resolveReplicaTableNameCategory($customerGroupId, $this->useIndexTempTable);
+        } else {
+            $tableName = $this->tableMaintainer->
+            resolveMainTableNameCategory($customerGroupId);
+        }
+        if (str_ends_with($this->getProductIndexTempTable(), AbstractAction::REPLICA_SUFFIX)) {
+            $productTableName = $this->tableMaintainer->
+            resolveReplicaTableNameProduct($customerGroupId, $this->useIndexTempTable);
+        } else {
+            $productTableName = $this->tableMaintainer->
+            resolveMainTableNameProduct($customerGroupId);
+        }
         foreach ($this->storeManager->getStores() as $store) {
             $this->productIndexFiller->populate(
                 $store,
                 $customerGroupId,
-                $this->getIndexTempTable(),
-                $this->getProductIndexTempTable(),
+                $tableName,
+                $productTableName,
                 $this->getProductList()
             );
         }
@@ -730,8 +790,54 @@ abstract class AbstractAction
         ];
 
         $condition = $this->getProductList() ? ['product_id IN (?)' => $this->getProductList()] : '';
+        $productIndexTempTable = $this->getProductIndexTempTable();
+        if ($this->scopeConfig->getValue(ModeSwitcher::XML_PATH_CATEGORY_PERMISSION_DIMENSIONS_MODE) ===
+            ModeSwitcher::DIMENSION_CUSTOMER_GROUP
+        ) {
+            foreach ($this->getCustomerGroupIds() as $groupId) {
+                $productIndexTableName = $productIndexTempTable . '_' . $groupId;
+                $this->connection->update($productIndexTableName, $data, $condition);
+            }
+        } else {
+            $this->connection->update($productIndexTempTable, $data, $condition);
+        }
+    }
 
-        $this->connection->update($this->getProductIndexTempTable(), $data, $condition);
+    /**
+     * Fix product permissions after population
+     *
+     * @param mixed $customerGroup
+     * @return void
+     */
+    private function fixProductPermissionsWithGroups($customerGroup)
+    {
+        $deny = (int)Permission::PERMISSION_DENY;
+        $data = [
+            'grant_catalog_product_price' => $this->connection->getCheckSql(
+                $this->connection->quoteInto('grant_catalog_category_view = ?', $deny),
+                $deny,
+                'grant_catalog_product_price'
+            ),
+            'grant_checkout_items' => $this->connection->getCheckSql(
+                $this->connection->quoteInto(
+                    'grant_catalog_category_view = ?',
+                    $deny
+                ) . ' OR ' . $this->connection->quoteInto(
+                    'grant_catalog_product_price = ?',
+                    $deny
+                ),
+                $deny,
+                'grant_checkout_items'
+            )
+        ];
+
+        $condition = $this->getProductList() ? ['product_id IN (?)' => $this->getProductList()] : '';
+
+        $this->connection->update(
+            $this->tableMaintainer->resolveMainTableNameProduct($customerGroup),
+            $data,
+            $condition
+        );
     }
 
     /**

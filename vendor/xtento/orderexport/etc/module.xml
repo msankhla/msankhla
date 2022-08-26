@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="Xtento_OrderExport" setup_version="2.15.9">
+    <module name="Xtento_OrderExport" setup_version="2.16.1">
         <sequence>
             <module name="Magento_Backend"/>
             <module name="Xtento_XtCore"/>
@@ -11,7 +11,7 @@
 /**
  * Product:       Xtento_OrderExport
  * ID:            %!uniqueid!%
- * Last Modified: 2022-06-27T15:47:12+00:00
+ * Last Modified: 2022-08-13T19:35:20+00:00
  * File:          etc/module.xml
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */

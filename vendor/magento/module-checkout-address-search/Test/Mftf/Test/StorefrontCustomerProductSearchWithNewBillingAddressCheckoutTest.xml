@@ -52,7 +52,7 @@
         <!-- *+ New Address* button is displayed under *Shipping Address* block -->
         <seeElement stepKey="checkIfChangeAddressButtonIsVisibleOnShippingStep" selector="{{CheckoutShippingAddressSection.changeAddressButton}}"/>
         <!-- Click *Next* button -->
-        <click selector="{{CheckoutShippingSection.next}}" stepKey="clickNext"/>
+        <actionGroup ref="StorefrontCheckoutClickNextButtonActionGroup" stepKey="clickNext"/>
         <!-- Select "Check / Money order" payment method -->
         <actionGroup ref="CheckoutSelectCheckMoneyOrderPaymentActionGroup" stepKey="selectCheckMoneyPayment"/>
         <!-- Review & Payments step of checkout is opened -->

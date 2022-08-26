@@ -37,8 +37,6 @@ class Controllers
     protected $_actionAttribute = null;
 
     /**
-     * Core registry
-     *
      * @var \Magento\Framework\Registry
      */
     protected $_coreRegistry = null;
@@ -49,15 +47,11 @@ class Controllers
     protected $messageManager;
 
     /**
-     * Request
-     *
      * @var \Magento\Framework\App\RequestInterface
      */
     protected $_request;
 
     /**
-     * Response
-     *
      * @var \Magento\Framework\App\ResponseInterface
      */
     protected $_response;
@@ -121,9 +115,8 @@ class Controllers
         $collectedIds = $processorModel->getCollectedIds();
         if ($collectedIds) {
             $eventModel->setInfo($this->_loggingData->implodeValues($collectedIds));
-            return true;
         }
-        return false;
+        return true;
     }
 
     /**

@@ -1,0 +1,89 @@
+<div id="<?= $block->getHtmlId() ?>">
+    <div class="massaction">
+        <div class="entry-edit">
+            <?php if ($block->getHideFormElement() !== true):?>
+            <form action="" id="<?= $block->getHtmlId() ?>-form" method="post">
+                <?php endif ?>
+                <?= $block->getBlockHtml('formkey')?>
+                <span class="field-row">
+                    <label class="label"><?= 'Select Product Actions' ?></label>
+                    <select id="<?= $block->getHtmlId() ?>-select"
+                            class="select absolute-advice local-validation">
+                        <option value=""><?= '-- Please select --' ?></option>
+                        <?php foreach ($block->getItems() as $_item): ?>
+                            <option value="<?= $_item->getId() ?>"
+                                <?=($_item->getSelected() ? ' selected="selected"' : '') ?>>
+                                <?= $_item->getLabel() ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </span>
+                <span class="outer-span" id="<?= $block->getHtmlId() ?>-form-hiddens"></span>
+                <span class="outer-span" id="<?= $block->getHtmlId() ?>-form-additional"></span>
+                <span class="field-row">
+                    <?= $block->getApplyButtonHtml() ?>
+                </span>
+                <?php if ($block->getHideFormElement() !== true):?>
+            </form>
+        <?php endif ?>
+            <div class="no-display">
+                <?php foreach ($block->getItems() as $_item): ?>
+                    <div id="<?= $block->getHtmlId() ?>-item-<?= $_item->getId() ?>-block">
+                        <?= $_item->getAdditionalActionBlockHtml() ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <div class="entry-select">
+            <select id="massaction-select" class="select">
+                <option value="">
+                    <?= 'Mass Actions' ?>
+                </option>
+                <?php if ($block->getUseSelectAll()):?>
+                    <option value="selectAll">
+                        <?= 'Select All' ?>
+                    </option>
+                    <option value="unselectAll">
+                        <?= 'Unselect All' ?>
+                    </option>
+                <?php endif; ?>
+                <option value="selectVisible">
+                    <?= 'Select Visible' ?>
+                </option>
+                <option value="unselectVisible">
+                    <?= 'Unselect Visible' ?>
+                </option>
+            </select>
+        <span class="items">
+            <strong id="<?= $block->getHtmlId() ?>-count">0</strong> <?= 'items selected' ?>
+        </span>
+        </div>
+    </div>
+    <script>
+        require(['jquery'], function($){
+            'use strict';
+            $('#massaction-select').change(function () {
+                var massAction = $('option:selected', this).val();
+                switch (massAction) {
+                    <?php if ($block->getUseSelectAll()):?>
+                    case 'selectAll':
+                        return <?= $block->getJsObjectName() ?>.selectAll();
+                        break;
+                    case 'unselectAll':
+                        return <?= $block->getJsObjectName() ?>.unselectAll();
+                        break;
+                    <?php endif; ?>
+                    case 'selectVisible':
+                        return <?= $block->getJsObjectName() ?>.selectVisible();
+                        break;
+                    case 'unselectVisible':
+                        return <?= $block->getJsObjectName() ?>.unselectVisible();
+                        break;
+                }
+            });
+        });
+        <?php if (!$block->getParentBlock()->canDisplayContainer()): ?>
+            <?= $block->getJsObjectName() ?>.setGridIds('<?= $block->getGridIdsJson() ?>');
+        <?php endif; ?>
+    </script>
+</div>

@@ -50,7 +50,12 @@ class SetGoogleAnalyticsOnCartRemove
     {
         $item = $subject->getItemById($itemId);
         if ($item) {
-            $this->setItemForTriggerRemoveEvent($this->helper, $this->registry, $item, $item->getQty());
+            $this->setItemForTriggerRemoveEvent(
+                $this->helper,
+                $this->registry,
+                $item,
+                $item->getQty()
+            );
         }
 
         return $result;
@@ -80,7 +85,12 @@ class SetGoogleAnalyticsOnCartRemove
         $result = $proceed($itemId, $buyRequest, $params);
 
         if ($qty > $result->getQty() && (int)$itemId === (int)$result->getItemId()) {
-            $this->setItemForTriggerRemoveEvent($this->helper, $this->registry, $result, $qty - $result->getQty());
+            $this->setItemForTriggerRemoveEvent(
+                $this->helper,
+                $this->registry,
+                $result,
+                $qty - $result->getQty()
+            );
         }
 
         return $result;

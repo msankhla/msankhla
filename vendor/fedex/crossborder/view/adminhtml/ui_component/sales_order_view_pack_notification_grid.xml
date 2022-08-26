@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">sales_order_view_pack_notification_grid.sales_order_view_pack_notification_grid_data_source</item>
+        </item>
+    </argument>
+    <settings>
+        <spinner>sales_order_pack_notification_columns</spinner>
+        <deps>
+            <dep>sales_order_view_pack_notification_grid.sales_order_view_pack_notification_grid_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="sales_order_view_pack_notification_grid_data_source" component="Magento_Ui/js/grid/provider">
+        <settings>
+            <filterUrlParams>
+                <param name="order_id">*</param>
+            </filterUrlParams>
+            <updateUrl path="mui/index/render"/>
+        </settings>
+        <aclResource>FedEx_CrossBorder::pack_notifications</aclResource>
+        <dataProvider class="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider" name="sales_order_view_pack_notification_grid_data_source">
+            <settings>
+                <requestFieldName>id</requestFieldName>
+                <primaryFieldName>entity_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <listingToolbar name="listing_top">
+        <bookmark name="bookmarks"/>
+        <columnsControls name="columns_controls"/>
+        <exportButton name="export_button">
+            <settings>
+                <additionalParams>
+                    <param xsi:type="string" active="true" name="order_id">*</param>
+                </additionalParams>
+            </settings>
+        </exportButton>
+        <filterSearch name="fulltext"/>
+        <filters name="listing_filters">
+            <filterSelect name="store_id" provider="${ $.parentName }">
+                <settings>
+                    <options class="Magento\Store\Ui\Component\Listing\Column\Store\Options"/>
+                    <caption translate="true">All Store Views</caption>
+                    <label translate="true">Purchased From</label>
+                    <dataScope>store_id</dataScope>
+                    <imports>
+                        <link name="visible">ns = ${ $.ns }, componentType = column, index = ${ $.index }:visible</link>
+                    </imports>
+                </settings>
+            </filterSelect>
+        </filters>
+        <massaction name="listing_massaction" component="Magento_Ui/js/grid/tree-massactions">
+            <action name="cancel" class="FedEx\CrossBorder\Ui\Component\PackNotification\Action">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="type" xsi:type="string">cancel</item>
+                        <item name="label" translate="true" xsi:type="string">Cancel</item>
+                        <item name="confirm" xsi:type="array">
+                            <item name="title" translate="true" xsi:type="string">Cancel Pack Notifications</item>
+                            <item name="message" translate="true" xsi:type="string">Cancel selected Pack Notifications?</item>
+                        </item>
+                        <item name="urlPath" xsi:type="string">fdxcb/packNotification/massCancel</item>
+                        <item name="urlParams" xsi:type="array">
+                            <item name="order_id" xsi:type="string">*</item>
+                        </item>
+                    </item>
+                </argument>
+            </action>
+            <action name="delete" class="FedEx\CrossBorder\Ui\Component\PackNotification\Action">
+                <argument name="data" xsi:type="array">
+                    <item name="config" xsi:type="array">
+                        <item name="type" xsi:type="string">send</item>
+                        <item name="label" translate="true" xsi:type="string">Send</item>
+                        <item name="confirm" xsi:type="array">
+                            <item name="title" translate="true" xsi:type="string">Send Pack Notifications</item>
+                            <item name="message" translate="true" xsi:type="string">Send selected Pack Notifications?</item>
+                        </item>
+                        <item name="urlPath" xsi:type="string">fdxcb/packNotification/massSend</item>
+                        <item name="urlParams" xsi:type="array">
+                            <item name="order_id" xsi:type="string">*</item>
+                        </item>
+                    </item>
+                </argument>
+            </action>
+        </massaction>
+        <paging name="listing_paging"/>
+    </listingToolbar>
+    <columns name="sales_order_pack_notification_columns">
+        <settings>
+            <childDefaults>
+                <param name="fieldAction" xsi:type="array">
+                    <item name="provider" xsi:type="string">sales_order_view_pack_notification_grid.sales_order_view_pack_notification_grid.sales_order_pack_notification_columns.actions</item>
+                    <item name="target" xsi:type="string">applyAction</item>
+                    <item name="params" xsi:type="array">
+                        <item name="0" xsi:type="string">view</item>
+                        <item name="1" xsi:type="string">${ $.$data.rowIndex }</item>
+                    </item>
+                </param>
+            </childDefaults>
+        </settings>
+        <selectionsColumn name="ids">
+            <settings>
+                <indexField>entity_id</indexField>
+            </settings>
+        </selectionsColumn>
+        <column name="entity_id" sortOrder="10">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">ID</label>
+                <sorting>asc</sorting>
+            </settings>
+        </column>
+        <column name="external_id" sortOrder="20">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">External ID</label>
+            </settings>
+        </column>
+        <column name="retailer_pack_id" sortOrder="30">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Retailer Pack ID</label>
+            </settings>
+        </column>
+        <column name="tracking_number" sortOrder="40">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Tracking Number</label>
+            </settings>
+        </column>
+        <column name="status" sortOrder="50">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Status</label>
+            </settings>
+        </column>
+        <column name="state" sortOrder="60">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">State</label>
+            </settings>
+        </column>
+        <actionsColumn name="actions" class="Magento\Sales\Ui\Component\Listing\Column\ViewAction">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="viewUrlPath" xsi:type="string">fdxcb/packNotification/view</item>
+                    <item name="urlEntityParamName" xsi:type="string">pack_id</item>
+                </item>
+            </argument>
+            <settings>
+                <indexField>increment_id</indexField>
+            </settings>
+        </actionsColumn>
+    </columns>
+</listing>

@@ -60,7 +60,7 @@ class CollectionTest extends TestCase
 
         $metadataMock->expects($this->any())
             ->method('getLinkField')
-            ->willReturn('id');
+            ->willReturn('row_id');
 
         $this->metadataPoolMock->expects($this->any())
             ->method('getMetadata')
@@ -101,15 +101,15 @@ class CollectionTest extends TestCase
         $this->collection->setFlag('cms_page_in_stores_data_joined', true);
         $this->connectionMock->method('quoteInto')
             ->with(
-                'cmsps.id = main_table.page_id AND cmsps.store_id IN (?)',
+                'cmsps.row_id = page_table.row_id AND cmsps.store_id IN (?)',
                 [0, 1]
             )
-            ->willReturn('cmsps.id = main_table.page_id AND cmsps.store_id IN (0, 1)');
+            ->willReturn('cmsps.id = page_table.row_id AND cmsps.store_id IN (0, 1)');
         $this->selectMock->expects($this->once())
             ->method('joinLeft')
             ->with(
                 ['cmsps' => $this->collection->getTable('cms_page_store')],
-                'cmsps.id = main_table.page_id AND cmsps.store_id IN (0, 1)'
+                'cmsps.id = page_table.row_id AND cmsps.store_id IN (0, 1)'
             )
             ->willReturnSelf();
         $this->selectMock->expects($this->once())

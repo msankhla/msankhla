@@ -102,6 +102,7 @@
             <actionGroup ref="ClearFiltersAdminDataGridActionGroup" stepKey="clearWidgetFilter"/>
             <!-- Logout Admin -->
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <magentoCron groups="index" stepKey="reindex"/>
         </after>
         <!--Check that Customer is subscribed to general subscription-->
         <actionGroup ref="CheckSubscribedNewsletterActionGroup" stepKey="checkSubscribedNewsletter"/>

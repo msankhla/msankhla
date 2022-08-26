@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="corra" translate="label" sortOrder="900">
+            <label>C O R R A</label>
+        </tab>
+        <section id="corra_log" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Log</label>
+            <tab>corra</tab>
+            <resource>Corra_Log::log</resource>
+            <!-- <group id="general" translate="label" type="text" sortOrder="10"
+                   showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>General</label>
+                <field id="enable_corra_logging" translate="label" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable For Corra Log Module</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group> -->
+            <group id="cron" translate="label" type="text" sortOrder="10"
+                   showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Cron Configuration</label>
+                <field id="days_to_archive" translate="label comment" type="text" sortOrder="1"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Days to Archive</label>
+                    <comment>Move from main table to archive table after specified amount of days.</comment>
+                    <validate>integer validate-greater-than-zero</validate>
+                </field>
+                <field id="days_to_wipe" translate="label comment" type="text" sortOrder="1"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Days to Wipe</label>
+                    <comment>Remove from archive after specified amount of days.</comment>
+                    <validate>integer validate-greater-than-zero</validate>
+                </field>
+            </group>
+            <!-- <group id="graylog" translate="label" type="text" sortOrder="10"
+                   showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Graylog Configuration</label>
+                <field id="enable_corra_logging" translate="label" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable GELF For Corra Log</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="enable_all_logging_temporary" translate="label" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable Temporary For All</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="enable_all_logging_temporary_period" translate="label comment" type="text" sortOrder="10"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Temporary Logging Period</label>
+                    <comment>Please enter amount of minutes</comment>
+                    <validate>required-entry integer validate-greater-than-zero</validate>
+                </field>
+                <field id="log_level_threshold" type="select" sortOrder="10" translate="label comment"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Log Level Threshold</label>
+                    <comment>Send to Graylog messages with level no lower than specified.</comment>
+                    <source_model>Corra\Log\Model\Config\Source\LogLevels</source_model>
+                </field>
+                <field id="graylog_host" translate="label comment" type="text" sortOrder="10"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Graylog Host</label>
+                    <comment>Please enter Graylog Host (eg: 127.0.0.1)</comment>
+                </field>
+                <field id="graylog_port" translate="label comment" type="text" sortOrder="10"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Graylog Port</label>
+                    <validate>validate-integer validate-zero-or-greater</validate>
+                    <comment>Please enter Graylog Port Number (eg: 514)</comment>
+                </field>
+            </group> -->
+            <group id="email_alerts" translate="label" type="text" sortOrder="10"
+                   showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Email Alerts</label>
+                <field id="digest_email_from" translate="label" type="select" sortOrder="1"
+                       showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Digest Emails Sender</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Identity</source_model>
+                </field>
+                <field id="digest_emails_to" translate="label comment" type="textarea" sortOrder="1"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Digest Emails To</label>
+                    <comment>List of emails, comma-separated.</comment>
+                    <validate>validate-emails</validate>
+                </field>
+                <field id="send_by_type_subtype" translate="label" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Separate emails by type and subtypes</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="emergency_period" translate="label comment" type="text" sortOrder="1"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Emergency Digest Period</label>
+                    <comment>Aggregate alerts for specified amount of minutes.</comment>
+                    <validate>integer validate-greater-than-zero</validate>
+                </field>
+                <field id="alert_period" translate="label comment" type="text" sortOrder="1"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Alert Digest Period</label>
+                    <comment>Aggregate alerts for specified amount of minutes.</comment>
+                    <validate>integer validate-greater-than-zero</validate>
+                </field>
+                <field id="critical_period" translate="label comment" type="text" sortOrder="1"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Critical Digest Period</label>
+                    <comment>Aggregate alerts for specified amount of minutes.</comment>
+                    <validate>integer validate-greater-than-zero</validate>
+                </field>
+                <field id="error_period" translate="label comment" type="text" sortOrder="1"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Error Digest Period</label>
+                    <comment>Aggregate alerts for specified amount of minutes.</comment>
+                    <validate>integer validate-greater-than-zero</validate>
+                </field>
+                <field id="warning_period" translate="label comment" type="text" sortOrder="1"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Warning Digest Period</label>
+                    <comment>Aggregate alerts for specified amount of minutes.</comment>
+                    <validate>integer validate-greater-than-zero</validate>
+                </field>
+                <field id="notice_period" translate="label comment" type="text" sortOrder="1"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Notice Digest Period</label>
+                    <comment>Aggregate alerts for specified amount of minutes.</comment>
+                    <validate>integer validate-greater-than-zero</validate>
+                </field>
+                <field id="info_period" translate="label comment" type="text" sortOrder="1"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Info Digest Period</label>
+                    <comment>Aggregate alerts for specified amount of minutes.</comment>
+                    <validate>integer validate-greater-than-zero</validate>
+                </field>
+                <field id="debug_period" translate="label comment" type="text" sortOrder="1"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Debug Digest Period</label>
+                    <comment>Aggregate alerts for specified amount of minutes.</comment>
+                    <validate>integer validate-greater-than-zero</validate>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

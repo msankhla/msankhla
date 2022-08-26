@@ -36,6 +36,7 @@
             <actionGroup ref="AdminDeleteWebsiteActionGroup" stepKey="deleteSecondWebsite">
                 <argument name="websiteName" value="{{NewWebSiteData.name}}"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
         </after>
         <!--Create  website-->
@@ -53,6 +54,7 @@
             <argument name="StoreGroup" value="NewStoreData"/>
             <argument name="customStore" value="storeViewData"/>
         </actionGroup>
+        <magentoCron groups="index" stepKey="reindex"/>
         <!--Open created product-->
         <comment userInput="Open created product" stepKey="commentOpenCreatedProduct"/>
         <amOnPage url="{{AdminProductEditPage.url($$createProduct.id$$)}}" stepKey="amOnEditPage"/>

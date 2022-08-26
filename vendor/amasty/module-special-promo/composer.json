@@ -3,7 +3,7 @@
     "description": "Special Promotions by Amasty",
     "require": {
         "php": ">=7.3",
-        "amasty/base": ">=1.13.4",
+        "amasty/base": ">=1.13.5",
         "amasty/module-banners-lite": ">=1.0.2",
         "amasty/rgrid": "*"
     },
@@ -12,7 +12,7 @@
         "amasty/module-special-promo-mftf-3": "Install module-special-promo-mftf-3 module to be able to run Special Promotions MFTF tests for Magento 2.4.0+ version."
     },
     "type": "magento2-module",
-    "version": "2.9.4",
+    "version": "2.9.5",
     "license": [
         "Commercial"
     ],

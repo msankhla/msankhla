@@ -88,7 +88,7 @@
 
         <!--  Step 6: Click See Balance -->
         <click selector="{{StorefrontApplyGiftCardAccountSection.seeBalanceButton}}" stepKey="clickSeeBalanceButton"/>
-        <waitForLoadingMaskToDisappear stepKey="waitForLoading"/>
+        <waitForPageLoad stepKey="waitForLoading"/>
         <waitForElementVisible selector="{{StorefrontApplyGiftCardAccountSection.giftCardInfo}}" time="30" stepKey="waitForGiftCardInfo"/>
         <seeElement selector="{{StorefrontApplyGiftCardAccountSection.giftCardInfo}}" stepKey="giftCardInfo2"/>
         <see selector="{{StorefrontApplyGiftCardAccountSection.giftCardNumber}}" userInput="{$grabGiftCardCode}" stepKey="seeGiftCardCode"/>
@@ -96,9 +96,9 @@
 
         <!--  Step 7: Click Apply -->
         <click selector="{{StorefrontApplyGiftCardAccountSection.applyGiftCardButton}}" stepKey="clickApplyGiftCardButton"/>
-        <waitForLoadingMaskToDisappear stepKey="waitForLoading2"/>
-        <see selector="{{StorefrontApplyGiftCardAccountSection.giftCardCodeAdded}}" userInput="Gift Card {$grabGiftCardCode} was added." stepKey="assertGiftCardCodeAdded"/>
-        <waitForLoadingMaskToDisappear stepKey="waitForLoading3"/>
+        <comment userInput="BIC workaround" stepKey="waitForLoading2"/>
+        <waitForText selector="{{StorefrontApplyGiftCardAccountSection.giftCardCodeAdded}}" userInput="Gift Card {$grabGiftCardCode} was added." stepKey="assertGiftCardCodeAdded"/>
+        <waitForPageLoad stepKey="waitForLoading3"/>
         <see selector="{{StorefrontApplyGiftCardAccountSection.giftCardAccountCodeName}}" userInput="Gift Card ({$grabGiftCardCode})" stepKey="assertGiftCardCodeNameInSummerySection"/>
         <see selector="{{StorefrontApplyGiftCardAccountSection.giftCardAccountCodeDiscount}}" userInput="-$40.00" stepKey="assertGiftCardCodeInSummerySection"/>
         <waitForElementVisible selector="{{CheckoutPaymentSection.notAvailablePaymentSolutions}}" time="30" stepKey="waitForPaymentMessage"/>
@@ -112,10 +112,10 @@
             <argument name="customerAddressVar" value="CustomerAddressSimple"/>
         </actionGroup>
         <click selector="{{CheckoutPaymentSection.update}}" stepKey="clickUpdateButton"/>
-        <waitForLoadingMaskToDisappear stepKey="waitForLoading4"/>
+        <waitForPageLoad stepKey="waitForLoading4"/>
 
         <!--  Step 9: Place Order -->
-        <click selector="{{CheckoutPaymentSection.placeOrder}}" stepKey="clickPlaceOrderButton"/>
+        <actionGroup ref="ClickPlaceOrderActionGroup" stepKey="clickPlaceOrderButton"/>
         <seeElement selector="{{CheckoutSuccessMainSection.success}}" stepKey="orderIsSuccessfullyPlaced"/>
         <grabTextFrom selector="{{CheckoutSuccessMainSection.orderNumber}}" stepKey="grabOrderNumber"/>
 

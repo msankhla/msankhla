@@ -14,8 +14,6 @@ use Magento\TargetRule\Model\Source\Rotation;
 abstract class AbstractProduct extends \Magento\Catalog\Block\Product\AbstractProduct
 {
     /**
-     * Link collection
-     *
      * @var null|\Magento\Catalog\Model\ResourceModel\Product\Collection
      */
     protected $_linkCollection = null;
@@ -65,8 +63,6 @@ abstract class AbstractProduct extends \Magento\Catalog\Block\Product\AbstractPr
     abstract public function getPositionBehavior();
 
     /**
-     * Target rule data
-     *
      * @var \Magento\TargetRule\Helper\Data
      */
     protected $_targetRuleData = null;
@@ -175,9 +171,27 @@ abstract class AbstractProduct extends \Magento\Catalog\Block\Product\AbstractPr
             }
         }
         if ($this->isShuffled()) {
-            shuffle($items);
+            $items = $this->shuffle($items);
         }
         return $items;
+    }
+
+    /**
+     * Shuffle items preserving the key as item id
+     *
+     * @param array $items
+     * @return array
+     */
+    private function shuffle(array $items): array
+    {
+        $ids = array_keys($items);
+        shuffle($ids);
+        $result = [];
+        foreach ($ids as $id) {
+            $result[$id] = $items[$id];
+        }
+
+        return $result;
     }
 
     /**

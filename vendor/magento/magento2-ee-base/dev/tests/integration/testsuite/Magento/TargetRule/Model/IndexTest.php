@@ -8,6 +8,17 @@ declare(strict_types=1);
 
 namespace Magento\TargetRule\Model;
 
+use Magento\Catalog\Test\Fixture\MultiselectAttribute as MultiselectAttributeFixture;
+use Magento\Catalog\Test\Fixture\Product as ProductFixture;
+use Magento\Store\Model\Store;
+use Magento\TargetRule\Test\Fixture\Action as RuleActionFixture;
+use Magento\TargetRule\Test\Fixture\Actions as RuleActionsFixture;
+use Magento\TargetRule\Test\Fixture\Rule as RuleFixture;
+use Magento\TestFramework\Fixture\DataFixture;
+use Magento\TestFramework\Fixture\DataFixtureStorage;
+use Magento\TestFramework\Fixture\DataFixtureStorageManager;
+use Magento\TestFramework\Fixture\DbIsolation;
+
 /**
  * Test for Magento\TargetRule\Model\Index
  */
@@ -23,10 +34,16 @@ class IndexTest extends \PHPUnit\Framework\TestCase
      */
     private $resourceModel;
 
+    /**
+     * @var DataFixtureStorage
+     */
+    private $fixtures;
+
     protected function setUp(): void
     {
         $this->objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $this->resourceModel = $this->objectManager->get(\Magento\TargetRule\Model\ResourceModel\Rule::class);
+        $this->fixtures = DataFixtureStorageManager::getStorage();
     }
 
     /**
@@ -165,6 +182,148 @@ class IndexTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
+    #[
+        DbIsolation(false),
+        DataFixture(
+            MultiselectAttributeFixture::class,
+            [
+                'attribute_code' => 'product_multiselect_attribute',
+                'options' => ['option_1', 'option_2', 'option_3', 'option_4', 'option_5']
+            ],
+            'attr'
+        ),
+        DataFixture(ProductFixture::class, as: 'product1'),
+        DataFixture(ProductFixture::class, as: 'product2'),
+        DataFixture(ProductFixture::class, as: 'product3'),
+        DataFixture(ProductFixture::class, as: 'product4'),
+        DataFixture(ProductFixture::class, as: 'product5'),
+        DataFixture(ProductFixture::class, as: 'product6'),
+        DataFixture(
+            RuleActionFixture::class,
+            [
+                'attribute' => '$attr.attribute_code$',
+                'value' => ['$attr.option_1$','$attr.option_4$'],
+                'operator' => '()'
+            ],
+            'action'
+        ),
+        DataFixture(
+            RuleActionsFixture::class,
+            ['conditions' => ['$action$']],
+            'actions'
+        ),
+        DataFixture(
+            RuleFixture::class,
+            [
+                'actions' => '$actions$'
+            ],
+            'rule'
+        ),
+    ]
+    public function testConditionWithMultiselectAndConstant(): void
+    {
+        $this->assertMatchingProducts(
+            'product6',
+            ['product1', 'product3', 'product5'],
+            [
+                'product1' => ['option_1'],
+                'product2' => ['option_2'],
+                'product3' => ['option_1', 'option_2'],
+                'product5' => ['option_4'],
+            ],
+        );
+    }
+
+    #[
+        DbIsolation(false),
+        DataFixture(
+            MultiselectAttributeFixture::class,
+            [
+                'attribute_code' => 'product_multiselect_attribute',
+                'options' => ['option_1', 'option_2', 'option_3', 'option_4', 'option_5']
+            ],
+            'attr'
+        ),
+        DataFixture(ProductFixture::class, as: 'product1'),
+        DataFixture(ProductFixture::class, as: 'product2'),
+        DataFixture(ProductFixture::class, as: 'product3'),
+        DataFixture(ProductFixture::class, as: 'product4'),
+        DataFixture(ProductFixture::class, as: 'product5'),
+        DataFixture(ProductFixture::class, as: 'product6'),
+        DataFixture(
+            RuleActionFixture::class,
+            [
+                'attribute' => '$attr.attribute_code$',
+                'operator' => '()',
+                'value_type' => \Magento\TargetRule\Model\Actions\Condition\Product\Attributes::VALUE_TYPE_SAME_AS
+            ],
+            'action'
+        ),
+        DataFixture(
+            RuleActionsFixture::class,
+            ['conditions' => ['$action$']],
+            'actions'
+        ),
+        DataFixture(
+            RuleFixture::class,
+            [
+                'actions' => '$actions$'
+            ],
+            'rule'
+        ),
+    ]
+    public function testConditionWithMultiselectAndSameAs(): void
+    {
+        $this->assertMatchingProducts(
+            'product3',
+            ['product1', 'product2'],
+            [
+                'product1' => ['option_1'],
+                'product2' => ['option_2'],
+                'product3' => ['option_1', 'option_2'],
+                'product5' => ['option_4'],
+            ],
+        );
+    }
+
+    /**
+     * @param string $targetProduct
+     * @param array $expectedProducts
+     * @param array $productsConfiguration
+     * @return void
+     */
+    private function assertMatchingProducts(
+        string $targetProduct,
+        array $expectedProducts,
+        array $productsConfiguration
+    ): void {
+        /** @var \Magento\Catalog\Model\ProductRepository $productRepository */
+        $productRepository = $this->objectManager->get(\Magento\Catalog\Model\ProductRepository::class);
+        /** @var \Magento\TargetRule\Model\Index $index */
+        $index = $this->objectManager->create(\Magento\TargetRule\Model\Index::class)
+            ->setType(\Magento\TargetRule\Model\Rule::RELATED_PRODUCTS);
+
+        $multiselect = $this->fixtures->get('attr');
+        $attributeCode = $multiselect->getAttributeCode();
+        // set multiselect attribute
+        foreach ($productsConfiguration as $fixture => $value) {
+            $id = (int) $this->fixtures->get($fixture)->getId();
+            $product = $productRepository->getById($id, true, Store::DEFAULT_STORE_ID, true);
+            $product->setData($attributeCode, implode(',', array_map([$multiselect, 'getData'], $value)));
+            $productRepository->save($product);
+        }
+
+        $targetProductId = (int) $this->fixtures->get($targetProduct)->getId();
+        $product = $productRepository->getById($targetProductId, true, Store::DEFAULT_STORE_ID, true);
+        $index->setProduct($product);
+
+        $expectedProductIds = [];
+        foreach ($expectedProducts as $fixture) {
+            $expectedProductIds[] = (int) $this->fixtures->get($fixture)->getId();
+        }
+
+        $this->assertEqualsCanonicalizing($expectedProductIds, array_keys($index->getProductIds()));
+    }
     /**
      * @param int $ruleType
      * @param string $actionAttribute

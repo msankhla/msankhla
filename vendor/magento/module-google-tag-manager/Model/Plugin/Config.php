@@ -5,6 +5,8 @@
  */
 namespace Magento\GoogleTagManager\Model\Plugin;
 
+use Magento\Framework\App\Cache\TypeListInterface;
+
 class Config
 {
     /**
@@ -13,23 +15,25 @@ class Config
     protected $config;
 
     /**
-     * @var \Magento\Framework\App\Cache\TypeListInterface
+     * @var TypeListInterface
      */
     protected $typeList;
 
     /**
      * @param \Magento\PageCache\Model\Config $config
-     * @param \Magento\Framework\App\Cache\TypeListInterface $typeList
+     * @param TypeListInterface $typeList
      */
     public function __construct(
         \Magento\PageCache\Model\Config $config,
-        \Magento\Framework\App\Cache\TypeListInterface $typeList
+        TypeListInterface $typeList
     ) {
         $this->config = $config;
         $this->typeList = $typeList;
     }
 
     /**
+     * After save plugin
+     *
      * @param \Magento\Config\Model\Config $subject
      * @param mixed $result
      * @return mixed

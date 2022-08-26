@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * FedEx Cross Border component
+ *
+ * @category    FedEx
+ * @package     FedEx_CrossBorder
+ * @author      Andrey Rapshtynsky <andrey.bh@gmail.com>
+ * @copyright   FedEx (https://crossborder.fedex.com/)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Catalog:etc/catalog_attributes.xsd">
+    <group name="catalog_product">
+        <attribute name="fdx_country_of_origin"/>
+        <attribute name="fdx_import_flag"/>
+        <attribute name="fdx_haz_flag"/>
+    </group>
+    <group name="quote_item">
+        <attribute name="fdx_country_of_origin"/>
+        <attribute name="fdx_import_flag"/>
+        <attribute name="fdx_haz_flag"/>
+    </group>
+</config>

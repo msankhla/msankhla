@@ -33,6 +33,7 @@
             <actionGroup ref="FindAndDeleteCustomerSegmentActionGroup" stepKey="deleteSegment">
                 <argument name="segmentName" value="{{CustomerSegmentDefault.name}}"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
             <!--Log out-->
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logOut"/>
         </after>
@@ -41,6 +42,7 @@
         <actionGroup ref="AdminCreateCustomerCustomAttributeWithValueRequired" stepKey="createTextAreaCustomAttribute">
             <argument name="customerAttribute" value="AttributeTextAreaData"/>
         </actionGroup>
+        <magentoCron groups="index" stepKey="reindex"/>
 
         <!-- Navigate to Stores -> Customers ->Filter the created attribute -->
         <amOnPage url="{{CustomerAttributesPage.url}}" stepKey="navigateToCustomerAttributes"/>

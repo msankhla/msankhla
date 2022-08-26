@@ -1,0 +1,23 @@
+{
+  "name": "fedex/crossborder",
+  "description": "FedEx Cross Border",
+  "require": {
+    "php": ">=7.0.0",
+    "magento/magento-composer-installer": "*",
+    "fedex/crossborder-sdk-php": ">=1.0.0",
+    "fedex/core": ">=1.0.1",
+    "fedex/installer": ">=1.0.0"
+  },
+  "type": "magento2-module",
+  "version": "1.0.7",
+  "license": [
+    "OSL-3.0",
+    "AFL-3.0"
+  ],
+  "autoload": {
+    "files": [ "registration.php" ],
+    "psr-4": {
+      "FedEx\\CrossBorder\\": ""
+    }
+  }
+}

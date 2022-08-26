@@ -6,26 +6,28 @@
 namespace Magento\GoogleTagManager\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
+use Magento\GoogleTagManager\Block\ListJson;
+use Magento\GoogleTagManager\Helper\Data;
 
 class UpdatePlaceholderInfoObserver implements ObserverInterface
 {
     /**
-     * @var null|\Magento\GoogleTagManager\Block\ListJson
+     * @var null|ListJson
      */
     protected $blockPromotions = null;
 
     /**
-     * @var \Magento\GoogleTagManager\Helper\Data
+     * @var Data
      */
     protected $helper;
 
     /**
-     * @param \Magento\GoogleTagManager\Helper\Data $helper
-     * @param \Magento\GoogleTagManager\Block\ListJson $blockPromotions
+     * @param Data $helper
+     * @param ListJson $blockPromotions
      */
     public function __construct(
-        \Magento\GoogleTagManager\Helper\Data $helper,
-        \Magento\GoogleTagManager\Block\ListJson $blockPromotions
+        Data $helper,
+        ListJson $blockPromotions
     ) {
         $this->helper = $helper;
         $this->blockPromotions = $blockPromotions;

@@ -255,6 +255,7 @@ class AddGiftCardToCartSingleMutationTest extends GraphQlAbstract
         gift_card_options {
           title
           required
+          uid
           ... on CustomizableFieldOption {
             value: value {
               uid
@@ -521,7 +522,7 @@ QUERY;
     {
         $uidMap = [];
         foreach ($giftCardOptions as $giftCardOption) {
-            $uidMap[$giftCardOption['title']] = $giftCardOption['value']['uid'];
+            $uidMap[$giftCardOption['title']] = $giftCardOption['uid'];
         }
         return $uidMap;
     }

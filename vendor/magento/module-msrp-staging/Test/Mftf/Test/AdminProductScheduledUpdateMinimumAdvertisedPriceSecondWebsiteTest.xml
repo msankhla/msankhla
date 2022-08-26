@@ -43,6 +43,7 @@
             <magentoCLI command="config:set {{StorefrontEnableAddStoreCodeToUrls.path}} {{StorefrontEnableAddStoreCodeToUrls.value}}" stepKey="setAddStoreCodeToUrlsToYes"/>
             <!-- Enable MAP -->
             <magentoCLI command="config:set --scope=websites --scope-code={{customWebsite.code}} sales/msrp/enabled 1" stepKey="enableMsrpForSecondWebsite"/>
+            <magentoCron groups="index" stepKey="reindex"/>
         </before>
         <after>
             <!-- Reset "add store code to URL" -->
@@ -55,6 +56,7 @@
             <actionGroup ref="AdminDeleteWebsiteActionGroup" stepKey="deleteSecondWebsite">
                 <argument name="websiteName" value="{{customWebsite.name}}"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
             <!-- Logout from admin -->
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
         </after>

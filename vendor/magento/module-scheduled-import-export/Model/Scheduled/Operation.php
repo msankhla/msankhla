@@ -16,7 +16,7 @@ use Magento\ImportExport\Model\Export\ConfigInterface as ExportConfigInterface;
 /**
  * Operation model
  *
- * @author      Magento Core Team <core@magentocommerce.com>
+ * @api
  *
  * @method string getOperationType() getOperationType()
  * @method \Magento\ScheduledImportExport\Model\Scheduled\Operation setOperationType() setOperationType(string $value)

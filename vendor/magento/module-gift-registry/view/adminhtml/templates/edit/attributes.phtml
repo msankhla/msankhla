@@ -96,7 +96,7 @@ require([
                                 '<td><input type="text" class="required-entry input-text"' +
                                     ' id="<%= data.prefix %>_attribute_<%= data.id %>_label"' +
                                     ' name="attributes[<%= data.prefix %>][<%= data.id %>][label]"' +
-                                    ' value="<%= data.label %>"><%= data.checkbox_scope %></td>'+
+                                    ' value="<%- data.label %>"><%= data.checkbox_scope %></td>'+
                                 '<td>{$requiredSelectHtml}</td>'+
                                 '<td><input type="text" class="input-text global-scope"' +
                                     ' id="<%- data.prefix %>_attribute_<%- data.id %>_sort_order"' +

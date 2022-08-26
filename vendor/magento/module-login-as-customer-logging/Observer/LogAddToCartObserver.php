@@ -13,6 +13,7 @@ use Magento\Framework\Event\ObserverInterface;
 use Magento\Logging\Model\ResourceModel\Event;
 use Magento\LoginAsCustomerApi\Api\GetLoggedAsCustomerAdminIdInterface;
 use Magento\LoginAsCustomerLogging\Model\GetEventForLogging;
+use Magento\LoginAsCustomerLogging\Model\LogValidation;
 
 /**
  * Login as customer log add to cart observer.
@@ -39,6 +40,11 @@ class LogAddToCartObserver implements ObserverInterface
     private $eventResource;
 
     /**
+     * @var LogValidation
+     */
+    private LogValidation $logValidation;
+
+    /**
      * @var GetLoggedAsCustomerAdminIdInterface
      */
     private $getLoggedAsCustomerAdminId;
@@ -47,17 +53,20 @@ class LogAddToCartObserver implements ObserverInterface
      * @param GetEventForLogging $getEventForLogging
      * @param Session $session
      * @param Event $eventResource
+     * @param LogValidation $logValidation
      * @param GetLoggedAsCustomerAdminIdInterface $getLoggedAsCustomerAdminId
      */
     public function __construct(
         GetEventForLogging $getEventForLogging,
         Session $session,
         Event $eventResource,
+        LogValidation $logValidation,
         GetLoggedAsCustomerAdminIdInterface $getLoggedAsCustomerAdminId
     ) {
         $this->getEventForLogging = $getEventForLogging;
         $this->session = $session;
         $this->eventResource = $eventResource;
+        $this->logValidation = $logValidation;
         $this->getLoggedAsCustomerAdminId = $getLoggedAsCustomerAdminId;
     }
 
@@ -66,7 +75,7 @@ class LogAddToCartObserver implements ObserverInterface
      */
     public function execute(Observer $observer): void
     {
-        if (!$this->getLoggedAsCustomerAdminId->execute()) {
+        if (!$this->logValidation->shouldBeLogged()) {
             return;
         }
         $event = $this->getEventForLogging->execute($this->getLoggedAsCustomerAdminId->execute());

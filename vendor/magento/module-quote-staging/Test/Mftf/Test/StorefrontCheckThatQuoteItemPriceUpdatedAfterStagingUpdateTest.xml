@@ -82,6 +82,9 @@
         <wait time="$getTimeToWait" stepKey="conditionalWait2"/>
 
         <actionGroup ref="ApplyUpdatedRuleStagingByCron" stepKey="runCronTwiceToApplyStagingUpdate"/>
+        <actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindex">
+            <argument name="indices" value=""/>
+        </actionGroup>
         <actionGroup ref="OpenStoreFrontProductPageActionGroup" stepKey="goToProductPage2">
             <argument name="productUrlKey" value="$createProduct.custom_attributes[url_key]$"/>
         </actionGroup>

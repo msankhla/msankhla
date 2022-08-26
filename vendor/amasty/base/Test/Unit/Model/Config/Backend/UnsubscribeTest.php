@@ -74,12 +74,12 @@ class UnsubscribeTest extends \PHPUnit\Framework\TestCase
             ['test', ''],
             [
                 NotificationType::UNSUBSCRIBE_ALL,
-                '<img src="https://amasty.com/frontend/base/default/images/amasty/notifeed/unsubscribe_all.svg"/>'
+                '<img src="https://feed.amasty.net/news/unsubscribe/unsubscribe_all.svg"/>'
                 . '<span>You have successfully unsubscribed from All Notifications.</span>'
             ],
             [
                 NotificationType::GENERAL,
-                '<img src="https://amasty.com/frontend/base/default/images/amasty/notifeed/info.svg"/>'
+                '<img src="https://feed.amasty.net/news/unsubscribe/info.svg"/>'
                 . '<span>You have successfully unsubscribed from General Info.</span>'
             ],
         ];

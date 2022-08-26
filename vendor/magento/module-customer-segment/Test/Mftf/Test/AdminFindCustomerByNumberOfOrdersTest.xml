@@ -28,6 +28,7 @@
             <actionGroup ref="FindAndDeleteCustomerSegmentActionGroup" stepKey="deleteCustomerSegment">
                 <argument name="segmentName" value="{{CustomerSegmentForNoorders.name}}"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
             <deleteData createDataKey="createCustomer" stepKey="deleteCustomer"/>
         </after>

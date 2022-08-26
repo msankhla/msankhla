@@ -7,7 +7,7 @@
         "magento/module-backend": "^101.0||^102.0"
     },
     "type": "magento2-module",
-    "version": "2.16.0",
+    "version": "2.17.0",
     "license": [
         "proprietary"
     ],

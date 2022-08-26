@@ -6,7 +6,7 @@
         "OSL-3.0",
         "AFL-3.0"
     ],
-    "version": "100.4.4",
+    "version": "100.4.5",
     "require": {
         "php": "~7.4.0||~8.1.0",
         "magento/module-eav": "102.1.*",
@@ -14,7 +14,7 @@
         "magento/module-webapi": "100.4.*",
         "magento/module-new-relic-reporting": "100.4.*",
         "magento/module-authorization": "100.4.*",
-        "webonyx/graphql-php": "~14.11.3"
+        "webonyx/graphql-php": "~14.11.5"
     },
     "suggest": {
         "magento/module-graph-ql-cache": "100.4.*"

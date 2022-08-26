@@ -108,15 +108,19 @@
         <grabTextFrom selector="{{AdminGiftCardAccountInformationSection.giftCardCode}}" stepKey="giftCardAccountCode"/>
 
         <!-- Add Simple Product to cart -->
-        <amOnPage url="{{StorefrontProductPage.url($$createSimpleProduct.custom_attributes[url_key]$$)}}" stepKey="navigateToSimpleProductPage"/>
-        <waitForPageLoad stepKey="waitForSimpleProductPageLoad"/>
+        <actionGroup ref="StorefrontOpenProductPageActionGroup" stepKey="navigateToSimpleProductPage">
+            <argument name="productUrl" value="$$createSimpleProduct.custom_attributes[url_key]$$"/>
+        </actionGroup>
+        <comment userInput="BIC workaround" stepKey="waitForSimpleProductPageLoad"/>
         <actionGroup ref="AddToCartFromStorefrontProductPageActionGroup" stepKey="addToCartSimpleProductFromStorefrontProductPage">
             <argument name="productName" value="$$createSimpleProduct.name$$"/>
         </actionGroup>
 
         <!-- Add Virtual Product to cart -->
-        <amOnPage url="{{StorefrontProductPage.url($$createVirtualProduct.custom_attributes[url_key]$$)}}" stepKey="navigateToVirtualProductPage"/>
-        <waitForPageLoad stepKey="waitForVirtualProductPageLoad"/>
+        <actionGroup ref="StorefrontOpenProductPageActionGroup" stepKey="navigateToVirtualProductPage">
+            <argument name="productUrl" value="$$createVirtualProduct.custom_attributes[url_key]$$"/>
+        </actionGroup>
+        <comment userInput="BIC workaround" stepKey="waitForVirtualProductPageLoad"/>
         <actionGroup ref="AddToCartFromStorefrontProductPageActionGroup" stepKey="addToCartVirtualProductFromStorefrontProductPage">
             <argument name="productName" value="$$createVirtualProduct.name$$"/>
         </actionGroup>
@@ -146,11 +150,12 @@
 
         <!-- Select free shipping -->
         <scrollTo selector="{{CheckoutShippingMethodsSection.next}}" stepKey="scrollToShippingRate"/>
+        <waitForElementClickable selector="{{CheckoutShippingMethodsSection.shippingMethodFreeShipping}}" stepKey="waitForShippingMethod"/>
         <click selector="{{CheckoutShippingMethodsSection.shippingMethodFreeShipping}}" stepKey="selectShippingMethod"/>
 
         <!-- Click next button to open payment section -->
-        <click selector="{{CheckoutShippingGuestInfoSection.next}}" stepKey="clickNext"/>
-        <waitForPageLoad stepKey="waitForShipmentPageLoad"/>
+        <actionGroup ref="StorefrontCheckoutClickNextButtonActionGroup" stepKey="clickNext"/>
+        <comment userInput="BIC workaround" stepKey="waitForShipmentPageLoad"/>
 
         <!-- Check order summary in checkout -->
         <waitForElement selector="{{CheckoutPaymentSection.paymentSectionTitle}}" stepKey="waitForPaymentSectionLoaded"/>
@@ -168,7 +173,7 @@
 
         <!-- Select payment method -->
         <click selector="{{StorefrontCheckoutPaymentMethodsSection.bankTransfer}}" stepKey="selectBankTransferMethod"/>
-        <click selector="{{CheckoutPaymentSection.placeOrder}}" stepKey="clickPlaceOrderButton"/>
+        <actionGroup ref="ClickPlaceOrderActionGroup" stepKey="clickPlaceOrderButton"/>
 
         <!-- Check order summary in checkout -->
         <seeElement selector="{{CheckoutSuccessMainSection.success}}" stepKey="orderIsSuccessfullyPlaced"/>
@@ -178,8 +183,8 @@
         <actionGroup ref="AssertMiniCartEmptyActionGroup" stepKey="assertMiniCartEmpty"/>
 
         <!-- Open created order in backend -->
-        <amOnPage url="{{AdminOrdersPage.url}}" stepKey="goToOrders"/>
-        <waitForPageLoad stepKey="waitForPageLoad"/>
+        <comment userInput="BIC workaround" stepKey="goToOrders"/>
+        <comment userInput="BIC workaround" stepKey="waitForPageLoad"/>
         <actionGroup ref="OpenOrderByIdActionGroup" stepKey="filterOrderGridById">
             <argument name="orderId" value="$grabOrderNumber"/>
         </actionGroup>
@@ -191,8 +196,8 @@
         <actionGroup ref="AssertOrderButtonsAvailableActionGroup" stepKey="assertOrderButtonsAvailable"/>
 
         <!-- Assert order grand total -->
-        <amOnPage url="{{StorefrontCustomerDashboardPage.url}}" stepKey="navigateToCustomerDashboardPage"/>
-        <waitForPageLoad stepKey="waitForCustomerDashboardPageLoad"/>
+        <actionGroup ref="StorefrontOpenMyAccountPageActionGroup" stepKey="navigateToCustomerDashboardPage"/>
+        <comment userInput="BIC workaround" stepKey="waitForCustomerDashboardPageLoad"/>
         <see selector="{{StorefrontCustomerRecentOrdersSection.orderTotal}}" userInput="$180.00" stepKey="checkOrderTotalInStorefront"/>
 
         <!-- Delete gift card account -->

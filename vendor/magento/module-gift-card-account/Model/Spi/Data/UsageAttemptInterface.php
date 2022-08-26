@@ -10,6 +10,8 @@ namespace Magento\GiftCardAccount\Model\Spi\Data;
 
 /**
  * An attempt to use a gift card code.
+ *
+ * @api
  */
 interface UsageAttemptInterface
 {

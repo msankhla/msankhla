@@ -21,6 +21,7 @@
             <group value="customeCustomAttributes"/>
         </annotations>
         <before>
+            <magentoCron groups="index" stepKey="reindex"/>
             <!--Login as admin-->
             <actionGroup ref="AdminLoginActionGroup" stepKey="LoginAsAdmin"/>
         </before>

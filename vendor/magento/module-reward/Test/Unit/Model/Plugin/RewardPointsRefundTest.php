@@ -216,27 +216,55 @@ class RewardPointsRefundTest extends TestCase
         );
     }
 
-    public function testBeforeSave()
+    /**
+     * Data provider for beforeSave and afterSave methods
+     *
+     * @return array
+     */
+    public function getCustomerIdDataProvider()
     {
-        $this->creditMemo->method('getOrder')->willReturn($this->order);
-        $this->rewardFactory->method('create')->willReturn($this->reward);
-        $this->reward->method('setCustomerId')->willReturnSelf();
-        $this->reward->expects($this->once())
-            ->method('setPointsDelta')
-            ->with(10)
-            ->willReturnSelf();
+        return
+            [
+                ['customer_id' => 123],
+                ['no_customer_id' => null]
+            ];
+    }
 
-        $this->creditMemo->method('getAutomaticallyCreated')->willReturn(null);
-        $this->creditMemo->method('getBaseRewardCurrencyAmount')->willReturn(10);
-        $this->creditMemo->method('getRewardPointsBalanceRefund')->willReturn(10);
+    /**
+     * Test for beforeSave method
+     *
+     * @return void
+     * @dataProvider getCustomerIdDataProvider
+     */
+    public function testBeforeSave(?int $customerId)
+    {
+
+        $this->creditMemo->method('getOrder')->willReturn($this->order);
+        $this->order->method('getCustomerId')->willReturn($customerId);
+
+        if ($customerId) {
+            $this->rewardFactory->method('create')->willReturn($this->reward);
+            $this->reward->method('setCustomerId')->willReturnSelf();
+            $this->reward->expects($this->once())
+                ->method('setPointsDelta')
+                ->with(10)
+                ->willReturnSelf();
+
+            $this->creditMemo->method('getAutomaticallyCreated')->willReturn(null);
+            $this->creditMemo->method('getBaseRewardCurrencyAmount')->willReturn(10);
+            $this->creditMemo->method('getRewardPointsBalanceRefund')->willReturn(10);
+        }
 
         $this->plugin->beforeSave($this->creditMemoResourceModel, $this->creditMemo);
     }
 
     /**
+     * Test for afterSave method
+     *
+     * @dataProvider getCustomerIdDataProvider
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    public function testAfterSave()
+    public function testAfterSave(?int $customerId)
     {
         $grandTotal = 655;
         $taxAmount = 0;
@@ -255,78 +283,83 @@ class RewardPointsRefundTest extends TestCase
         ];
         $this->creditMemo->method('getOrder')
             ->willReturn($this->order);
-        $this->historyCollectionFactory->method('create')
-            ->willReturn($this->historyCollection);
-        $this->historyCollection->method('addCustomerFilter')
-            ->willReturnSelf();
-        $this->historyCollection->method('addWebsiteFilter')
-            ->willReturnSelf();
-        $this->historyCollection->method('addFilter')
-            ->willReturnSelf();
-
         $this->order->method('getCustomerId')
-            ->willReturn(1);
-        $this->order->method('getStore')
-            ->willReturn($this->store);
-        $this->order->method('getIncrementId')
-            ->willReturn($incrementId);
-        $this->store->method('getWebsiteId')
-            ->willReturn(0);
+            ->willReturn($customerId);
 
-        $this->historyCollection->method('getIterator')
-            ->willReturn(new \ArrayIterator([$this->rewardHistory]));
+        if ($customerId) {
+            $this->historyCollectionFactory->method('create')
+                ->willReturn($this->historyCollection);
+            $this->historyCollection->method('addCustomerFilter')
+                ->willReturnSelf();
+            $this->historyCollection->method('addWebsiteFilter')
+                ->willReturnSelf();
+            $this->historyCollection->method('addFilter')
+                ->willReturnSelf();
 
-        $this->rewardHistory->method('getAdditionalData')
-            ->willReturn($additionalData);
-        $this->salesRuleRefund->method('refund')
-            ->willReturnSelf();
+            $this->order->method('getCustomerId')
+                ->willReturn(1);
+            $this->order->method('getStore')
+                ->willReturn($this->store);
+            $this->order->method('getIncrementId')
+                ->willReturn($incrementId);
+            $this->store->method('getWebsiteId')
+                ->willReturn(0);
 
-        $this->order->method('getBaseGrandTotal')
-            ->willReturn($grandTotal);
-        $this->order->method('getBaseTaxAmount')
-            ->willReturn($taxAmount);
-        $this->order->method('getBaseShippingAmount')
-            ->willReturn($shippingCost);
-        $this->order->method('getBaseTotalRefunded')
-            ->willReturn($grandTotal);
-        $this->order->method('getBaseTaxRefunded')
-            ->willReturn($taxAmount);
-        $this->order->method('getBaseShippingRefunded')
-            ->willReturn($shippingCost);
+            $this->historyCollection->method('getIterator')
+                ->willReturn(new \ArrayIterator([$this->rewardHistory]));
 
-        $this->creditMemo->method('setRewardedAmountAfterRefund')
-            ->willReturnSelf();
-        $this->eventManager->method('dispatch')
-            ->willReturnSelf();
-        $this->creditMemo->method('getRewardedAmountAfterRefund')
-            ->willReturn(0);
-        $this->rewardHistory->method('getPointsVoided')
-            ->willReturn('0');
-        $this->rewardHistory->method('getPointsDelta')
-            ->willReturn($pointsDelta);
+            $this->rewardHistory->method('getAdditionalData')
+                ->willReturn($additionalData);
+            $this->salesRuleRefund->method('refund')
+                ->willReturnSelf();
 
-        $this->rewardFactory->method('create')
-            ->willReturn($this->reward);
-        $this->storeManager->method('getStore')
-            ->willReturn($this->store);
-        $this->order->method('getStoreId')
-            ->willReturn(1);
-        $this->reward->method('setWebsiteId')
-            ->willReturnSelf();
-        $this->reward->method('setCustomerId')
-            ->willReturnSelf();
-        $this->reward->method('loadByCustomer')
-            ->willReturnSelf();
-        $this->reward->method('getPointsBalance')
-            ->willReturn($pointsBalance);
+            $this->order->method('getBaseGrandTotal')
+                ->willReturn($grandTotal);
+            $this->order->method('getBaseTaxAmount')
+                ->willReturn($taxAmount);
+            $this->order->method('getBaseShippingAmount')
+                ->willReturn($shippingCost);
+            $this->order->method('getBaseTotalRefunded')
+                ->willReturn($grandTotal);
+            $this->order->method('getBaseTaxRefunded')
+                ->willReturn($taxAmount);
+            $this->order->method('getBaseShippingRefunded')
+                ->willReturn($shippingCost);
 
-        $this->rewardData->method('getGeneralConfig')
-            ->willReturn(null);
+            $this->creditMemo->method('setRewardedAmountAfterRefund')
+                ->willReturnSelf();
+            $this->eventManager->method('dispatch')
+                ->willReturnSelf();
+            $this->creditMemo->method('getRewardedAmountAfterRefund')
+                ->willReturn(0);
+            $this->rewardHistory->method('getPointsVoided')
+                ->willReturn('0');
+            $this->rewardHistory->method('getPointsDelta')
+                ->willReturn($pointsDelta);
 
-        $this->rewardHistory->method('getResource')
-            ->willReturn($this->history);
-        $this->history->method('updateHistoryRow')
-            ->willReturnSelf();
+            $this->rewardFactory->method('create')
+                ->willReturn($this->reward);
+            $this->storeManager->method('getStore')
+                ->willReturn($this->store);
+            $this->order->method('getStoreId')
+                ->willReturn(1);
+            $this->reward->method('setWebsiteId')
+                ->willReturnSelf();
+            $this->reward->method('setCustomerId')
+                ->willReturnSelf();
+            $this->reward->method('loadByCustomer')
+                ->willReturnSelf();
+            $this->reward->method('getPointsBalance')
+                ->willReturn($pointsBalance);
+
+            $this->rewardData->method('getGeneralConfig')
+                ->willReturn(null);
+
+            $this->rewardHistory->method('getResource')
+                ->willReturn($this->history);
+            $this->history->method('updateHistoryRow')
+                ->willReturnSelf();
+        }
 
         $this->assertSame(
             $this->creditMemoResourceModel,

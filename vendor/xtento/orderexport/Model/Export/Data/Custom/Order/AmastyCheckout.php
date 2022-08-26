@@ -3,7 +3,7 @@
 /**
  * Product:       Xtento_OrderExport
  * ID:            %!uniqueid!%
- * Last Modified: 2019-06-12T19:47:27+00:00
+ * Last Modified: 2022-08-13T19:35:02+00:00
  * File:          Model/Export/Data/Custom/Order/AmastyCheckout.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -54,7 +54,7 @@ class AmastyCheckout extends \Xtento\OrderExport\Model\Export\Data\AbstractData
             'enabled' => true,
             'apply_to' => [Export::ENTITY_ORDER, Export::ENTITY_INVOICE, Export::ENTITY_SHIPMENT, Export::ENTITY_CREDITMEMO],
             'third_party' => true,
-            'depends_module' => 'Amasty_Checkout',
+            'depends_module' => 'Amasty_CheckoutCore',
         ];
     }
 

@@ -29,7 +29,6 @@ class Parser
 
     private $filename;
     private $offset = 0;
-    private $numberOfParsedLines = 0;
     private $totalNumberOfLines;
     private $lines = [];
     private $currentLineNb = -1;
@@ -88,7 +87,7 @@ class Parser
 
         $mbEncoding = null;
 
-        if (2 /* MB_OVERLOAD_STRING */ & (int) ini_get('mbstring.func_overload')) {
+        if (2 /* MB_OVERLOAD_STRING */ & (int) \ini_get('mbstring.func_overload')) {
             $mbEncoding = mb_internal_encoding();
             mb_internal_encoding('UTF-8');
         }
@@ -103,7 +102,6 @@ class Parser
             $this->offset = 0;
             $this->lines = [];
             $this->currentLine = '';
-            $this->numberOfParsedLines = 0;
             $this->refs = [];
             $this->skippedLineNumbers = [];
             $this->locallySkippedLineNumbers = [];
@@ -119,11 +117,10 @@ class Parser
         $this->currentLine = '';
         $value = $this->cleanup($value);
         $this->lines = explode("\n", $value);
-        $this->numberOfParsedLines = \count($this->lines);
         $this->locallySkippedLineNumbers = [];
 
         if (null === $this->totalNumberOfLines) {
-            $this->totalNumberOfLines = $this->numberOfParsedLines;
+            $this->totalNumberOfLines = \count($this->lines);
         }
 
         if (!$this->moveToNextLine()) {
@@ -450,8 +447,7 @@ class Parser
                     $value = '';
 
                     foreach ($this->lines as $line) {
-                        $trimmedLine = trim($line);
-                        if ('#' === ($trimmedLine[0] ?? '')) {
+                        if ('' !== ltrim($line) && '#' === ltrim($line)[0]) {
                             continue;
                         }
                         // If the indentation is not consistent at offset 0, it is to be considered as a ParseError
@@ -460,22 +456,22 @@ class Parser
                         }
 
                         if (false !== strpos($line, ': ')) {
-                            throw new ParseException('Mapping values are not allowed in multi-line blocks.', $this->getRealCurrentLineNb() + 1, $this->currentLine, $this->filename);
+                            @trigger_error('Support for mapping keys in multi-line blocks is deprecated since Symfony 4.3 and will throw a ParseException in 5.0.', \E_USER_DEPRECATED);
                         }
 
-                        if ('' === $trimmedLine) {
+                        if ('' === trim($line)) {
                             $value .= "\n";
                         } elseif (!$previousLineWasNewline && !$previousLineWasTerminatedWithBackslash) {
                             $value .= ' ';
                         }
 
-                        if ('' !== $trimmedLine && '\\' === substr($line, -1)) {
+                        if ('' !== trim($line) && '\\' === substr($line, -1)) {
                             $value .= ltrim(substr($line, 0, -1));
-                        } elseif ('' !== $trimmedLine) {
-                            $value .= $trimmedLine;
+                        } elseif ('' !== trim($line)) {
+                            $value .= trim($line);
                         }
 
-                        if ('' === $trimmedLine) {
+                        if ('' === trim($line)) {
                             $previousLineWasNewline = true;
                             $previousLineWasTerminatedWithBackslash = false;
                         } elseif ('\\' === substr($line, -1)) {
@@ -502,7 +498,7 @@ class Parser
             $data = new TaggedValue($tag, $data);
         }
 
-        if (Yaml::PARSE_OBJECT_FOR_MAP & $flags && 'mapping' === $context && !\is_object($data)) {
+        if (Yaml::PARSE_OBJECT_FOR_MAP & $flags && !\is_object($data) && 'mapping' === $context) {
             $object = new \stdClass();
 
             foreach ($data as $key => $value) {
@@ -566,10 +562,6 @@ class Parser
      */
     private function getCurrentLineIndentation(): int
     {
-        if (' ' !== ($this->currentLine[0] ?? '')) {
-            return 0;
-        }
-
         return \strlen($this->currentLine) - \strlen(ltrim($this->currentLine, ' '));
     }
 
@@ -690,7 +682,7 @@ class Parser
      */
     private function moveToNextLine(): bool
     {
-        if ($this->currentLineNb >= $this->numberOfParsedLines - 1) {
+        if ($this->currentLineNb >= \count($this->lines) - 1) {
             return false;
         }
 
@@ -986,7 +978,7 @@ class Parser
      */
     private function isCurrentLineBlank(): bool
     {
-        return '' === $this->currentLine || '' === trim($this->currentLine, ' ');
+        return '' == trim($this->currentLine, ' ');
     }
 
     /**
@@ -996,8 +988,8 @@ class Parser
      */
     private function isCurrentLineComment(): bool
     {
-        //checking explicitly the first char of the trim is faster than loops or strpos
-        $ltrimmedLine = '' !== $this->currentLine && ' ' === $this->currentLine[0] ? ltrim($this->currentLine, ' ') : $this->currentLine;
+        // checking explicitly the first char of the trim is faster than loops or strpos
+        $ltrimmedLine = ltrim($this->currentLine, ' ');
 
         return '' !== $ltrimmedLine && '#' === $ltrimmedLine[0];
     }

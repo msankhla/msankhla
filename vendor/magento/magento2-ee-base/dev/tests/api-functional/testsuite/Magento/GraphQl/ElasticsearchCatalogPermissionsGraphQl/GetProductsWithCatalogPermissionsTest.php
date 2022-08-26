@@ -39,7 +39,7 @@ class GetProductsWithCatalogPermissionsTest extends GraphQlAbstract
 
     /**
      * @magentoConfigFixture admin_store catalog/magento_catalogpermissions/enabled true
-     * @magentoDataFixture Magento/CatalogPermissions/_files/category_products_guest_deny.php
+     * @magentoApiDataFixture Magento/CatalogPermissions/_files/category_products_guest_deny.php
      * @magentoDbIsolation disabled
      */
     public function testSearchProductsAsGuest()
@@ -67,7 +67,7 @@ QUERY;
 
     /**
      * @magentoConfigFixture admin_store catalog/magento_catalogpermissions/enabled true
-     * @magentoDataFixture Magento/CatalogPermissions/_files/category_products_deny.php
+     * @magentoApiDataFixture Magento/CatalogPermissions/_files/category_products_deny.php
      * @magentoApiDataFixture Magento/Customer/_files/customer.php
      * @magentoDbIsolation disabled
      */

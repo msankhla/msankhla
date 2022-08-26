@@ -243,18 +243,28 @@ class CustomerTest extends TestCase
         $event = 'test_event';
         $customerSegment = $this->createPartialMock(
             Segment::class,
-            ['validateCustomer']
+            ['validateCustomer', 'getConditionsInstance']
         );
         $customerSegment->expects($this->once())->method('validateCustomer')->willReturn(true);
         $customerSegment->setData('apply_to', Segment::APPLY_TO_VISITORS);
         $customerSegment->setData('id', 'segment_id');
 
         $this->collection->expects($this->once())->method('addEventFilter')->with($event)->willReturnSelf();
-        $this->collection->expects($this->once())->method('addWebsiteFilter')->with(5)->willReturnSelf();
-        $this->collection->expects($this->once())->method('addIsActiveFilter')->with(1)->willReturnSelf();
-        $this->collection->expects($this->once())->method('getIterator')->willReturn(
+        $this->collection->expects($this->atLeastOnce())->method('addWebsiteFilter')->with(5)->willReturnSelf();
+        $this->collection->expects($this->atLeastOnce())->method('addIsActiveFilter')->with(1)->willReturnSelf();
+        $this->collection->expects($this->atLeastOnce())->method('getIterator')->willReturn(
             new \ArrayIterator([$customerSegment])
         );
+
+        $conditions = $this->getMockBuilder(\Magento\CustomerSegment\Model\Segment\Condition\Combine::class)
+            ->setMethods(['setRule', 'setId', 'setPrefix', 'getConditions'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $conditions->expects($this->once())->method('setRule')->willReturnSelf();
+        $conditions->expects($this->once())->method('setId')->willReturnSelf();
+        $conditions->expects($this->once())->method('setPrefix')->willReturnSelf();
+        $conditions->expects($this->atLeastOnce())->method('getConditions')->willReturn([]);
+        $customerSegment->expects($this->once())->method('getConditionsInstance')->willReturn($conditions);
 
         $this->visitorMock->setData('id', 'visitor_1');
         $this->visitorMock->setData('quote_id', 'quote_1');
@@ -278,6 +288,21 @@ class CustomerTest extends TestCase
         array $resultSegmentIds,
         array $contextSegmentIds
     ) {
+
+        $this->collectionFactoryMock->expects($this->exactly(1))
+            ->method('create')
+            ->willReturn($this->collection);
+        $this->collection->expects($this->atLeastOnce())
+            ->method('addWebsiteFilter')
+            ->with($websiteId);
+        $this->collection->expects($this->once())
+            ->method('addFieldToFilter')
+            ->with('apply_to', [Segment::APPLY_TO_VISITORS, Segment::APPLY_TO_VISITORS_AND_REGISTERED]);
+        $this->collection->expects($this->once())
+            ->method('addIsActiveFilter')
+            ->with(1);
+        $this->collection->method('getIterator')
+            ->willReturn(new \ArrayIterator());
         /**
          * @var SessionManagerInterface|MockObject $sessionMock
          */
@@ -350,6 +375,33 @@ class CustomerTest extends TestCase
             $this->model,
             $this->model->removeVisitorFromWebsiteSegments($sessionMock, $websiteId, $segmentIds)
         );
+    }
+
+    /**
+     * Tests that visitor segments are cached per website.
+     *
+     * @return void
+     */
+    public function testVisitorsSegmentsForWebsiteIsCached(): void
+    {
+        $customer = new DataObject();
+        $this->_registry->method('registry')
+            ->with('segment_customer')
+            ->willReturn($customer);
+        $this->_customerSession->method('getCustomerSegmentIds')
+            ->willReturn([]);
+        $this->collectionFactoryMock->expects($this->exactly(1))
+            ->method('create')
+            ->willReturn($this->collection);
+        $this->collection->expects($this->once())
+            ->method('addWebsiteFilter')
+            ->with($this->websiteId);
+        $this->collection->method('getIterator')
+            ->willReturn(new \ArrayIterator());
+
+        for ($i=0; $i < 3; $i++) {
+            $this->model->getCurrentCustomerSegmentIds();
+        }
     }
 
     /**

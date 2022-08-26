@@ -23,6 +23,7 @@
             <magentoCLI command="config:set {{SetAllowedCurrenciesConfigForUSD.path}} {{SetAllowedCurrenciesConfigForUSD.value}},{{SetAllowedCurrenciesConfigForEUR.value}}" stepKey="setAllowedCurrencyEURandUSD"/>
             <createData entity="SimpleProduct2" stepKey="createSimpleProduct"/>
             <createData entity="Simple_Customer_Without_Address" stepKey="createCustomer"/>
+            <magentoCron groups="index" stepKey="reindex"/>
             <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
         </before>
         <after>

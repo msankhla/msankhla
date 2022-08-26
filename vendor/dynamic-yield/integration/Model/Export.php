@@ -374,7 +374,7 @@ class Export
      *
      * @return array
      */
-    public function chunkProductExport($file, $limit = 100, $offset = 0, $additionalAttributes)
+    public function chunkProductExport($file, $additionalAttributes, $limit = 100, $offset = 0)
     {
         if($this->_feedHelper->getIsDebugMode()){
             $time_start = microtime(true);
@@ -545,7 +545,7 @@ class Export
      *
      * @return array
      */
-    public function readLine(Product $_product, $storeCollection,$parentProductCollection = null, $additionalAttributes)
+    public function readLine($additionalAttributes, Product $_product, $storeCollection,$parentProductCollection = null)
     {
         if($defaultStore = $this->_storeManager->getDefaultStoreView()) {
             $this->_storeManager->setCurrentStore($defaultStore->getStoreId());

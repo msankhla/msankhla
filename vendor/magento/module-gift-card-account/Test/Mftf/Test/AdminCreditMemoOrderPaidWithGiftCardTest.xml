@@ -54,6 +54,7 @@
         <amOnPage url="$$createCategory.custom_attributes[url_key]$$.html" stepKey="goToCategoryPageStorefront"/>
         <click selector="{{StorefrontCategoryProductSection.ProductTitleByName($$createProduct.name$$)}}" stepKey="clickProductInCategory"/>
         <waitForPageLoad stepKey="waitForProductPageLoad"/>
+        <waitForElementClickable selector="{{StorefrontProductActionSection.addToCart}}" stepKey="waitForAddToCartButton"/>
         <click selector="{{StorefrontProductActionSection.addToCart}}" stepKey="addProductToCart"/>
         <waitForPageLoad stepKey="waitForAddToCart"/>
         <waitForElementVisible selector="{{StorefrontMessagesSection.success}}" stepKey="waitForSuccessMessage"/>

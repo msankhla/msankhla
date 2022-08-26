@@ -28,9 +28,9 @@ class History extends \Magento\CustomerSegment\Model\Condition\Combine\AbstractC
      */
     protected $_combineProductCondition = true;
 
-    const VIEWED = 'viewed_history';
+    public const VIEWED = 'viewed_history';
 
-    const ORDERED = 'ordered_history';
+    public const ORDERED = 'ordered_history';
 
     /**
      * @var string
@@ -316,7 +316,7 @@ class History extends \Magento\CustomerSegment\Model\Condition\Combine\AbstractC
         );
 
         if (!$this->getData('product_ids')) {
-            return false;
+            return '!=' === $this->getOperator();
         }
 
         $select = $this->getConditionsSql($customer, $websiteId);
@@ -324,8 +324,8 @@ class History extends \Magento\CustomerSegment\Model\Condition\Combine\AbstractC
         $matchedParams = $this->matchParameters($select, $params);
 
         $result = $this->getResource(true)->getConnection()->fetchOne($select, $matchedParams) > 0;
-        if ('!=' === $this->getOperator() && false === $result) {
-            $result = true;
+        if ('!=' === $this->getOperator()) {
+            $result = !$result;
         }
 
         return $result;

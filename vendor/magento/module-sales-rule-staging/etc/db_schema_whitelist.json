@@ -46,7 +46,9 @@
     "salesrule_label": {
         "constraint": {
             "SALESRULE_LABEL_RULE_ID_SALESRULE_RULE_ID": true,
-            "SALESRULE_LABEL_RULE_ID_SEQUENCE_SALESRULE_SEQUENCE_VALUE": true
+            "SALESRULE_LABEL_RULE_ID_SEQUENCE_SALESRULE_SEQUENCE_VALUE": true,
+            "SALESRULE_LABEL_ROW_ID_SALESRULE_ROW_ID": true,
+            "SALESRULE_LABEL_ROW_ID_STORE_ID": true
         }
     },
     "salesrule_coupon": {

@@ -9,6 +9,7 @@ namespace Magento\Staging\Model\Update;
 use Magento\Framework\Exception\ValidatorException;
 use Magento\Framework\Intl\DateTimeFactory;
 use Magento\Staging\Api\Data\UpdateInterface;
+use Magento\Staging\Model\VersionManager;
 
 /**
  * Validate a staging update entity data.
@@ -19,11 +20,6 @@ class Validator
      * @var DateTimeFactory
      */
     private $dateTimeFactory;
-
-    /**
-     * @var int $stagingMaxYear
-     */
-    private $stagingMaxYear = 30;
 
     /**
      * Validator constructor.
@@ -46,7 +42,6 @@ class Validator
     {
         $this->validateUpdate($entity);
         $this->validateStartTimeNotPast($entity);
-        $this->validateMaxTime($entity);
     }
 
     /**
@@ -80,23 +75,23 @@ class Validator
      */
     private function validateMaxTime(UpdateInterface $entity) : void
     {
-        $currentDateTime = $this->dateTimeFactory->create();
-        $maxYearTimestamp = $currentDateTime->modify('+ ' . $this->stagingMaxYear . ' years')->getTimestamp();
-
-        if (strtotime($entity->getStartTime()) > $maxYearTimestamp) {
+        $currentDateTime = new \DateTime();
+        $diff = abs(VersionManager::MAX_VERSION - $currentDateTime->getTimestamp());
+        $years = ceil($diff / (365*60*60*24));
+        if (strtotime($entity->getStartTime()) > VersionManager::MAX_VERSION) {
             throw new ValidatorException(
                 __(
                     "The Future Update Start Time is invalid. It can't be later than current time + %1 years.",
-                    $this->stagingMaxYear
+                    $years
                 )
             );
         }
 
-        if ($entity->getEndTime() && strtotime($entity->getEndTime()) > $maxYearTimestamp) {
+        if ($entity->getEndTime() && strtotime($entity->getEndTime()) > VersionManager::MAX_VERSION) {
             throw new ValidatorException(
                 __(
                     "The Future Update End Time is invalid. It can't be later than current time + %1 years.",
-                    $this->stagingMaxYear
+                    $years
                 )
             );
         }
@@ -144,5 +139,6 @@ class Validator
                 __("The Future Update End Time is invalid. It can't be earlier than the current time.")
             );
         }
+        $this->validateMaxTime($entity);
     }
 }

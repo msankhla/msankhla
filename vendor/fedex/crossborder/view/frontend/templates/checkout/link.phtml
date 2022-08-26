@@ -1,0 +1,24 @@
+<?php
+/**
+ * FedEx Cross Border component
+ *
+ * @category    FedEx
+ * @package     FedEx_CrossBorder
+ * @author      Andrey Rapshtynsky <andrey.bh@gmail.com>
+ * @copyright   FedEx (https://crossborder.fedex.com/)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+/** @var \FedEx\CrossBorder\Block\Checkout\Link $block */
+?>
+<?php if ($block->canShow()) :?>
+    <div class="action fdxcb_button" data-mage-init='{"FedEx_CrossBorder/js/checkout-by-fedex": {}}'>
+        <?= $block->escapeHtmlAttr(__('CHECKOUT')) ?>
+        <div class="small">
+            <?= $block->escapeHtmlAttr(__('My order will ship outside of %1', $block->getHelper()->getDefaultCountry())) ?>
+        </div>
+    </div>
+    <div class="action fdxcb_link">
+        <a class="action domestic" href="<?= $block->escapeUrl($block->getCheckoutUrl()) ?>"><span><?= $block->escapeHtml(__('CHECKOUT and ship to the %1', $block->getHelper()->getDefaultCountry())) ?></span></a>
+    </div>
+<?php endif?>

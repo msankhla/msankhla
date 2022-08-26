@@ -9,8 +9,8 @@ namespace Magento\Staging\Test\Unit\Model;
 
 use Magento\Framework\Api\SearchCriteria;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
-use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Magento\Staging\Api\Data\UpdateSearchResultInterfaceFactory;
+use Magento\Staging\Model\Entity\PeriodSync\Scheduler as PeriodSyncScheduler;
 use Magento\Staging\Model\ResourceModel\Update\Collection;
 use Magento\Staging\Model\Update;
 use Magento\Staging\Model\Update\Validator;
@@ -72,6 +72,11 @@ class UpdateRepositoryTest extends TestCase
      */
     private $collectionProcessor;
 
+    /**
+     * @var PeriodSyncScheduler|MockObject
+     */
+    private $periodSyncSchedulerMock;
+
     protected function setUp(): void
     {
         $this->entityMock = $this->createMock(Update::class);
@@ -84,20 +89,19 @@ class UpdateRepositoryTest extends TestCase
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
-        $objectManager = new ObjectManager($this);
         $this->collectionProcessor = $this->createMock(
             CollectionProcessorInterface::class
         );
-        $this->model = $objectManager->getObject(
-            UpdateRepository::class,
-            [
-                'resource' => $this->resourceMock,
-                'validator' => $this->validatorMock,
-                'updateFactory' => $this->updateFactoryMock,
-                'versionHistory' => $this->versionHistoryMock,
-                'searchResultFactory' => $this->searchResultsFactoryMock,
-                'collectionProcessor' => $this->collectionProcessor
-            ]
+        $this->periodSyncSchedulerMock = $this->createMock(PeriodSyncScheduler::class);
+
+        $this->model = new UpdateRepository(
+            $this->searchResultsFactoryMock,
+            $this->resourceMock,
+            $this->updateFactoryMock,
+            $this->validatorMock,
+            $this->versionHistoryMock,
+            $this->collectionProcessor,
+            $this->periodSyncSchedulerMock
         );
     }
 
@@ -107,7 +111,7 @@ class UpdateRepositoryTest extends TestCase
     public function testSaveNewPermanent()
     {
         $this->validatorMock->expects($this->once())->method('validateCreate')->with($this->entityMock);
-        $this->entityMock->expects($this->once())->method('getId')->willReturn(null);
+        $this->entityMock->expects($this->atLeastOnce())->method('getId')->willReturn(null);
         $startTime = date('m/d/y', time());
         //getIdForEntity
         $this->entityMock->expects($this->any())->method('getStartTime')->willReturn($startTime);
@@ -185,7 +189,7 @@ class UpdateRepositoryTest extends TestCase
 
         $oldEntityMock = $this->createMock(Update::class);
         $oldEntityMock->expects($this->any())->method('getStartTime')->willReturn($oldStartTime);
-        $oldEntityMock->expects($this->once())->method('getId')->willReturn(strtotime($oldStartTime));
+        $oldEntityMock->expects($this->atLeastOnce())->method('getId')->willReturn(strtotime($oldStartTime));
         $this->updateFactoryMock->expects($this->any())
             ->method('create')
             ->willReturnOnConsecutiveCalls(
@@ -198,7 +202,7 @@ class UpdateRepositoryTest extends TestCase
         //$this->entityMock->expects($this->once())->method('setOldId')->with(strtotime($oldStartTime));
         $this->entityMock->expects($this->once())->method('getEndTime')->willReturn(null);
         $this->entityMock->expects($this->once())->method('setId')->willReturn($newId);
-        $this->entityMock->expects($this->once())->method('getRollbackId')->willReturn(null);
+        $this->entityMock->expects($this->atLeastOnce())->method('getRollbackId')->willReturn(null);
         $this->resourceMock->expects($this->once())->method('save')->with($this->entityMock);
 
         $this->assertEquals($this->entityMock, $this->model->save($this->entityMock));

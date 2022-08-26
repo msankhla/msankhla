@@ -19,6 +19,7 @@
             <group value="giftCard"/>
             <group value="sales"/>
             <group value="mtf_migrated"/>
+            <group value="cloud_smoke"/>
         </annotations>
         <before>
             <createData entity="Simple_GB_Customer" stepKey="createCustomer"/>

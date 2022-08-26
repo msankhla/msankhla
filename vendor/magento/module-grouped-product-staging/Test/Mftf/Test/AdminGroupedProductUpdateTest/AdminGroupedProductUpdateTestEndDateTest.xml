@@ -48,6 +48,7 @@
             <argument name="product" value="GroupedProduct"/>
         </actionGroup>
 
+        <scrollTo selector="{{AdminProductFormGroupedProductsSection.toggleGroupedProduct}}" x="0" y="-100" stepKey="scrollToGroupedSection"/>
         <conditionalClick selector="{{AdminProductFormGroupedProductsSection.toggleGroupedProduct}}" dependentSelector="{{AdminProductFormGroupedProductsSection.addProductsToGroup}}" visible="false" stepKey="openGroupedProductsSection"/>
         <click selector="body" stepKey="clickBodyToCorrectFocusGrouped"/>
         <click selector="{{AdminProductFormGroupedProductsSection.addProductsToGroup}}" stepKey="clickAddProductsToGroup"/>
@@ -81,9 +82,9 @@
             <argument name="name" value="{{_defaultStaging.name}}"/>
         </actionGroup>
 
-        <!-- Check to make sure the update shows up and has all of the details -->
-        <seeElement stepKey="seeUpdateRow" selector="{{AdminStagingDashboardSection.nthStagingUpdateRow('1')}}"/>
-        <see stepKey="seeUpcoming" selector="{{AdminStagingDashboardSection.nthStagingUpdateCell('1', '1')}}" userInput="Active"/>
-        <see stepKey="seeUpdateTitle" selector="{{AdminStagingDashboardSection.nthStagingUpdateCell('1', '2')}}" userInput="{{_defaultStaging.name}}"/>
+        <!-- Active permanent updates are no longer shown on the staging dashboard -->
+        <comment userInput="BIC workaround" stepKey="seeUpdateRow"/>
+        <comment userInput="BIC workaround" stepKey="seeUpcoming"/>
+        <comment userInput="BIC workaround" stepKey="seeUpdateTitle"/>
     </test>
 </tests>

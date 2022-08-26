@@ -412,14 +412,6 @@
         </arguments>
     </type>
 
-    <type name="Magento\CatalogStaging\Model\Plugin\Model\Product\ActionPlugin">
-        <arguments>
-            <argument name="attributeCodes" xsi:type="array">
-                <item name="news_from_date" xsi:type="string">news_to_date</item>
-            </argument>
-        </arguments>
-    </type>
-
     <type name="Magento\Catalog\Block\Adminhtml\Product\Edit\Action\Attribute\Tab\Attributes">
         <arguments>
             <argument name="excludeFields" xsi:type="array">
@@ -428,12 +420,7 @@
         </arguments>
     </type>
 
-    <type name="Magento\Catalog\Model\Product\Action">
-        <plugin name="stagingMassAttributesUpdate"
-                type="Magento\CatalogStaging\Model\Plugin\Model\Product\ActionPlugin"
-                sortOrder="1"/>
-    </type>
     <type name="Magento\Catalog\Helper\Product\Edit\Action\Attribute">
-        <plugin name="catalogHelperProductAttributePlugin" type="\Magento\CatalogStaging\Plugin\Helper\Product\Edit\Action\Attribute" />
+        <plugin name="catalogHelperProductAttributePlugin" type="Magento\CatalogStaging\Plugin\Helper\Product\Edit\Action\Attribute" />
     </type>
 </config>

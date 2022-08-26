@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * FedEx Installer component
+ *
+ * @category    FedEx
+ * @package     FedEx_Installer
+ * @author      Andrey Rapshtynsky <andrey.bh@gmail.com>
+ * @copyright   FedEx (https://crossborder.fedex.com/)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
+    <module name="FedEx_Installer" setup_version="1.0.0">
+        <sequence>
+            <module name="Magento_Catalog"/>
+            <module name="Magento_Cms"/>
+            <module name="Magento_Eav"/>
+            <module name="Magento_Framework"/>
+            <module name="Magento_Store"/>
+        </sequence>
+    </module>
+</config>

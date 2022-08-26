@@ -63,7 +63,8 @@ class CreditMemoResolver
             return true;
         }
 
-        if ($this->comparator->equal((float)$subject->getBaseTotalPaid(), $totalRefunded)) {
+        // If total invoiced is equal to total refunded amount then CreditMemo can not be created anymore
+        if ($this->comparator->equal($totalRefunded, $totalInvoiced)) {
             return false;
         }
 

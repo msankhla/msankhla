@@ -8,7 +8,7 @@
     "config": {
         "sort-packages": true
     },
-    "version": "2.2.2",
+    "version": "2.2.3",
     "require": {
         "magento/module-page-builder": "2.2.*",
         "magento/module-backend": "*",

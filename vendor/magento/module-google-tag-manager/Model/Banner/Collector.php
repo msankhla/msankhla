@@ -5,6 +5,8 @@
  */
 namespace Magento\GoogleTagManager\Model\Banner;
 
+use Magento\Banner\Block\Widget\Banner;
+
 /**
  * @api
  * @since 100.0.2
@@ -17,10 +19,12 @@ class Collector
     protected $bannerIds = [];
 
     /**
-     * @param \Magento\Banner\Block\Widget\Banner $banner
+     * Add banner block
+     *
+     * @param Banner $banner
      * @return $this
      */
-    public function addBannerBlock(\Magento\Banner\Block\Widget\Banner $banner)
+    public function addBannerBlock(Banner $banner)
     {
         $bannerIds = $banner->getBannerIds();
         if (empty($bannerIds)) {
@@ -33,6 +37,8 @@ class Collector
     }
 
     /**
+     * Get banner ids
+     *
      * @return string[]
      */
     public function getBannerIds()

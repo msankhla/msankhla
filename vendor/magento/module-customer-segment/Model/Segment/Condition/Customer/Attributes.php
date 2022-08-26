@@ -461,6 +461,24 @@ class Attributes extends AbstractCondition
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getValue()
+    {
+        if ($this->getInputType() === 'date'
+            && $this->getOperator() === '<='
+            && !$this->getIsValueParsed()
+        ) {
+            $date = (new \DateTime($this->getData('value')))->setTime(23, 59, 59);
+            $value = $date->format('Y-m-d H:i:s');
+            $this->setValue($value);
+            $this->setIsValueParsed(true);
+            return $this->getData('value');
+        }
+        return parent::getValue();
+    }
+
+    /**
      * Return customer select according to condition.
      *
      * @param int $websiteId

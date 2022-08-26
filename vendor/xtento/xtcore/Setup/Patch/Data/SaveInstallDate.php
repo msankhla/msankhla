@@ -3,7 +3,7 @@
 /**
  * Product:       Xtento_XtCore
  * ID:            %!uniqueid!%
- * Last Modified: 2022-06-26T20:19:29+00:00
+ * Last Modified: 2022-08-15T19:11:41+00:00
  * File:          Setup/Patch/Data/SaveInstallDate.php
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */
@@ -51,21 +51,15 @@ class SaveInstallDate implements DataPatchInterface
     }
 
     /**
-     * Script adding shipping type attribute for products
-     *
-     * @return void
+     * @return void|SaveInstallDate
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function apply()
     {
-        try {
-            $this->saveInstallDate();
-        } catch (SessionException $e) {
-            $this->appState->setAreaCode('adminhtml');
-            $this->saveInstallDate();
-        }
+        $this->appState->emulateAreaCode('adminhtml', [$this, 'saveInstallDate'], []);
     }
 
-    protected function saveInstallDate()
+    public function saveInstallDate()
     {
         /** @var $configValue \Magento\Framework\App\Config\ValueInterface */
         $configValue = $this->configValueFactory->create();

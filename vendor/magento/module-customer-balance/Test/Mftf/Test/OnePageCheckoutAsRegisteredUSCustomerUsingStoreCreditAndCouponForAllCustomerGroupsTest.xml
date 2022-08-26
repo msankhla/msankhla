@@ -38,6 +38,7 @@
             <createData entity="SimpleSalesRuleCoupon" stepKey="createCouponForCartPriceRule">
                 <requiredEntity createDataKey="createCartPriceRule"/>
             </createData>
+            <magentoCron groups="index" stepKey="reindex"/>
 
             <!-- Enable payment method -->
             <magentoCLI command="config:set {{PurchaseOrderEnableConfigData.path}} {{PurchaseOrderEnableConfigData.value}}" stepKey="enablePurchaseOrder"/>
@@ -118,8 +119,8 @@
         </actionGroup>
 
         <!-- Click next button to open payment section -->
-        <click selector="{{CheckoutShippingGuestInfoSection.next}}" stepKey="clickNext"/>
-        <waitForPageLoad stepKey="waitForShipmentPageLoad"/>
+        <actionGroup ref="StorefrontCheckoutClickNextButtonActionGroup" stepKey="clickNext"/>
+        <comment userInput="BIC workaround" stepKey="waitForShipmentPageLoad"/>
 
         <!-- Apply coupon -->
         <actionGroup ref="ApplyCouponOnPaymentPageActionGroup" stepKey="applyCoupon">
@@ -135,7 +136,7 @@
         <fillField selector="{{StorefrontCheckoutPaymentMethodsSection.purchaseOrderNumber}}" userInput="{{CONST.purchaseOrderNumber}}" stepKey="fillPurchaseOrderNumber"/>
 
         <!-- Check order summary in checkout -->
-        <click selector="{{CheckoutPaymentSection.placeOrder}}" stepKey="clickPlaceOrderButton"/>
+        <actionGroup ref="ClickPlaceOrderActionGroup" stepKey="clickPlaceOrderButton"/>
         <seeElement selector="{{CheckoutSuccessMainSection.success}}" stepKey="orderIsSuccessfullyPlaced"/>
         <grabTextFrom selector="{{CheckoutSuccessMainSection.orderNumber22}}" stepKey="grabOrderNumber"/>
 

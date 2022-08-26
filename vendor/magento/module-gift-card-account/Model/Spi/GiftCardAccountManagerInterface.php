@@ -16,6 +16,8 @@ use Magento\GiftCardAccount\Api\Exception\TooManyAttemptsException;
  * Manage gift card accounts.
  *
  * Additional logic required for this GiftCardAccount module implementation which is not exposed as API.
+ *
+ * @api
  */
 interface GiftCardAccountManagerInterface
 {

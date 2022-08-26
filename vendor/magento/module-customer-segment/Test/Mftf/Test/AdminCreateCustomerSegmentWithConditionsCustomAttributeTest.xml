@@ -31,6 +31,7 @@
             <actionGroup ref="AdminAddCustomerAttributeOptionsTwoMultipleActionGroup" stepKey="addOptions">
                 <argument name="customerAttribute" value="AttributeMultiSelectForSegment" />
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
              <!--Open edit customer page -->
             <actionGroup ref="OpenEditCustomerFromAdminActionGroup" stepKey="editCustomer">
                 <argument name="customer" value="$createCustomer$"/>
@@ -51,6 +52,7 @@
             <actionGroup ref="AdminDeleteCustomerAttributeActionGroup" stepKey="deleteAttribute">
                     <argument name="attributeData" value="AttributeMultiSelectForSegment"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
         </after>
 

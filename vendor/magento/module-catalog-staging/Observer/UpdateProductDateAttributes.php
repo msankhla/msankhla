@@ -121,10 +121,13 @@ class UpdateProductDateAttributes implements ObserverInterface
                     $localStartTime->format(DateTime::DATETIME_PHP_FORMAT)
                 );
             } else {
-                $date = $product->getData('is_new')
-                    ? $this->localeDate->date()->format(DateTime::DATETIME_PHP_FORMAT)
-                    : $product->getData('news_from_date');
-                $this->setDateTime($product, self::$startDateKeys, $date);
+                if ($product->getData('is_new')) {
+                    $date = $product->getData('news_from_date') ??
+                        $this->localeDate->date()->format(DateTime::DATETIME_PHP_FORMAT);
+                    $this->setDateTime($product, self::$startDateKeys, $date);
+                } else {
+                    $this->setDateTime($product, self::$startDateKeys, null);
+                }
             }
 
             if ($updatedIn < VersionManager::MAX_VERSION) {
@@ -132,7 +135,9 @@ class UpdateProductDateAttributes implements ObserverInterface
                 $localEndTime = $this->localeDate->date($dateTime);
                 $this->setDateTime($product, self::$endDateKeys, $localEndTime->format(DateTime::DATETIME_PHP_FORMAT));
             } else {
-                $this->setDateTime($product, self::$endDateKeys, null);
+                $date = $product->getData('is_new') && $product->getData('news_to_date') ?
+                    $product->getData('news_to_date') : null;
+                $this->setDateTime($product, self::$endDateKeys, $date);
             }
         }
     }

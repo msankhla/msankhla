@@ -14,9 +14,6 @@ use Magento\Framework\App\ResourceConnection;
 use Magento\Staging\Api\UpdateRepositoryInterface;
 use Magento\Staging\Model\VersionManager;
 
-/**
- * Class RescheduleUpdate
- */
 class RescheduleUpdate
 {
     /**
@@ -228,6 +225,8 @@ class RescheduleUpdate
     }
 
     /**
+     * Update entity
+     *
      * @param EntityMetadataInterface $metadata
      * @param UpdateInterface $origin
      * @param UpdateInterface $target
@@ -273,22 +272,23 @@ class RescheduleUpdate
         $hydrator = $this->hydratorPool->getHydrator($entityType);
         $entityData = $hydrator->extract($entity);
         $identifier = $entityData[$metadata->getIdentifierField()];
+        $rollbackId = $origin->getRollbackId() ?: $entityData['updated_in'];
         $connection = $this->resourceConnection->getConnectionByName($metadata->getEntityConnectionName());
         $connection->update(
             $metadata->getEntityTable(),
             [
-                'updated_in' => $this->getNextForRollback($metadata, $origin->getRollbackId(), $identifier),
+                'updated_in' => $this->getNextForRollback($metadata, $rollbackId, $identifier),
             ],
             [
                 $metadata->getIdentifierField() . ' = ?' => $identifier,
-                'created_in = ?' => $this->getPreviousForRollback($metadata, $origin->getRollbackId(), $identifier)
+                'created_in = ?' => $this->getPreviousForRollback($metadata, $rollbackId, $identifier)
             ]
         );
         $connection->delete(
             $metadata->getEntityTable(),
             [
                 $metadata->getIdentifierField() . ' = ?' => $identifier,
-                'created_in = ?' => $origin->getRollbackId()
+                'created_in = ?' => $rollbackId
             ]
         );
         return true;
@@ -335,7 +335,7 @@ class RescheduleUpdate
         $connection = $this->resourceConnection->getConnectionByName($metadata->getEntityConnectionName());
         $connection->beginTransaction();
         try {
-            if ($origin->getRollbackId()) {
+            if ($origin->getRollbackId() || !$target->getRollbackId()) {
                 $this->purgeRollbackEntry($entityType, $entity, $origin);
             }
             $this->moveEntityVersion($entityType, $entity, $origin, $target);

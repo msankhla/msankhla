@@ -5,12 +5,12 @@
  */
 declare(strict_types=1);
 
-
 namespace Magento\CheckoutStaging\Test\Unit\Plugin;
 
 use Magento\Checkout\Api\PaymentInformationManagementInterface;
 use Magento\CheckoutStaging\Plugin\PaymentInformationManagementPlugin;
 use Magento\Customer\Api\AddressRepositoryInterface;
+use Magento\Customer\Api\Data\AddressInterface as CustomerAddressInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Quote\Api\CartRepositoryInterface;
@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
 
 class PaymentInformationManagementPluginTest extends TestCase
 {
-    const CART_ID = 1;
+    private const CART_ID = 1;
 
     /**
      * @var VersionManager|MockObject
@@ -76,6 +76,16 @@ class PaymentInformationManagementPluginTest extends TestCase
     private $plugin;
 
     /**
+     * @var CustomerAddressInterface|mixed|MockObject
+     */
+    private $customerAddress;
+
+    /**
+     * @var AddressInterface|mixed|MockObject
+     */
+    private $billingAddress;
+
+    /**
      * Set up
      */
     protected function setUp(): void
@@ -90,13 +100,42 @@ class PaymentInformationManagementPluginTest extends TestCase
         $this->addressRepository = $this->getMockBuilder(AddressRepositoryInterface::class)
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
+        $this->customerAddress = $this->getMockBuilder(CustomerAddressInterface::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['setIsDefaultShipping', 'setIsDefaultBilling', 'setCustomerId', 'getId'])
+            ->getMockForAbstractClass();
         $this->quoteMock = $this->getMockBuilder(Quote::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getShippingAddress', 'getCustomer', 'getCustomerId', 'getCustomerAddressId'])
+            ->setMethods(
+                [
+                    'getShippingAddress',
+                    'getBillingAddress',
+                    'getCustomer',
+                    'getCustomerId',
+                    'getCustomerAddressId',
+                    'addCustomerAddress',
+                    'isVirtual'
+                ]
+            )
             ->getMock();
         $this->shippingAddress = $this->getMockBuilder(AddressInterface::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getSameAsBilling', 'setSameAsBilling', 'getCustomerAddressId'])
+            ->setMethods(
+                [
+                    'getSameAsBilling',
+                    'setSameAsBilling',
+                    'getCustomerAddressId',
+                    'getQuoteId',
+                    'exportCustomerAddress',
+                    'setCustomerAddressData',
+                    'setCustomerAddressId',
+                    'getData'
+                ]
+            )
+            ->getMockForAbstractClass();
+        $this->billingAddress = $this->getMockBuilder(AddressInterface::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getSaveInAddressBook'])
             ->getMockForAbstractClass();
         $this->customerMock = $this->getMockForAbstractClass(CustomerInterface::class);
         $this->paymentInformationManagement =
@@ -104,7 +143,11 @@ class PaymentInformationManagementPluginTest extends TestCase
         $this->paymentMethod = $this->getMockForAbstractClass(PaymentInterface::class);
         $this->address = $this->getMockForAbstractClass(AddressInterface::class);
 
-        $this->plugin = new PaymentInformationManagementPlugin($this->versionManager, $this->quoteRepository, $this->addressRepository);
+        $this->plugin = new PaymentInformationManagementPlugin(
+            $this->versionManager,
+            $this->quoteRepository,
+            $this->addressRepository
+        );
     }
 
     /**
@@ -137,6 +180,7 @@ class PaymentInformationManagementPluginTest extends TestCase
      * @param bool $hasDefaultShipping
      * @throws LocalizedException
      * @dataProvider dataProviderForSavePaymentInformationAndPlaceOrder
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function testSameAsBillingFlagBeforeSavePaymentInformationAndPlaceOrder(
         string $quoteSameAsBilling,
@@ -144,7 +188,8 @@ class PaymentInformationManagementPluginTest extends TestCase
         string $shippingCustomerAddressId = null,
         string $billingCustomerAddressId = null,
         bool $hasDefaultBilling = true,
-        bool $hasDefaultShipping = true
+        bool $hasDefaultShipping = true,
+        bool $isVirtual = false
     ): void {
         $this->versionManager->expects(static::once())
             ->method('isPreviewVersion')
@@ -164,8 +209,16 @@ class PaymentInformationManagementPluginTest extends TestCase
             ->willReturn($this->shippingAddress);
         $this->quoteMock
             ->expects($this->any())
+            ->method('getBillingAddress')
+            ->willReturn($this->billingAddress);
+        $this->quoteMock
+            ->expects($this->any())
             ->method('getCustomerId')
             ->willReturn($customerId);
+        $this->quoteMock
+            ->expects($this->any())
+            ->method('isVirtual')
+            ->willReturn($isVirtual);
         $this->customerMock
             ->expects($this->any())
             ->method('getId')
@@ -178,6 +231,30 @@ class PaymentInformationManagementPluginTest extends TestCase
             ->expects($this->any())
             ->method('getDefaultShipping')
             ->willReturn($hasDefaultShipping);
+        $this->customerAddress
+            ->expects($this->any())
+            ->method('setIsDefaultShipping')
+            ->with(!$hasDefaultShipping)
+            ->willReturnSelf();
+        $this->customerAddress
+            ->expects($this->any())
+            ->method('setIsDefaultBilling')
+            ->with($hasDefaultBilling)
+            ->willReturnSelf();
+        $this->customerAddress
+            ->expects($this->any())
+            ->method('setCustomerId')
+            ->with($customerId)
+            ->willReturnSelf();
+        $this->customerAddress
+            ->expects($this->any())
+            ->method('getId')
+            ->willReturn($shippingCustomerAddressId);
+        $this->quoteMock
+            ->expects($this->any())
+            ->method('addCustomerAddress')
+            ->with($this->customerAddress)
+            ->willReturnSelf();
         $this->shippingAddress
             ->expects($this->any())
             ->method('getSameAsBilling')
@@ -186,6 +263,32 @@ class PaymentInformationManagementPluginTest extends TestCase
             ->expects($this->any())
             ->method('getCustomerAddressId')
             ->willReturn($shippingCustomerAddressId);
+        $this->shippingAddress
+            ->expects($this->any())
+            ->method('getQuoteId')
+            ->willReturn(self::CART_ID);
+        $this->shippingAddress
+            ->expects($this->any())
+            ->method('exportCustomerAddress')
+            ->willReturn($this->customerAddress);
+        $this->shippingAddress
+            ->expects($this->any())
+            ->method('setCustomerAddressData')
+            ->with($this->customerAddress)
+            ->willReturnSelf();
+        $this->shippingAddress
+            ->expects($this->any())
+            ->method('setCustomerAddressId')
+            ->with($shippingCustomerAddressId)
+            ->willReturnSelf();
+        $this->shippingAddress
+            ->expects($this->any())
+            ->method('getData')
+            ->willReturnSelf([]);
+        $this->billingAddress
+            ->expects($this->any())
+            ->method('getSaveInAddressBook')
+            ->willReturn(0);
         $this->address
             ->expects($this->any())
             ->method('getCustomerAddressId')
@@ -206,12 +309,22 @@ class PaymentInformationManagementPluginTest extends TestCase
     public function dataProviderForSavePaymentInformationAndPlaceOrder(): array
     {
         return [
-            'update same_as_billing flag if customer id is null' => ['0', null, null, null],
-            'update same_as_billing flag if getSameAsBilling is 1' => ['1', '1', '2', '3'],
-            'update same_as_billing flag with different customer address id for shipping and billing ' => ['0', '2', '1', '2'],
-            'update same_as_billing flag with same customer address id for shipping and billing ' => ['0', '2', '2', '2'],
-            'update same_as_billing flag with same customer address id for shipping and billing and no default billing ' => ['0', '2', '2', '2', false],
-            'update same_as_billing flag with same customer address id for shipping and billing and no default shipping ' => ['0', '2', '2', '2', true, false]
+            'update same_as_billing flag if customer id is null'
+            => ['0', null, null, null],
+            'update same_as_billing flag if getSameAsBilling is 1'
+            => ['1', '1', '2', '3'],
+            'update same_as_billing flag with different customer address id for shipping and billing'
+            => ['0', '2', '1', '2'],
+            'update same_as_billing flag with same customer address id for shipping and billing '
+            => ['0', '2', '2', '2'],
+            'update same_as_billing flag with same customer address id for shipping and billing and no default billing'
+            => ['0', '2', '2', '2', false],
+            'update same_as_billing flag with same customer address id for shipping and billing and no default shipping'
+            => ['0', '2', '2', '2', true, false],
+            'update same_as_billing flag with same customer address id for deafult shipping and billing'
+            => ['0', '2', '2', '2', true, true],
+            'update same_as_billing flag with same customer address id for deafult billing and virtual quote'
+            => ['0', '2', '2', '2', true, true, true]
         ];
     }
 }

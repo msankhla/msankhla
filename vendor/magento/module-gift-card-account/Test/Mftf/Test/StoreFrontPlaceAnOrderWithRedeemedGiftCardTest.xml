@@ -53,8 +53,8 @@
             <argument name="code" value="$giftCardAccountCode"/>
         </actionGroup>
         <actionGroup ref="GoToCheckoutFromMinicartActionGroup" stepKey="goToCheckoutFromMinicart"/>
-        <click selector="{{CheckoutShippingSection.next}}" stepKey="clickNext"/>
-        <click selector="{{CheckoutPaymentSection.placeOrder}}" stepKey="clickPlaceOrder"/>
+        <actionGroup ref="StorefrontCheckoutClickNextButtonActionGroup" stepKey="clickNext"/>
+        <actionGroup ref="ClickPlaceOrderActionGroup" stepKey="clickPlaceOrder"/>
         <see stepKey="seeSuccessMessage" userInput="Thank you for your purchase!"/>
         <actionGroup ref="DeleteGiftCardAccountActionGroup" stepKey="deleteGiftCardAccount">
             <argument name="giftCardAccountCode" value="{$giftCardAccountCode}"/>

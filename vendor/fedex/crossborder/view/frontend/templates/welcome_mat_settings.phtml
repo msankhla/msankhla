@@ -1,0 +1,45 @@
+<?php
+/**
+ * FedEx Cross Border component
+ *
+ * @category    FedEx
+ * @package     FedEx_CrossBorder
+ * @author      Andrey Rapshtynsky <andrey.bh@gmail.com>
+ * @copyright   FedEx (https://crossborder.fedex.com/)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+/** @var \FedEx\CrossBorder\Block\WelcomeMat $block */
+?>
+<?php if ($block->canShow()): ?>
+    <div class="switcher">
+        <strong class="label"><span><?= $block->escapeHtml(__('Country')) ?></span></strong>
+        <strong data-trigger="welcome-mat-trigger"><?= $block->getSelectedCountryName() ?></strong>
+    </div>
+<?php else: ?>
+    <div class="switcher fdxcb-country-selector">
+        <strong class="label"><span><?= $block->escapeHtml(__('Country')) ?></span></strong>
+        <div class="actions dropdown options switcher-options">
+            <div class="action toggle switcher-trigger"
+                 id="switcher-country-trigger"
+                 data-mage-init='{"dropdown":{}}'
+                 data-toggle="dropdown"
+                 data-trigger-keypress-button="true"
+            >
+                <strong><?= $block->getSelectedCountryName() ?></strong>
+            </div>
+            <ul class="dropdown switcher-dropdown" data-target="dropdown">
+                <?php foreach ($this->getHelper()->getAvailableCountries()->toOptionArray() as $_code => $_data) : ?>
+                    <?php if (!empty($_code) && $_code != $block->getHelper()->getSelectedCountry()) : ?>
+                        <li class="switcher-option">
+                            <a href="#" data-post='<?= $block->getCountryPostData($_code) ?>'>
+                                <span><?= $block->escapeHtml($_data['label']) ?></span>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    </div>
+<?php endif; ?>
+

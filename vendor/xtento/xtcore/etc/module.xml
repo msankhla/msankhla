@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="Xtento_XtCore" setup_version="2.16.0">
+    <module name="Xtento_XtCore" setup_version="2.17.0">
         <sequence>
             <module name="Magento_AdminNotification"/>
         </sequence>
@@ -10,7 +10,7 @@
 /**
  * Product:       Xtento_XtCore
  * ID:            %!uniqueid!%
- * Last Modified: 2022-06-26T20:22:02+00:00
+ * Last Modified: 2022-08-15T19:13:26+00:00
  * File:          etc/module.xml
  * Copyright:     Copyright (c) XTENTO GmbH & Co. KG <info@xtento.com> / All rights reserved.
  */

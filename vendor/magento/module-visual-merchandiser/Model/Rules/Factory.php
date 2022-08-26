@@ -3,19 +3,30 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Magento\VisualMerchandiser\Model\Rules;
 
+use Magento\Catalog\Model\Product;
+use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
+use Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\VisualMerchandiser\Api\RuleManagerInterface;
 use Magento\VisualMerchandiser\Api\RuleFactoryPoolInterface;
 
+/**
+ * Visual merchandiser rules factory
+ *
+ * @api
+ */
 class Factory
 {
 
     /**
      * @deprecated 100.3.0  This property exists to provide backward compatibility.
      *              Now objects are created by RuleFactoryPoolInterface collection of factories
-     * @var \Magento\Framework\ObjectManagerInterface
+     * @var ObjectManagerInterface
      */
     protected $objectManager;
 
@@ -24,12 +35,12 @@ class Factory
      *             Avoid usage of injected shared model instance.
      *             Create a new instance with a factory instead.
      * @see self::attribiteFactory
-     * @var \Magento\Catalog\Model\ResourceModel\Eav\Attribute
+     * @var Attribute
      */
     protected $attribute;
 
     /**
-     * @var \Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory
+     * @var AttributeFactory
      */
     private $attributeFactory;
     /**
@@ -38,20 +49,20 @@ class Factory
     private $rulePool;
 
     /**
-     * @param \Magento\Framework\ObjectManagerInterface $objectManager
-     * @param \Magento\Catalog\Model\ResourceModel\Eav\Attribute $attribute
-     * @param \Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory $attributeFactory
+     * @param ObjectManagerInterface $objectManager
+     * @param Attribute $attribute
+     * @param AttributeFactory $attributeFactory
      */
     public function __construct(
-        \Magento\Framework\ObjectManagerInterface $objectManager,
-        \Magento\Catalog\Model\ResourceModel\Eav\Attribute $attribute,
-        \Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory $attributeFactory = null,
+        ObjectManagerInterface $objectManager,
+        Attribute $attribute,
+        AttributeFactory $attributeFactory = null,
         RuleFactoryPoolInterface $rulePool = null
     ) {
         $this->objectManager = $objectManager;
         $this->attribute = $attribute;
         $this->attributeFactory = $attributeFactory ?: $objectManager->get(
-            \Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory::class
+            AttributeFactory::class
         );
 
         $this->rulePool = $rulePool ?: $objectManager->get(
@@ -91,12 +102,13 @@ class Factory
 
     /**
      * @param array $rule
-     * @return \Magento\VisualMerchandiser\Model\Rules\RuleInterface
+     * @return RuleInterface
+     * @throws LocalizedException
      */
     public function create(array $rule)
     {
         $attribute = $this->attributeFactory->create()->loadByCode(
-            \Magento\Catalog\Model\Product::ENTITY,
+            Product::ENTITY,
             $rule['attribute']
         );
 

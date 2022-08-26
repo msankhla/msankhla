@@ -52,6 +52,7 @@
                 <argument name="segmentName" value="{{CustomerSegmentLastName.name}}"/>
             </actionGroup>
             <actionGroup ref="ClearFiltersAdminDataGridActionGroup" stepKey="clearFilterOnCustomerSegmentPage"/>
+            <magentoCron groups="index" stepKey="reindex"/>
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
             <comment userInput="BIC workaround" stepKey="customerLogoutStorefront"/>
         </after>

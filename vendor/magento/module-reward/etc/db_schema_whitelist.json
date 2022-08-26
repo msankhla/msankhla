@@ -43,7 +43,8 @@
         "index": {
             "MAGENTO_REWARD_HISTORY_REWARD_ID": true,
             "MAGENTO_REWARD_HISTORY_WEBSITE_ID": true,
-            "MAGENTO_REWARD_HISTORY_STORE_ID": true
+            "MAGENTO_REWARD_HISTORY_STORE_ID": true,
+            "MAGENTO_REWARD_HISTORY_ENTITY": true
         },
         "constraint": {
             "PRIMARY": true,

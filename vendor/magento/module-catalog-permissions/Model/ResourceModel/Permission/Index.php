@@ -6,14 +6,20 @@
 
 namespace Magento\CatalogPermissions\Model\ResourceModel\Permission;
 
+use Magento\Backend\Block\Widget\Tab;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\ResourceModel\Category\Collection as CategoryCollection;
 use Magento\Catalog\Model\ResourceModel\Category\Flat\Collection as FlatCollection;
 use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
 use Magento\CatalogPermissions\Helper\Data as Helper;
+use Magento\CatalogPermissions\Model\Indexer\TableMaintainer;
 use Magento\CatalogPermissions\Model\Permission;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Data\Collection\AbstractDb as AbstractCollection;
+use Magento\Framework\DB\Select;
+use Magento\Framework\Search\AdapterInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Customer\Model\ResourceModel\Group\CollectionFactory as GroupCollectionFactory;
 
 /**
  * Catalog permissions index resource model.
@@ -38,21 +44,27 @@ class Index extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
     protected $storeManager;
 
     /**
-     * Constructor
-     *
+     * @var TableMaintainer
+     */
+    private $tableMaintainer;
+
+    /**
      * @param \Magento\Framework\Model\ResourceModel\Db\Context $context
      * @param Helper $helper
      * @param StoreManagerInterface $storeManager
-     * @param string $connectionName
+     * @param mixed $connectionName
+     * @param mixed $tableMaintainer
      */
     public function __construct(
         \Magento\Framework\Model\ResourceModel\Db\Context $context,
         Helper $helper,
         StoreManagerInterface $storeManager,
-        $connectionName = null
+        $connectionName = null,
+        TableMaintainer $tableMaintainer = null
     ) {
         $this->helper = $helper;
         $this->storeManager = $storeManager;
+        $this->tableMaintainer = $tableMaintainer ?? ObjectManager::getInstance()->get(TableMaintainer::class);
         parent::__construct($context, $connectionName);
     }
 
@@ -92,7 +104,9 @@ class Index extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             $categoryId = [$categoryId];
         }
 
-        $select = $connection->select()->from($this->getMainTable())->where('category_id IN (?)', $categoryId);
+        $select = $this->tableMaintainer->getInitialSelect(TableMaintainer::CATEGORY, $customerGroupId);
+        $select->where('category_id IN (?)', $categoryId);
+
         if ($customerGroupId !== null) {
             $select->where('customer_group_id = ?', $customerGroupId);
         }
@@ -115,12 +129,12 @@ class Index extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
     public function getRestrictedCategoryIds($customerGroupId, $websiteId)
     {
         $connection = $this->getConnection();
-        $select = $connection->select()->from(
-            $this->getMainTable(),
-            'category_id'
-        )->where(
-            'grant_catalog_category_view = :grant_catalog_category_view'
-        );
+
+        $select = $this->tableMaintainer->getInitialSelect(TableMaintainer::CATEGORY, $customerGroupId)
+            ->columns(['category_id'])
+            ->where(
+                'grant_catalog_category_view = :grant_catalog_category_view'
+            );
         $bind = [];
         if ($customerGroupId !== null) {
             $select->where('customer_group_id = :customer_group_id');
@@ -170,7 +184,7 @@ class Index extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         }
 
         $collection->getSelect()->joinLeft(
-            ['perm' => $this->getMainTable()],
+            ['perm' => $this->tableMaintainer->resolveMainTableNameCategory($customerGroupId)],
             'perm.category_id = ' . $tableAlias . '.entity_id' . ' AND ' . $connection->quoteInto(
                 'perm.website_id = ?',
                 $websiteId
@@ -219,7 +233,7 @@ class Index extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             $conditions[] = 'perm.product_id = cat_index.product_id';
             $conditions[] = $connection->quoteInto('perm.store_id = ?', $collection->getStoreId());
             $joinConditions = join(' AND ', $conditions);
-            $tableName = $this->getProductTable();
+            $tableName = $this->tableMaintainer->resolveMainTableNameProduct($customerGroupId);
 
             if (!isset($fromPart['perm'])) {
                 $collection->getSelect()->joinLeft(
@@ -235,7 +249,7 @@ class Index extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
                 $this->storeManager->getStore($collection->getStoreId())->getWebsiteId()
             );
             $joinConditions = join(' AND ', $conditions);
-            $tableName = $this->getMainTable();
+            $tableName = $this->tableMaintainer->resolveMainTableNameCategory($customerGroupId);
 
             if (!isset($fromPart['perm'])) {
                 $collection->getSelect()->joinLeft(
@@ -299,33 +313,31 @@ class Index extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         $connection = $this->getConnection();
 
         if ($product->getCategory()) {
-            $select = $connection->select()->from(
-                ['perm' => $this->getMainTable()],
-                ['grant_catalog_category_view', 'grant_catalog_product_price', 'grant_checkout_items']
-            )->where(
-                'category_id = ?',
-                $product->getCategory()->getId()
-            )->where(
-                'customer_group_id = ?',
-                $customerGroupId
-            )->where(
-                'website_id = ?',
-                $this->storeManager->getStore($product->getStoreId())->getWebsiteId()
-            );
+            $select = $this->tableMaintainer->getInitialSelect(TableMaintainer::CATEGORY, $customerGroupId)
+                ->columns(['grant_catalog_category_view', 'grant_catalog_product_price', 'grant_checkout_items'])
+                ->where(
+                    'category_id = ?',
+                    $product->getCategory()->getId()
+                )->where(
+                    'customer_group_id = ?',
+                    $customerGroupId
+                )->where(
+                    'website_id = ?',
+                    $this->storeManager->getStore($product->getStoreId())->getWebsiteId()
+                );
         } else {
-            $select = $connection->select()->from(
-                ['perm' => $this->getProductTable()],
-                ['grant_catalog_category_view', 'grant_catalog_product_price', 'grant_checkout_items']
-            )->where(
-                'product_id = ?',
-                $product->getId()
-            )->where(
-                'customer_group_id = ?',
-                $customerGroupId
-            )->where(
-                'store_id = ?',
-                $product->getStoreId()
-            );
+            $select = $this->tableMaintainer->getInitialSelect(TableMaintainer::PRODUCT, $customerGroupId)
+                ->columns(['grant_catalog_category_view', 'grant_catalog_product_price', 'grant_checkout_items'])
+                ->where(
+                    'product_id = ?',
+                    $product->getId()
+                )->where(
+                    'customer_group_id = ?',
+                    $customerGroupId
+                )->where(
+                    'store_id = ?',
+                    $product->getStoreId()
+                );
         }
 
         $permission = $connection->fetchRow($select);
@@ -351,22 +363,23 @@ class Index extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         }
 
         $connection = $this->getConnection();
-        $select = $connection->select()->from(
-            ['perm' => $this->getProductTable()],
-            [
-                'product_id',
-                'grant_catalog_category_view',
-                'grant_catalog_product_price',
-                'grant_checkout_items',
-                'customer_group_id'
-            ]
-        )->where(
-            'product_id IN (?)',
-            $productId
-        )->where(
-            'store_id = ?',
-            $storeId
-        );
+        $select = $this->tableMaintainer->getInitialSelect(TableMaintainer::PRODUCT, $customerGroupId)
+            ->columns(
+                [
+                    'product_id',
+                    'grant_catalog_category_view',
+                    'grant_catalog_product_price',
+                    'grant_checkout_items',
+                    'customer_group_id'
+                ]
+            )
+            ->where(
+                'product_id IN (?)',
+                $productId
+            )->where(
+                'store_id = ?',
+                $storeId
+            );
 
         if (null !== $customerGroupId) {
             $select->where(

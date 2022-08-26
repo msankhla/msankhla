@@ -21,6 +21,7 @@ $updateRepository = $objectManager->get(UpdateRepositoryInterface::class);
 $productStaging = $objectManager->get(ProductStagingInterface::class);
 $versionManager = $objectManager->get(VersionManager::class);
 $productRepository = $objectManager->get(ProductRepositoryInterface::class);
+$currentVersionId = $versionManager->getCurrentVersion()->getId();
 
 //create product
 /** @var Product $product */
@@ -59,3 +60,4 @@ $product = $productRepository->get('asimpleproduct');
 $versionManager->setCurrentVersionId($update->getId());
 $product->setName('Updated A Simple Product Name')->setPrice(6);
 $productStaging->schedule($product, $update->getId());
+$versionManager->setCurrentVersionId($currentVersionId);

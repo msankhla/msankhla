@@ -38,7 +38,7 @@ class GetCategoriesWithCatalogPermissionsTest extends GraphQlAbstract
 
     /**
      * @magentoConfigFixture admin_store catalog/magento_catalogpermissions/enabled true
-     * @magentoDataFixture Magento/CatalogPermissions/_files/category_permissions_for_guest.php
+     * @magentoApiDataFixture Magento/CatalogPermissions/_files/category_permissions_for_guest.php
      * @magentoDbIsolation disabled
      * @expectedException \Magento\TestFramework\TestCase\GraphQl\ResponseContainsErrorsException
      * @expectedExceptionMessage GraphQL response contains errors: Category doesn't exist
@@ -63,7 +63,7 @@ QUERY;
 
     /**
      * @magentoConfigFixture admin_store catalog/magento_catalogpermissions/enabled true
-     * @magentoDataFixture Magento/CatalogPermissions/_files/category_permissions_for_logged_in.php
+     * @magentoApiDataFixture Magento/CatalogPermissions/_files/category_permissions_for_logged_in.php
      * @magentoDbIsolation disabled
      * @expectedException \Magento\TestFramework\TestCase\GraphQl\ResponseContainsErrorsException
      * @expectedExceptionMessage GraphQL response contains errors: Not enough permissions to access category
@@ -88,7 +88,7 @@ QUERY;
 
     /**
      * @magentoConfigFixture admin_store catalog/magento_catalogpermissions/enabled true
-     * @magentoDataFixture Magento/CatalogPermissions/_files/category_permissions_for_logged_in.php
+     * @magentoApiDataFixture Magento/CatalogPermissions/_files/category_permissions_for_logged_in.php
      * @magentoDbIsolation disabled
      * @magentoApiDataFixture Magento/Customer/_files/customer.php
      */
@@ -125,7 +125,7 @@ QUERY;
 
     /**
      * @magentoConfigFixture admin_store catalog/magento_catalogpermissions/enabled true
-     * @magentoDataFixture Magento/CatalogPermissions/_files/child_category_permissions_for_logged_in.php
+     * @magentoApiDataFixture Magento/CatalogPermissions/_files/child_category_permissions_for_logged_in.php
      * @magentoDbIsolation disabled
      * @magentoApiDataFixture Magento/Customer/_files/customer.php
      */

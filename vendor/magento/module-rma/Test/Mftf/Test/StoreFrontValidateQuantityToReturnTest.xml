@@ -45,8 +45,9 @@
             <argument name="orderNumberMessage" value="CONST.successCheckoutOrderNumberMessage"/>
             <argument name="emailYouMessage" value="CONST.successCheckoutEmailYouMessage"/>
         </actionGroup>
-
         <grabTextFrom selector="{{CheckoutSuccessMainSection.orderNumber22}}" stepKey="orderNumber"/>
+        <actionGroup ref="StorefrontClickOrderLinkFromCheckoutSuccessPageActionGroup" stepKey="openOrderViewPage"/>
+        <grabFromCurrentUrl regex="~/order_id/(\d+)/~" stepKey="grabOrderId"/>
 
         <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
 
@@ -59,7 +60,7 @@
         <actionGroup ref="StorefrontOpenMyAccountPageActionGroup" stepKey="navigateToCustomerDashboardPage"/>
         <actionGroup ref="StorefrontClickViewOrderLinkOnMyOrdersPageActionGroup" stepKey="clickViewOrder"/>
         <!--Customer on Return page-->
-        <amOnPage url="{{StorefrontCustomerReturnPage.url({$orderNumber})}}" stepKey="amOnCustomerOrderPage"/>
+        <amOnPage url="{{StorefrontCustomerReturnPage.url({$grabOrderId})}}" stepKey="amOnCustomerOrderPage"/>
         <waitForPageLoad stepKey="waitForPageLoad"/>
         <fillField selector="{{StorefrontCustomerReturnSection.quantityToReturn('0')}}" userInput="-1" stepKey="fillFieldQuantityReturn"/>
         <grabTextFrom selector="{{StorefrontCustomerReturnSection.quantityToReturnError('0')}}" stepKey="grabQuantityToReturnErrorMessage"/>

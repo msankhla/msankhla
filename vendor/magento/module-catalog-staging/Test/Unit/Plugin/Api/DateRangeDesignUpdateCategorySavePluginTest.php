@@ -78,21 +78,21 @@ class DateRangeDesignUpdateCategorySavePluginTest extends TestCase
                 ]
             );
 
-        if ($setCustomDesignFromAt >= 0 && $setCustomDesignToAt >= 0) {
-            $categoryMock
-                ->method('setCustomAttribute')
-                ->withConsecutive(
-                    ['custom_design_from', $startTime],
-                    ['custom_design_to', $endTime]
-                );
-        } elseif ($setCustomDesignFromAt > 0 && $setCustomDesignToAt < 0) {
-            $categoryMock
-                ->method('setCustomAttribute')
-                ->with('custom_design_from', $startTime);
-        } elseif ($setCustomDesignToAt > 0 && $setCustomDesignFromAt < 0) {
-            $categoryMock
+        if ($setCustomDesignFromAt < 0 && $setCustomDesignToAt < 0) {
+            $categoryMock->expects($this->never())->method('setCustomAttribute');
+        } elseif ($setCustomDesignFromAt < 0) {
+            $categoryMock->expects($this->once())
                 ->method('setCustomAttribute')
                 ->with('custom_design_to', $endTime);
+        } elseif ($setCustomDesignFromAt == 0 && $setCustomDesignToAt > 0) {
+            //The second update is not a roll back of the first one
+            $categoryMock->expects($this->once())
+                ->method('setCustomAttribute')
+                ->with('custom_design_from', $startTime);
+        } elseif ($setCustomDesignFromAt == 0 && $setCustomDesignToAt < 0) {
+            $categoryMock->expects($this->once())
+                ->method('setCustomAttribute')
+                ->with('custom_design_from', $startTime);
         }
 
         $this->plugin->beforeSave(

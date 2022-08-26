@@ -71,6 +71,7 @@
                 <argument name="browsingCategoryPermission" value="deny"/>
             </actionGroup>
             <actionGroup ref="AdminSaveCategoryFormActionGroup" stepKey="saveCategoryForm"/>
+            <magentoCron groups="index" stepKey="reindex"/>
         </before>
 
         <after>

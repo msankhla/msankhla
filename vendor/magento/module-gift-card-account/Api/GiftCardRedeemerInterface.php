@@ -14,6 +14,8 @@ use Magento\GiftCardAccount\Api\Exception\TooManyAttemptsException;
 
 /**
  * Service responsible for redeeming a gift card.
+ *
+ * @api
  */
 interface GiftCardRedeemerInterface
 {

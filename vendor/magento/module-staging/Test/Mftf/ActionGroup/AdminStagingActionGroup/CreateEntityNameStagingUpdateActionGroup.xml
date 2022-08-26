@@ -45,6 +45,7 @@
         <wait stepKey="conditionalWait2" time="$getTimeToWait"/>
 
         <magentoCLI stepKey="runCron" command="cron:run --group='staging'"/>
+        <magentoCLI stepKey="cronRunTwice" command="cron:run --group='staging'"/>
         <magentoCLI stepKey="reindex" command="indexer:reindex"/>
         <magentoCLI stepKey="flushCache" command="cache:flush"/>
     </actionGroup>

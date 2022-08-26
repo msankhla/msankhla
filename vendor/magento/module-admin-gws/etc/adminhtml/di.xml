@@ -38,6 +38,13 @@
     <type name="Magento\Catalog\Controller\Adminhtml\Product\Edit">
         <plugin name="admin_gws_store_switcher" type="Magento\AdminGws\Plugin\ProductStoreSwitcherUpdater" />
     </type>
+    <type name="Magento\Catalog\Controller\Adminhtml\Category\Edit">
+        <plugin name="admin_gws_category_store_switcher" type="Magento\AdminGws\Plugin\CategoryStoreSwitcherUpdater" />
+        <plugin name="admin_gws_category_store_updater" type="Magento\AdminGws\Plugin\CategoryStoreUpdater" />
+    </type>
+    <type name="Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Categories">
+        <plugin name="admin_gws_product_categories_role_restrictions" type="Magento\AdminGws\Plugin\Catalog\Ui\DataProvider\Product\Form\Modifier\CategoriesRoleRestrictions" />
+    </type>
     <type name="Magento\Store\Model\StoreManagerInterface">
         <plugin name="store_filter" type="Magento\AdminGws\Plugin\StoreFilter" />
     </type>

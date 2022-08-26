@@ -3,13 +3,18 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
+
 namespace Magento\VersionsCms\Model;
 
 use Magento\Framework\App\RequestInterface;
+use Magento\VersionsCms\Api\Data\HierarchyNodeInterface;
 
 /**
  * Interface for CMS Hierarchy Node resolver.
  * This resolver detects current CMS Hierarchy Node instance based on request.
+ *
+ * @api
  */
 interface CurrentNodeResolverInterface
 {
@@ -20,7 +25,7 @@ interface CurrentNodeResolverInterface
      * that corresponds to request.
      *
      * @param RequestInterface $request
-     * @return \Magento\VersionsCms\Api\Data\HierarchyNodeInterface|null
+     * @return HierarchyNodeInterface|null
      */
     public function get(RequestInterface $request);
 }

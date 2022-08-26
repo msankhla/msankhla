@@ -7,43 +7,47 @@
 namespace Magento\VisualMerchandiser\Observer;
 
 use Magento\Framework\Event\Observer;
+use Magento\Framework\Event\ObserverInterface;
+use Magento\VisualMerchandiser\Model\Category\Builder;
+use Magento\VisualMerchandiser\Model\RulesFactory;
 
-class CatalogCategorySaveBefore implements \Magento\Framework\Event\ObserverInterface
+class CatalogCategorySaveBefore implements ObserverInterface
 {
     /**
-     * @var \Magento\VisualMerchandiser\Model\Category\Builder
+     * @var Builder
      */
     protected $categoryBuilder;
 
     /**
-     * @var \Magento\VisualMerchandiser\Model\Rules
+     * @var RulesFactory
      */
-    protected $_rules;
+    protected $rulesFactory;
 
     /**
      * Constructor
      *
-     * @param \Magento\VisualMerchandiser\Model\Category\Builder $categoryBuilder
-     * @param \Magento\VisualMerchandiser\Model\Rules $rules
+     * @param Builder $categoryBuilder
+     * @param RulesFactory $rulesFactory
      */
     public function __construct(
-        \Magento\VisualMerchandiser\Model\Category\Builder $categoryBuilder,
-        \Magento\VisualMerchandiser\Model\Rules $rules
+        Builder $categoryBuilder,
+        RulesFactory $rulesFactory
     ) {
         $this->categoryBuilder = $categoryBuilder;
-        $this->_rules = $rules;
+        $this->rulesFactory = $rulesFactory;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    public function execute(Observer $observer)
     {
         /* @var \Magento\Catalog\Model\Category $category */
         $category = $observer->getEvent()->getDataObject();
 
         // Disable smart category rule after application
-        $rule = $this->_rules->loadByCategory($category);
+        $rules = $this->rulesFactory->create();
+        $rule = $rules->loadByCategory($category);
         if ($rule->getId() && $rule->getIsActive()) {
             $this->categoryBuilder->rebuildCategory($category);
             $rule->setData([

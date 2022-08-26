@@ -10,4 +10,7 @@
         <!-- Override origin log plugin -->
         <plugin name="log_authentication" type="Magento\LoginAsCustomerLogging\Plugin\LoginAsCustomerApi\LogAuthenticationPlugin"/>
     </type>
+    <type name="Magento\Customer\Controller\Account\Logout">
+        <plugin name="log_logout_from_customer_account" type="Magento\LoginAsCustomerLogging\Plugin\LogCustomerAccountLogoutPlugin"/>
+    </type>
 </config>

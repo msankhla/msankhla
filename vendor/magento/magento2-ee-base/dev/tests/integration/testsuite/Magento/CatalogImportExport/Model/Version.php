@@ -6,7 +6,17 @@
 
 namespace Magento\CatalogImportExport\Model;
 
+use Magento\Catalog\Api\Data\ProductCustomOptionInterfaceFactory;
+use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\Catalog\Model\Product\Option\Repository;
+use Magento\Catalog\Model\Product\Option\SaveHandler;
+use Magento\Catalog\Model\ProductRepository;
+use Magento\CatalogStaging\Api\ProductStagingInterface;
+use Magento\Framework\EntityManager\HydratorPool;
 use Magento\Framework\ObjectManagerInterface;
+use Magento\Staging\Api\Data\UpdateInterface;
+use Magento\Staging\Api\UpdateRepositoryInterface;
+use Magento\Staging\Model\VersionManager;
 
 /**
  * Class responsible for creating schedule update for products.
@@ -16,7 +26,7 @@ use Magento\Framework\ObjectManagerInterface;
 class Version
 {
     /**
-     * @var \Magento\Framework\ObjectManagerInterface
+     * @var ObjectManagerInterface
      */
     private $objectManager;
 
@@ -39,29 +49,16 @@ class Version
     public function create(array $skus, AbstractProductExportImportTestCase $testInstance = null): void
     {
         $date = new \DateTime();
-        /** @var \Magento\Staging\Model\UpdateFactory $updateFactory */
-        $updateFactory = $this->objectManager->get(\Magento\Staging\Model\UpdateFactory::class);
-        /** @var \Magento\Framework\EntityManager\MetadataPool $metadataPool */
-        $metadataPool = $this->objectManager->get(\Magento\Framework\EntityManager\MetadataPool::class);
-        /** @var \Magento\Catalog\Model\ResourceModel\Product $productResource */
-        $productResource = $this->objectManager->get(\Magento\Catalog\Model\ResourceModel\Product::class);
-        /** @var \Magento\Catalog\Model\Product $product */
-        $product = $this->objectManager->create(\Magento\Catalog\Model\Product::class);
-        /** @var \Magento\Staging\Model\ResourceModel\Update $resourceUpdate */
-        $resourceUpdate = $this->objectManager->get(\Magento\Staging\Model\ResourceModel\Update::class);
-        /** @var \Magento\Framework\EntityManager\EntityManager $entityManager */
-        $entityManager = $this->objectManager->get(\Magento\Framework\EntityManager\EntityManager::class);
-        /** @var \Magento\Staging\Model\VersionManager $versionManager */
-        $versionManager = $this->objectManager->get(\Magento\Staging\Model\VersionManager::class);
-        /** @var \Magento\Framework\EntityManager\HydratorInterface $hydrator */
-        $hydrator = $metadataPool->getHydrator(\Magento\Staging\Api\Data\UpdateInterface::class);
+        $productRepository = $this->objectManager->get(ProductRepositoryInterface::class);
+        $updateRepository = $this->objectManager->get(UpdateRepositoryInterface::class);
+        $versionManager = $this->objectManager->get(VersionManager::class);
+        $productStaging = $this->objectManager->get(ProductStagingInterface::class);
+        $hydratorPool = $this->objectManager->get(HydratorPool::class);
+        $hydrator = $hydratorPool->getHydrator(UpdateInterface::class);
 
         $i = 2;
         foreach ($skus as $sku) {
             $startDate = $date->add(new \DateInterval('P' . $i . 'D'))->format('Y-m-d H:i:s');
-
-            $productId = $productResource->getIdBySku($sku);
-            $product->clearInstance()->load($productId);
 
             $stagingData = [
                 'mode'        => 'save',
@@ -73,26 +70,22 @@ class Version
                 'select_id'   => null,
             ];
 
-            /** @var \Magento\Staging\Model\Update $update */
-            $update = $updateFactory->create();
+            $update = $this->objectManager->create(UpdateInterface::class);
             $hydrator->hydrate($update, $stagingData);
             $update->setIsCampaign(false);
             $update->setId(strtotime($update->getStartTime()));
             $update->isObjectNew(true);
+            $updateRepository->save($update);
 
-            $resourceUpdate->save($update);
-
+            $product = $productRepository->get($sku);
             $oldVersion = $versionManager->getCurrentVersion();
             $versionManager->setCurrentVersionId($update->getId());
-
             $this->prepareCustomOptions($product);
             if ($testInstance) {
                 $testInstance->prepareProduct($product);
             }
-
-            $product->unsRowId();
             $product->setName('My Product ' . $startDate);
-            $entityManager->save($product, ['created_in' => $update->getId()]);
+            $productStaging->schedule($product, $update->getId());
             $versionManager->setCurrentVersionId($oldVersion->getId());
 
             $i++;
@@ -106,15 +99,12 @@ class Version
      */
     public function prepareCustomOptions($product)
     {
-        $this->objectManager->removeSharedInstance(\Magento\Catalog\Model\ProductRepository::class);
-        $this->objectManager->removeSharedInstance(\Magento\Catalog\Model\Product\Option\Repository::class);
-        $this->objectManager->removeSharedInstance(\Magento\Catalog\Model\Product\Option\SaveHandler::class);
+        $this->objectManager->removeSharedInstance(ProductRepository::class);
+        $this->objectManager->removeSharedInstance(Repository::class);
+        $this->objectManager->removeSharedInstance(SaveHandler::class);
 
         if ($product->getOptions()) {
-            /** @var \Magento\Catalog\Api\Data\ProductCustomOptionInterfaceFactory $customOptionFactory */
-            $customOptionFactory = $this->objectManager->get(
-                \Magento\Catalog\Api\Data\ProductCustomOptionInterfaceFactory::class
-            );
+            $customOptionFactory = $this->objectManager->get(ProductCustomOptionInterfaceFactory::class);
 
             $options = [];
             foreach ($product->getOptions() as $option) {
@@ -136,7 +126,6 @@ class Version
                     }
                     $optionData['values'] = $optionValues;
                 }
-                /** @var \Magento\Catalog\Api\Data\ProductCustomOptionInterface $option */
                 $option = $customOptionFactory->create(['data' => $optionData]);
                 $option->setProductSku($product->getSku());
                 $options[] = $option;

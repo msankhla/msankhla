@@ -17,6 +17,7 @@ use Magento\Logging\Model\Processor;
 use Magento\Logging\Model\ResourceModel\Event;
 use Magento\Logging\Model\ResourceModel\Event\Changes;
 use Magento\LoginAsCustomerApi\Api\GetLoggedAsCustomerAdminIdInterface;
+use Magento\LoginAsCustomerLogging\Model\LogValidation;
 use Magento\LoginAsCustomerLogging\Model\GetEventForLogging;
 
 /**
@@ -59,6 +60,11 @@ class LogDeleteCustomerAddressObserver implements ObserverInterface
     private $changesResource;
 
     /**
+     * @var LogValidation
+     */
+    private LogValidation $logValidation;
+
+    /**
      * @var GetLoggedAsCustomerAdminIdInterface
      */
     private $getLoggedAsCustomerAdminId;
@@ -70,6 +76,7 @@ class LogDeleteCustomerAddressObserver implements ObserverInterface
      * @param GetEventForLogging $getEventForLogging
      * @param Models $models
      * @param Changes $changesResource
+     * @param LogValidation $logValidation
      * @param GetLoggedAsCustomerAdminIdInterface $getLoggedAsCustomerAdminId
      */
     public function __construct(
@@ -79,6 +86,7 @@ class LogDeleteCustomerAddressObserver implements ObserverInterface
         GetEventForLogging $getEventForLogging,
         Models $models,
         Changes $changesResource,
+        LogValidation $logValidation,
         GetLoggedAsCustomerAdminIdInterface $getLoggedAsCustomerAdminId
     ) {
         $this->eventResource = $eventResource;
@@ -87,6 +95,7 @@ class LogDeleteCustomerAddressObserver implements ObserverInterface
         $this->getEventForLogging = $getEventForLogging;
         $this->models = $models;
         $this->changesResource = $changesResource;
+        $this->logValidation = $logValidation;
         $this->getLoggedAsCustomerAdminId = $getLoggedAsCustomerAdminId;
     }
 
@@ -95,7 +104,7 @@ class LogDeleteCustomerAddressObserver implements ObserverInterface
      */
     public function execute(Observer $observer): void
     {
-        if (!$this->getLoggedAsCustomerAdminId->execute()) {
+        if (!$this->logValidation->shouldBeLogged()) {
             return;
         }
         $event = $this->getEventForLogging->execute($this->getLoggedAsCustomerAdminId->execute());

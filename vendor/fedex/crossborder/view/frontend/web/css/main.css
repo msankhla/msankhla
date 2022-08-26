@@ -1,0 +1,327 @@
+.panel.header .welcome_mat_button {
+    display: none;
+    float: right;
+    margin-left: 15px;
+    padding: 3px;
+    width: 16px;
+    height: 16px;
+    order: 0;
+    line-height: 0;
+    cursor: pointer;
+}
+
+.page-header .switcher.fdxcb-country-selector .options .action.toggle:after,
+.page-footer .switcher.fdxcb-country-selector .options .action.toggle:after {
+    content: '';
+}
+
+.fdxcb-country-selector .action img {
+    width: 16px;
+    height: 16px;
+    order: 0;
+    line-height: 0;
+}
+
+.fdxcb-country-selector .switcher-option a {
+    display: -webkit-flex !important;
+    display: flex !important;
+    -webkit-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+}
+
+.fdxcb-country-selector .switcher-option img,
+.fdxcb-country-selector .switcher-option span {
+    white-space: nowrap;
+    -webkit-flex-grow: 0;
+    flex-grow: 0;
+    -webkit-flex-shrink: 0;
+    flex-shrink: 0;
+}
+
+.fdxcb-country-selector .switcher-option img {
+    width: 16px;
+    height: 16px;
+    order: 0;
+    line-height: 0;
+    margin: 2px 8px 2px 0;
+}
+
+@media only screen and (max-width: 767px) {
+    .panel.header {
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex-direction: row;
+        flex-direction: row;
+        -webkit-justify-content: flex-end;
+        justify-content: flex-end;
+    }
+
+    .panel.header .welcome_mat_button {
+        float: none;
+        margin: 5px 0 5px 15px;
+    }
+}
+
+.panel.header .welcome_mat_button img {
+    width: 100%;
+    height: 100%;
+}
+
+.welcome_mat_container .modal-inner-wrap {
+    width: 600px;
+}
+
+#welcome_mat {
+    display: none;
+}
+
+#welcome_mat .selector_container {
+    margin-top: 15px;
+}
+
+#welcome_mat .country_container,
+#welcome_mat .currency_container {
+    padding: 20px 0 0 0;
+    box-sizing: border-box;
+}
+
+#welcome_mat .country_info_container {
+    background-color: #efefef;
+    padding: 10px;
+    margin-top: 10px;
+    box-sizing: border-box;
+}
+
+#welcome_mat .country_info_container._hide {
+    display: none;
+}
+
+@media only screen and (min-width: 768px) {
+    .panel.header .welcome_mat_button {
+        display: inline-block;
+    }
+
+    .panel.header .fdxcb-country-selector ul.dropdown {
+        max-height: 360px;
+        overflow: auto;
+        width: max-content !important;
+    }
+
+    #welcome_mat .selector_container {
+        position: relative;
+        min-height: 144px;
+    }
+
+    #welcome_mat .country_container,
+    #welcome_mat .currency_container,
+    #welcome_mat .country_info_container {
+        max-width: 50%;
+        width: 50%;
+        padding-right: 20px;
+    }
+
+    #welcome_mat .country_info_container {
+        position: absolute;
+        right: 0px;
+        top: 20px;
+        margin-top: 0;
+    }
+}
+
+#welcome_mat .button_container
+{
+    margin-top: 35px;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+
+#welcome_mat .apply_container {
+    padding-right: 10px;
+    text-align: left;
+    -webkit-flex: 1 1 50%;
+    flex: 1 1 50%;
+    box-sizing: border-box;
+}
+
+#welcome_mat .default_container {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: flex-end;
+    justify-content: flex-end;
+    padding-left: 10px;
+    text-align: right;
+    -webkit-flex: 1 1 50%;
+    flex: 1 1 50%;
+    box-sizing: border-box;
+}
+
+#welcome_mat .button_container button {
+    background-color: #1979c3;
+    color: white;
+    border-radius: 3px;
+    border: none;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    line-height: 18px;
+    height: 100%;
+}
+
+#welcome_mat .default_container a {
+    line-height: 18px;
+    -webkit-align-self: center;
+    align-self: center;
+    text-align: center;
+}
+
+@media only screen and (max-width: 369px) {
+    #welcome_mat .apply_container,
+    #welcome_mat .default_container {
+        padding: 0;
+        -webkit-flex: 1 1 100%;
+        flex: 1 1 100%;
+    }
+
+    #welcome_mat .button_container button,
+    #welcome_mat .default_container a {
+        width: 100%;
+    }
+
+    #welcome_mat .default_container {
+        padding-top: 10px;
+    }
+}
+
+.fdxcb_actions {
+    background-color: #f5f5f5;
+    padding-bottom: 25px;
+    margin-bottom: 25px;
+}
+
+.fdxcb_button {
+    background-color: #1979c3;
+    border-radius: 3px;
+    padding: 14px 17px;
+    margin-bottom: 25px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.8rem;
+    line-height: 2.2rem;
+    text-align: center;
+    cursor: pointer;
+}
+
+.fdxcb_button .small {
+    font-size: 1rem;
+    font-weight: normal;
+}
+
+.fdxcb_link {
+    text-align: center;
+}
+
+div[data-fdxcb-name="warning"] {
+    color: red;
+    font-weight: 700;
+    text-align: center;
+}
+
+.block-bundle-summary div[data-fdxcb-name="warning"],
+.grouped div[data-fdxcb-name="warning"] {
+    font-weight: normal;
+    text-align: left;
+}
+
+div[data-fdxcb-name="warning"].hide,
+div[data-fdxcb-name^="addtocart-container-"].hide {
+    display: none;
+
+}
+
+.product-add-form .fdxcb_warning {
+    padding-bottom: 35px;
+}
+
+/* Fixing styles after FedEx Widget inserted */
+.panel.header .dropdown {
+    width: auto !important;
+}
+
+.sales-order-view .page-title {
+    margin: 0 25px 2rem 0 !important;
+    font-size: 2.6rem !important;
+}
+
+/* Sales Order Info Block */
+.sales-order-view .fdxcb-info {
+    margin-top: 14px;
+    margin-bottom: 26px;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+}
+
+.sales-order-view .fdxcb-info .order-number {
+    box-sizing: border-box;
+    text-align: left;
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.sales-order-view .fdxcb-info .tracking-link {
+    margin-top: 26px;
+    box-sizing: border-box;
+    text-align: center;
+    line-height: 24px;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-align-self: center;
+    align-self: center;
+}
+
+.sales-order-view .fdxcb-info .tracking-link .link {
+    text-align: center;
+    white-space: nowrap;
+    line-height: 24px;
+}
+
+.sales-order-view .fdxcb-info .tracking-link .delimeter {
+    display: none;
+    line-height: 24px;
+}
+
+@media screen and (min-width: 360px), print {
+    .sales-order-view .fdxcb-info .tracking-link {
+        -webkit-flex-direction: row;
+        flex-direction: row;
+    }
+
+    .sales-order-view .fdxcb-info .tracking-link .delimeter {
+        display: inline;
+        padding: 0 10px 0 10px;
+    }
+}
+
+@media screen and (min-width: 640px), print {
+    .sales-order-view .fdxcb-info {
+        -webkit-flex-direction: row;
+        flex-direction: row;
+        -webkit-justify-content: space-between;
+        justify-content: space-between;
+    }
+
+    .sales-order-view .fdxcb-info .tracking-link {
+        margin-top: 0;
+        text-align: right;
+        -webkit-align-self: auto;
+        align-self: auto;
+        margin-left: 10px;
+    }
+}

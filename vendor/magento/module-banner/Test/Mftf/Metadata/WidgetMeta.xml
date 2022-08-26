@@ -7,7 +7,7 @@
 -->
 <operations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:mftf:DataGenerator/etc/dataOperation.xsd">
-    <operation name="CreateBannerWidget" dataType="banner_widget" type="create" auth="adminFormKey" url="admin/widget_instance/save/code/magento_banner/theme_id/3/back/edit/active_tab/main_section/" method="POST" returnRegex="~\/save\/instance_id\/(\d+)\/~" successRegex="~The widget instance has been saved.~">
+    <operation name="CreateBannerWidget" dataType="banner_widget" type="create" auth="adminFormKey" url="admin/widget_instance/save/code/magento_banner/theme_id/{theme_id}/back/edit/active_tab/main_section/" method="POST" returnRegex="~\/save\/instance_id\/(\d+)\/~" successRegex="~The widget instance has been saved.~">
         <object key="store_ids" dataType="store_ids">
             <field key="0">string</field>
         </object>

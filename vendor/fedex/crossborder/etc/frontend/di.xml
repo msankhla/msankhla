@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * FedEx Cross Border component
+ *
+ * @category    FedEx
+ * @package     FedEx_CrossBorder
+ * @author      Andrey Rapshtynsky <andrey.bh@gmail.com>
+ * @copyright   FedEx (https://crossborder.fedex.com/)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\ConfigurableProduct\Block\Product\View\Type\Configurable">
+        <plugin name="fedex-crossborder-configurable-product-plugin" type="FedEx\CrossBorder\Plugin\ConfigurableProduct\Block\Product\View\Type\ConfigurablePlugin" />
+    </type>
+
+    <type name="Magento\Checkout\Controller\Onepage">
+        <plugin name="checkout-controller-onepage-plugin" type="FedEx\CrossBorder\Plugin\Checkout\Controller\OnepagePlugin"/>
+    </type>
+
+    <type name="Magento\Checkout\CustomerData\Cart">
+        <plugin name="checkout-customerdata-cart-plugin" type="FedEx\CrossBorder\Plugin\Checkout\CustomerData\CartPlugin"/>
+    </type>
+
+    <type name="Magento\GroupedProduct\Model\Product\Type\Grouped">
+        <plugin name="groped-product-type-plugin" type="FedEx\CrossBorder\Plugin\GroupedProduct\Product\Type\GroupedPlugin"/>
+    </type>
+
+    <type name="Magento\Quote\Model\Quote\Item\AbstractItem">
+        <plugin name="checkout-cart-validation-plugin" type="FedEx\CrossBorder\Plugin\Quote\Model\Quote\Item\AbstractItemPlugin"/>
+    </type>
+
+    <type name="Magento\Wishlist\CustomerData\Wishlist">
+        <plugin name="wishlist-customer-data-plugin" type="FedEx\CrossBorder\Plugin\Wishlist\CustomerData\WishlistPlugin"/>
+    </type>
+</config>

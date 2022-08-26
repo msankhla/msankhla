@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--AdminCreateCustomerCustomAttributeAndSaveCustomerWithRequiredCustomAttributeTest
+<!--
  /**
   * Copyright © Magento, Inc. All rights reserved.
   * See COPYING.txt for license details.
@@ -42,6 +42,7 @@
                 <argument name="formToUse1" value="Customer Account Edit"/>
                 <argument name="message" value="You saved the customer attribute."/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
         </before>
         <after>
             <!--Logout from storefront-->

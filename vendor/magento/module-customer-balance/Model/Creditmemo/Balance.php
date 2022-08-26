@@ -59,39 +59,36 @@ class Balance
      */
     public function save(Creditmemo $creditmemo) :void
     {
-        if ($creditmemo->getCustomerBalanceRefundFlag() && $creditmemo->getBsCustomerBalTotalRefunded()) {
-            $order = $creditmemo->getOrder();
-            $order->setBsCustomerBalTotalRefunded(
-                $order->getBsCustomerBalTotalRefunded() + $creditmemo->getBsCustomerBalTotalRefunded()
-            );
-            $order->setCustomerBalTotalRefunded(
-                $order->getCustomerBalTotalRefunded() + $creditmemo->getCustomerBalTotalRefunded()
-            );
-            $order->setBaseCustomerBalanceRefunded(
-                $order->getBaseCustomerBalanceRefunded() + $creditmemo->getBaseCustomerBalanceRefunded()
-            );
-            $customerBalanceRefunded = $creditmemo->getCustomerBalanceRefunded();
-            $order->setCustomerBalanceRefunded(
-                $order->getCustomerBalanceRefunded() + $customerBalanceRefunded
-            );
-            $status = $order->getConfig()->getStateDefaultStatus($order->getState());
-            $comment = __(
-                'We refunded %1 to Store Credit',
-                $order->getBaseCurrency()->formatTxt($customerBalanceRefunded)
-            );
-            $order->addCommentToStatusHistory($comment, $status, false);
-            $this->orderRepository->save($order);
+        $order = $creditmemo->getOrder();
+        $order->setBsCustomerBalTotalRefunded(
+            $order->getBsCustomerBalTotalRefunded() + $creditmemo->getBsCustomerBalTotalRefunded()
+        );
+        $order->setCustomerBalTotalRefunded(
+            $order->getCustomerBalTotalRefunded() + $creditmemo->getCustomerBalTotalRefunded()
+        );
+        $order->setBaseCustomerBalanceRefunded(
+            $order->getBaseCustomerBalanceRefunded() + $creditmemo->getBaseCustomerBalanceRefunded()
+        );
+        $customerBalanceRefunded = $creditmemo->getCustomerBalanceRefunded();
+        $order->setCustomerBalanceRefunded(
+            $order->getCustomerBalanceRefunded() + $customerBalanceRefunded
+        );
+        $this->orderRepository->save($order);
+        $status = $order->getConfig()->getStateDefaultStatus($order->getState());
+        $comment = __(
+            'We refunded %1 to Store Credit',
+            $order->getBaseCurrency()->formatTxt($customerBalanceRefunded)
+        );
+        $order->addCommentToStatusHistory($comment, $status, false);
+        $websiteId = $this->storeManager->getStore($order->getStoreId())->getWebsiteId();
 
-            $websiteId = $this->storeManager->getStore($order->getStoreId())->getWebsiteId();
-
-            $this->balanceFactory->create()
-                ->setCustomerId($order->getCustomerId())
-                ->setWebsiteId($websiteId)
-                ->setAmountDelta($creditmemo->getBsCustomerBalTotalRefunded())
-                ->setHistoryAction(History::ACTION_REFUNDED)
-                ->setOrder($order)
-                ->setCreditMemo($creditmemo)
-                ->save();
-        }
+        $this->balanceFactory->create()
+            ->setCustomerId($order->getCustomerId())
+            ->setWebsiteId($websiteId)
+            ->setAmountDelta($creditmemo->getBsCustomerBalTotalRefunded())
+            ->setHistoryAction(History::ACTION_REFUNDED)
+            ->setOrder($order)
+            ->setCreditMemo($creditmemo)
+            ->save();
     }
 }

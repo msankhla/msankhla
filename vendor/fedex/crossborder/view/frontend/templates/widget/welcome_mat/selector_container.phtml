@@ -1,0 +1,72 @@
+<?php
+/**
+ * FedEx Cross Border component
+ *
+ * @category    FedEx
+ * @package     FedEx_CrossBorder
+ * @author      Andrey Rapshtynsky <andrey.bh@gmail.com>
+ * @copyright   FedEx (https://crossborder.fedex.com/)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+/** @var \FedEx\CrossBorder\Block\Widget\WelcomeMat\SelectorContainer $block */
+?>
+<?php if ($block->getShowCountry() || $block->getShowCurrency() || $block->getShowDefault()): ?>
+    <form id="selector-container-form" method="post" action="<?= $block->escapeUrl($block->getPostUrl()) ?>">
+    <?php if ($block->getShowCountry() || $block->getShowCurrency()): ?>
+        <div class="selector_container">
+            <?php if ($block->getShowCountry()): ?>
+                <div class="country_container">
+                    <?php if ($block->hasCountryTitle()): ?>
+                        <div class="label"><?= $block->escapeHtml($block->getCountryTitle()) ?></div>
+                    <?php endif; ?>
+                    <div class="selector">
+                        <select name="country_selector" id="country_selector">
+                            <?php foreach ($block->getCountryOptions() as $option) :?>
+                                <option value="<?= $option['value'] ?>"<?= ($block->getSelectedCountry() == $option['value'] ? ' selected="selected"' : '') ?>><?= $option['label'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <div id="country_info_container" class="country_info_container<?= (!$block->getInfoBlock() ? ' _hide' : '') ?>">
+                    <?= $block->getInfoBlock() ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($block->getShowCurrency()): ?>
+                <div class="currency_container">
+                    <?php if ($block->hasCurrencyTitle()): ?>
+                        <div class="label"><?= $block->escapeHtml($block->getCurrencyTitle()) ?></div>
+                    <?php endif; ?>
+                    <div class="selector">
+                        <select name="currency_selector" id="currency_selector">
+                            <?php foreach ($block->getCurrencyOptions() as $option) :?>
+                                <option value="<?= $option['value'] ?>"<?= ($block->getSelectedCurrency() == $option['value'] ? ' selected="selected"' : '') ?>><?= $option['label'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+    <div class="button_container">
+        <?php if ($block->getShowCountry() || $block->getShowCurrency()): ?>
+            <div class="apply_container">
+                <button type="submit" id="apply_btn"><?= $block->escapeHtml($block->getSaveButtonTitle()); ?></button>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($block->getShowDefault()): ?>
+            <div class="default_container">
+                <input type="hidden" name="wm_default" id="wm_default" value="" />
+                <?php if ($block->getDefaultType() == 'button'): ?>
+                    <button id="default_selector"><?= $block->escapeHtml($block->getDefaultTitle()) ?></button>
+                <?php else: ?>
+                    <a href="#" id="default_selector"><?= $block->escapeHtml($block->getDefaultTitle()) ?></a>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+    <?= $block->getBlockHtml('formkey') ?>
+    </form>
+<?php endif; ?>

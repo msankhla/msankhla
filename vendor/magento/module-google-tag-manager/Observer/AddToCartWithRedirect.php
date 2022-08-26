@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace Magento\GoogleTagManager\Observer;
 
+use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Stdlib\CookieManagerInterface;
 use Magento\Framework\Stdlib\Cookie\FailureToSendException;
@@ -15,6 +16,7 @@ use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
 use Magento\Framework\Stdlib\Cookie\PublicCookieMetadata;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\GoogleTagManager\Model\Config\TagManagerConfig;
 use Magento\Store\Model\ScopeInterface;
 use Magento\GoogleTagManager\Helper\Data as DataHelper;
 use Magento\Catalog\Model\Product;
@@ -69,15 +71,15 @@ class AddToCartWithRedirect implements ObserverInterface
     /**
      * Send cookies after add to cart action
      *
-     * @param \Magento\Framework\Event\Observer $observer
+     * @param Observer $observer
      * @return void
      * @throws FailureToSendException If cookie couldn't be sent to the browser.
      * @throws CookieSizeLimitReachedException Thrown when the cookie is too big to store any additional data.
      * @throws InputException If the cookie name is empty or contains invalid characters.
      */
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    public function execute(Observer $observer)
     {
-        if (!$this->helper->isTagManagerAvailable() || !$this->isRedirectToCartEnabled()) {
+        if ((!$this->helper->isTagManagerAvailable()) || !$this->isRedirectToCartEnabled()) {
             return;
         }
 
@@ -100,7 +102,7 @@ class AddToCartWithRedirect implements ObserverInterface
             ->setSameSite('Strict');
 
         $this->cookieManager->setPublicCookie(
-            DataHelper::GOOGLE_ANALYTICS_COOKIE_NAME,
+            TagManagerConfig::GOOGLE_ANALYTICS_COOKIE_NAME,
             \rawurlencode(\json_encode($productsToAdd)),
             $publicCookieMetadata
         );

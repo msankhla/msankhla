@@ -12,6 +12,7 @@ use Magento\Staging\Api\UpdateRepositoryInterface;
 use Magento\CatalogRule\Model\Rule\Condition\Product;
 use Magento\CatalogRule\Model\RuleFactory;
 use Magento\Staging\Model\UpdateFactory;
+use Magento\Staging\Model\VersionManager;
 use Magento\TestFramework\Helper\Bootstrap;
 
 $objectManager = Bootstrap::getObjectManager();
@@ -65,8 +66,12 @@ $updateRepository = $objectManager->get(UpdateRepositoryInterface::class);
 $updateRepository->save($update);
 
 $catalogRule->setIsActive(1);
+$versionManager = $objectManager->get(VersionManager::class);
+$currentVersionId = $versionManager->getCurrentVersion()->getId();
+$versionManager->setCurrentVersionId($update->getId());
 $catalogRuleStaging = $objectManager->get(CatalogRuleStagingInterface::class);
 $catalogRuleStaging->schedule($catalogRule, $update->getId());
+$versionManager->setCurrentVersionId($currentVersionId);
 
 /** @var IndexBuilder $indexBuilder */
 $indexBuilder = Bootstrap::getObjectManager()

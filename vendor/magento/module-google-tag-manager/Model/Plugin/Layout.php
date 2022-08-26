@@ -5,28 +5,32 @@
  */
 namespace Magento\GoogleTagManager\Model\Plugin;
 
+use Magento\Banner\Block\Widget\Banner;
 use Magento\Framework\View\LayoutInterface;
+use Magento\GoogleTagManager\Helper\Data;
 
 class Layout
 {
     /**
-     * @var \Magento\GoogleTagManager\Helper\Data
+     * @var Data
      */
     protected $helper;
 
     /**
-     * @param \Magento\GoogleTagManager\Helper\Data $helper
+     * @param Data $helper
      */
     public function __construct(
-        \Magento\GoogleTagManager\Helper\Data $helper
+        Data $helper
     ) {
         $this->helper = $helper;
     }
 
     /**
+     * After create block pluging
+     *
      * @param LayoutInterface $subject
-     * @param  \Magento\Framework\View\Element\BlockInterface $result
-     * @return \Magento\Framework\View\Element\BlockInterface
+     * @param LayoutInterface $result
+     * @return Banner|mixed
      */
     public function afterCreateBlock(LayoutInterface $subject, $result)
     {
@@ -34,7 +38,7 @@ class Layout
             return $result;
         }
 
-        if ($result instanceof \Magento\Banner\Block\Widget\Banner) {
+        if ($result instanceof Banner) {
             /** @var \Magento\GoogleTagManager\Block\ListJson $jsonBlock */
             $jsonBlock = $subject->getBlock('banner_impression');
             if (is_object($jsonBlock)) {

@@ -40,8 +40,8 @@
         </actionGroup>
 
         <!-- Open My Account > Order by SKU -->
-        <amOnPage stepKey="goToMyAccountPage" url="{{StorefrontCustomerDashboardPage.url}}"/>
-        <waitForPageLoad stepKey="waitForPageLoad"/>
+        <actionGroup ref="StorefrontOpenMyAccountPageActionGroup" stepKey="goToMyAccountPage"/>
+        <comment userInput="BIC workaround" stepKey="waitForPageLoad"/>
         <actionGroup ref="StorefrontCustomerGoToSidebarMenu" stepKey="goToSidebarMenu">
             <argument name="menu" value="Order by SKU"/>
         </actionGroup>
@@ -54,6 +54,7 @@
         </actionGroup>
 
         <!-- Add product to cart -->
+        <waitForElementClickable selector="{{StorefrontCustomerOrderBySkuSection.addToCart}}" stepKey="waitForAddToCart"/>
         <click selector="{{StorefrontCustomerOrderBySkuSection.addToCart}}" stepKey="clickAddToCart"/>
 
         <!-- Assert product required attention fail message -->

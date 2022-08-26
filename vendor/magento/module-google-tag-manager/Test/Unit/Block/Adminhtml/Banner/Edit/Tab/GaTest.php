@@ -17,6 +17,7 @@ use Magento\Framework\Registry;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 use Magento\GoogleTagManager\Block\Adminhtml\Banner\Edit\Tab\Ga;
 use Magento\GoogleTagManager\Helper\Data;
+use Magento\GoogleTagManager\Model\Config\TagManagerConfig;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -37,6 +38,11 @@ class GaTest extends TestCase
     /** @var Data|MockObject */
     protected $googleTagManagerHelper;
 
+    /**
+     * @var TagManagerConfig|MockObject
+     */
+    private $tagManagerConfig;
+
     protected function setUp(): void
     {
         $this->registry = $this->createMock(Registry::class);
@@ -45,7 +51,9 @@ class GaTest extends TestCase
         $directory = $this->getMockForAbstractClass(ReadInterface::class);
         $filesystem = $this->createMock(Filesystem::class);
         $filesystem->expects($this->any())->method('getDirectoryRead')->willReturn($directory);
-
+        $this->tagManagerConfig = $this->getMockBuilder(TagManagerConfig::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->objectManagerHelper = new ObjectManagerHelper($this);
         $this->ga = $this->objectManagerHelper->getObject(
             Ga::class,
@@ -53,7 +61,8 @@ class GaTest extends TestCase
                 'registry' => $this->registry,
                 'formFactory' => $this->formFactory,
                 'helper' => $this->googleTagManagerHelper,
-                'filesystem' => $filesystem
+                'filesystem' => $filesystem,
+                'tagManagerConfig' => $this->tagManagerConfig
             ]
         );
     }
@@ -63,7 +72,12 @@ class GaTest extends TestCase
      */
     public function testToHtml()
     {
-        $this->googleTagManagerHelper->expects($this->any())->method('isGoogleAnalyticsAvailable')->willReturn(true);
+        $this->googleTagManagerHelper->expects($this->any())
+            ->method('isGoogleAnalyticsAvailable')
+            ->willReturn(false);
+        $this->tagManagerConfig->expects($this->any())
+            ->method('isGoogleAnalyticsAvailable')
+            ->willReturn(true);
         $fieldset = $this->createMock(Fieldset::class);
         $fieldset->expects($this->any())->method('addField')->withConsecutive(
             [
@@ -119,7 +133,12 @@ class GaTest extends TestCase
      */
     public function testToHtmlGaDisabled()
     {
-        $this->googleTagManagerHelper->expects($this->any())->method('isGoogleAnalyticsAvailable')->willReturn(false);
+        $this->googleTagManagerHelper->expects($this->any())
+            ->method('isGoogleAnalyticsAvailable')
+            ->willReturn(false);
+        $this->tagManagerConfig->expects($this->any())
+            ->method('isGoogleAnalyticsAvailable')
+            ->willReturn(false);
         $this->formFactory->expects($this->never())->method('create');
     }
 }

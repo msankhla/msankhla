@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * FedEx Cross Border component
+ *
+ * @category    FedEx
+ * @package     FedEx_CrossBorder
+ * @author      Andrey Rapshtynsky <andrey.bh@gmail.com>
+ * @copyright   FedEx (https://crossborder.fedex.com/)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="FedEx_CrossBorder::css/main.css" />
+    </head>
+    <body>
+        <referenceBlock name="sales_order_tabs">
+            <block class="FedEx\CrossBorder\Block\Adminhtml\Order\View\Tab\PackNotification" name="sales_order_pack_notification.grid.container"/>
+            <action method="addTab">
+                <argument name="name" xsi:type="string">order_pack_notification</argument>
+                <argument name="block" xsi:type="string">sales_order_pack_notification.grid.container</argument>
+            </action>
+        </referenceBlock>
+
+        <referenceBlock name="sales_order_pack_notification.grid.container">
+            <uiComponent name="sales_order_view_pack_notification_grid"/>
+        </referenceBlock>
+
+        <referenceContainer name="order_additional_info">
+            <block class="FedEx\CrossBorder\Block\Adminhtml\Order\View\Info" name="sales_order_view_fdxcb_info" template="order/view/info.phtml" />
+        </referenceContainer>
+
+        <referenceBlock name="tax">
+            <action method="setTemplate">
+                <argument name="template" xsi:type="string">FedEx_CrossBorder::order/totals/tax.phtml</argument>
+            </action>
+        </referenceBlock>
+    </body>
+</page>

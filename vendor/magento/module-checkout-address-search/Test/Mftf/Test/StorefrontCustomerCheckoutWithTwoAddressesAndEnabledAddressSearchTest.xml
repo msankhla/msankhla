@@ -81,8 +81,8 @@
         </actionGroup>
         <!--Select first shipping method-->
         <click stepKey="SelectFirstShippingMethod" selector="{{CheckoutShippingMethodsSection.firstShippingMethod}}"/>
-        <waitForElement stepKey="WaitForNextButtonVisible" selector="{{CheckoutShippingMethodsSection.next}}" time="30"/>
-        <click stepKey="ProceedToBillingStep" selector="{{CheckoutShippingMethodsSection.next}}" />
+        <comment userInput="BIC workaround" stepKey="WaitForNextButtonVisible"/>
+        <actionGroup ref="StorefrontCheckoutClickNextButtonActionGroup" stepKey="ProceedToBillingStep"/>
         <!--Review & Payments step of checkout is opened-->
         <!--Select Check / Money order Payment method-->
         <actionGroup ref="CheckoutSelectCheckMoneyOrderPaymentActionGroup" stepKey="selectCheckMoneyPayment"/>

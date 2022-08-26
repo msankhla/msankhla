@@ -3,9 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Magento\VisualMerchandiser\Api;
 
+use Magento\Framework\Exception\LocalizedException;
+
+/**
+ * Interface Rule factory pool interface
+ *
+ * @api
+ */
 interface RuleFactoryPoolInterface
 {
 
@@ -15,7 +23,7 @@ interface RuleFactoryPoolInterface
     /**
      * @param $ruleId
      * @return string
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     public function getRule($ruleId);
 

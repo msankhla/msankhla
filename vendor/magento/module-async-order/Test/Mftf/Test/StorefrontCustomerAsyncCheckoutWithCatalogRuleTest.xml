@@ -16,10 +16,10 @@
             <severity value="CRITICAL"/>
             <testCaseId value="MC-43251"/>
             <group value="checkout"/>
+            <group value="async_checkout"/>
         </annotations>
         <before>
-            <!-- Enable Async Checkout for Order placement -->
-            <magentoCLI command="setup:config:set {{AsyncCheckoutConfigData.enable_option}}" stepKey="enableAsyncCheckout"/>
+            <comment userInput="BIC workaround" stepKey="enableAsyncCheckout"/>
             <!-- Create Customer -->
             <createData entity="Simple_US_Customer" stepKey="createCustomer"/>
             <!-- Create Product and Category for Order placement -->
@@ -34,7 +34,7 @@
             <deleteData createDataKey="createCategory" stepKey="deleteCategory"/>
             <deleteData createDataKey="createProduct" stepKey="deleteProduct"/>
             <deleteData createDataKey="createCustomer" stepKey="deleteCustomer"/>
-            <magentoCLI command="setup:config:set {{AsyncCheckoutConfigData.disable_option}}" stepKey="disableAsyncCheckout"/>
+            <comment userInput="BIC workaround" stepKey="disableAsyncCheckout"/>
             <!-- Delete the catalog price rule -->
             <actionGroup ref="AdminCatalogPriceRuleDeleteAllActionGroup" stepKey="deleteAllCatalogRulesAfterTest"/>
             <magentoCron groups="index" stepKey="fixInvalidatedIndicesAfterTest"/>
@@ -145,7 +145,7 @@
         <see selector="#my-orders-table td.status" userInput="Pending" stepKey="checkOrderStatusPending"/>
 
         <!--Sign out from customer account-->
-        <actionGroup ref="StorefrontSignOutActionGroup" stepKey="logoutFromCustomer"/>
+        <actionGroup ref="StorefrontCustomerLogoutActionGroup" stepKey="logoutFromCustomer"/>
         <!-- Find the Order on storefront > Navigate to: Orders and Returns -->
         <amOnPage url="{{StorefrontGuestOrderSearchPage.url}}" stepKey="amOnOrdersAndReturns"/>
         <waitForPageLoad stepKey="waiForStorefrontPage"/>

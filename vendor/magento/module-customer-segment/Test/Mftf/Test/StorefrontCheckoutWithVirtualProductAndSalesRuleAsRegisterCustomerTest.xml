@@ -37,6 +37,7 @@
             <deleteData createDataKey="createSimpleUsCustomer" stepKey="deleteCustomer"/>
             <!--Logout From Admin-->
             <actionGroup ref="AdminLogoutActionGroup" stepKey="adminLogout"/>
+            <magentoCron groups="index" stepKey="reindex"/>
         </after>
 
         <!-- Create new Customer Segment -->

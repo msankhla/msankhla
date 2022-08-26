@@ -8,12 +8,13 @@
 namespace Amasty\ShippingTableRates\Block\Adminhtml\Methods\Edit\Tab\Rates\Grid;
 
 use Amasty\ShippingTableRates\Api\Data\ShippingTableRateInterface;
+use Amasty\ShippingTableRates\Block\Adminhtml\Methods\Edit\Tab\Rates\Grid\Column\GeneralColumn;
 use Amasty\ShippingTableRates\Helper\Data;
 use Amasty\ShippingTableRates\Model\Source\Option\WeightRoundingOptions;
-use Magento\Backend\Block\Widget\Grid\Column;
 use Magento\Backend\Model\Widget\Grid\Row\UrlGeneratorFactory;
 use Magento\Backend\Model\Widget\Grid\SubTotals;
 use Magento\Backend\Model\Widget\Grid\Totals;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\View\Element\Template\Context;
 
 /**
@@ -213,10 +214,12 @@ class ColumnSet extends \Magento\Backend\Block\Widget\Grid\ColumnSet
     /**
      * @param string $title
      * @param array $data
+     * @return void
+     * @throws LocalizedException
      */
-    public function addColumn($title, $data)
+    public function addColumn(string $title, array $data, string $class = GeneralColumn::class): void
     {
-        $column = $this->getLayout()->createBlock(Column::class, $title)->addData($data);
+        $column = $this->getLayout()->createBlock($class, $title)->addData($data);
         $this->setChild($title, $column);
     }
 

@@ -3,6 +3,8 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+declare(strict_types=1);
+
 namespace Magento\GiftRegistry\Block\Adminhtml\Giftregistry\Edit\Attribute;
 
 use Magento\Framework\App\ObjectManager;
@@ -42,7 +44,6 @@ class Attribute extends \Magento\Backend\Block\Widget\Form
     protected $_template = 'edit/attributes.phtml';
 
     /**
-     * Core registry
      *
      * @var \Magento\Framework\Registry
      */
@@ -379,6 +380,8 @@ class Attribute extends \Magento\Backend\Block\Widget\Form
                     $value[$param] = $paramValue;
                 }
             }
+
+            $value['label'] = $this->_escaper->escapeHtmlAttr($value['label']);
 
             $values[] = new \Magento\Framework\DataObject($value);
             $innerId++;

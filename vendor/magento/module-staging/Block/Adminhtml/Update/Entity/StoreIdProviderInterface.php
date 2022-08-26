@@ -9,6 +9,8 @@ namespace Magento\Staging\Block\Adminhtml\Update\Entity;
 
 /**
  * Interface StoreIdProviderInterface
+ *
+ * @api
  */
 interface StoreIdProviderInterface
 {

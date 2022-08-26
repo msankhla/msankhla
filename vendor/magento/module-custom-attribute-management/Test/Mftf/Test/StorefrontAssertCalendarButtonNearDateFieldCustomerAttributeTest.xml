@@ -24,11 +24,13 @@
             <actionGroup ref="AdminCreateCustomerCustomAttribute" stepKey="createCustomerAttributeDate">
                 <argument name="customerAttribute" value="AttributeDateData"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
         </before>
         <after>
             <actionGroup ref="AdminDeleteCustomerCustomAttributeActionGroup" stepKey="deleteAttribute">
                 <argument name="attributeLabel" value="{{AttributeDateData.label}}"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutFromAdmin"/>
         </after>
 

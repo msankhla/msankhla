@@ -29,6 +29,7 @@ class EditTest extends AbstractBackendController
         $this->dispatch('backend/catalog/category/index');
         $body = $this->getResponse()->getBody();
         $this->assertNotEmpty($body);
+        $this->assertNotEmpty($this->getRequest()->getParam('store'));
         $this->assertEquals(
             1,
             Xpath::getElementsCountForXpath(

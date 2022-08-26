@@ -89,6 +89,8 @@ class RescheduleUpdateTest extends TestCase
             ->getMockForAbstractClass();
         $updateTargetMock = $this->getMockBuilder(UpdateInterface::class)
             ->getMockForAbstractClass();
+        $updateTargetMock->method('getRollbackId')
+            ->willReturn(512);
         $metadataMock = $this->getMockBuilder(EntityMetadataInterface::class)
             ->getMockForAbstractClass();
         $metadataMock->expects($this->atLeastOnce())

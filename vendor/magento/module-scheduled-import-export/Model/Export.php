@@ -27,12 +27,18 @@ class Export extends \Magento\ImportExport\Model\Export implements
     protected $_dateModel;
 
     /**
+     * @var \Magento\Framework\Locale\ResolverInterface
+     */
+    private $localeResolver;
+
+    /**
      * @param \Psr\Log\LoggerInterface $logger
      * @param \Magento\Framework\Filesystem $filesystem
      * @param \Magento\ImportExport\Model\Export\ConfigInterface $exportConfig
      * @param \Magento\ImportExport\Model\Export\Entity\Factory $entityFactory
      * @param \Magento\ImportExport\Model\Export\Adapter\Factory $exportAdapterFac
      * @param \Magento\Framework\Stdlib\DateTime\DateTime $coreDate
+     * @param \Magento\Framework\Locale\ResolverInterface $localeResolver
      * @param array $data
      */
     public function __construct(
@@ -42,9 +48,12 @@ class Export extends \Magento\ImportExport\Model\Export implements
         \Magento\ImportExport\Model\Export\Entity\Factory $entityFactory,
         \Magento\ImportExport\Model\Export\Adapter\Factory $exportAdapterFac,
         \Magento\Framework\Stdlib\DateTime\DateTime $coreDate,
+        \Magento\Framework\Locale\ResolverInterface $localeResolver,
         array $data = []
     ) {
         $this->_dateModel = $coreDate;
+        $this->localeResolver = $localeResolver;
+
         parent::__construct(
             $logger,
             $filesystem,
@@ -65,11 +74,17 @@ class Export extends \Magento\ImportExport\Model\Export implements
      */
     public function runSchedule(Scheduled\Operation $operation)
     {
+        $currentLocale = $this->localeResolver->getLocale();
+        $locale = $operation->getFileInfo()['locale'] ?? $currentLocale;
+        $this->localeResolver->setLocale($locale);
+
         try {
             $data = $this->export();
         } catch (\Exception $e) {
             $operation->saveFileSource($this, $e->getMessage());
             throw $e;
+        } finally {
+            $this->localeResolver->setLocale($currentLocale);
         }
 
         $result = $operation->saveFileSource($this, $data);

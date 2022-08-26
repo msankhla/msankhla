@@ -13,6 +13,7 @@ use Magento\Catalog\Model\Product\Price\Validation\Result as ValidationResult;
 use Magento\Catalog\Model\ResourceModel\Attribute;
 use Magento\CatalogStaging\Api\ProductStagingInterface;
 use Magento\CatalogStaging\Model\Product\UpdateScheduler;
+use Magento\CatalogStaging\Model\ResourceModel\ProductUpdateRetriever;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\Exception\LocalizedException;
@@ -65,6 +66,11 @@ class SpecialPrice implements \Magento\Catalog\Api\SpecialPriceInterface
     private $versionManager;
 
     /**
+     * @var ProductUpdateRetriever
+     */
+    private $productUpdateRetriever;
+
+    /**
      * @var \Magento\Catalog\Model\ResourceModel\Eav\Attribute
      */
     private $specialPriceAttribute;
@@ -75,8 +81,6 @@ class SpecialPrice implements \Magento\Catalog\Api\SpecialPriceInterface
     private $productLinkField;
 
     /**
-     * Items per operation.
-     *
      * @var int
      */
     private $itemsPerOperation = 500;
@@ -87,11 +91,12 @@ class SpecialPrice implements \Magento\Catalog\Api\SpecialPriceInterface
      * @param MetadataPool $metadataPool
      * @param ValidationResult $validationResult
      * @param UpdateScheduler $updateScheduler
-     * @param ProductRepositoryInterface $productRepository
-     * @param ProductStagingInterface $productStaging
+     * @param ProductRepositoryInterface|null $productRepository
+     * @param ProductStagingInterface|null $productStaging
      * @param UpdateInterfaceFactory|null $updateFactory
      * @param UpdateRepositoryInterface|null $updateRepository
-     * @param VersionManager $versionManager
+     * @param VersionManager|null $versionManager
+     * @param ProductUpdateRetriever|null $productUpdateRetriever
      * @throws NoSuchEntityException
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
@@ -106,7 +111,8 @@ class SpecialPrice implements \Magento\Catalog\Api\SpecialPriceInterface
         ProductStagingInterface $productStaging = null,
         UpdateInterfaceFactory $updateFactory = null,
         UpdateRepositoryInterface $updateRepository = null,
-        VersionManager $versionManager = null
+        VersionManager $versionManager = null,
+        ProductUpdateRetriever $productUpdateRetriever = null
     ) {
         $this->attributeResource = $attributeResource;
         $this->validationResult = $validationResult;
@@ -121,6 +127,8 @@ class SpecialPrice implements \Magento\Catalog\Api\SpecialPriceInterface
             ?? ObjectManager::getInstance()->get(UpdateRepositoryInterface::class);
         $this->versionManager = $versionManager
             ?? ObjectManager::getInstance()->get(VersionManager::class);
+        $this->productUpdateRetriever = $productUpdateRetriever
+            ?? ObjectManager::getInstance()->get(ProductUpdateRetriever::class);
 
         $this->specialPriceAttribute = $attributeRepository->get('special_price');
         $this->productLinkField = $metadataPool->getMetadata(\Magento\Catalog\Api\Data\ProductInterface::class)
@@ -322,10 +330,14 @@ class SpecialPrice implements \Magento\Catalog\Api\SpecialPriceInterface
      */
     private function retrieveUpdate(SpecialPriceInterface $price): UpdateInterface
     {
-        try {
-            $updateId = $this->findProductUpdateId($price);
+        $updateId = $this->productUpdateRetriever->retrieveUpdateId(
+            $price->getSku(),
+            $price->getPriceFrom(),
+            $price->getPriceTo()
+        );
+        if ($updateId) {
             $update = $this->updateRepository->get($updateId);
-        } catch (NoSuchEntityException $e) {
+        } else {
             $name = __('Update %1 from %2 to %3.', $price->getSku(), $price->getPriceFrom(), $price->getPriceTo());
             $update = $this->updateFactory->create();
             $update->setName($name);
@@ -333,44 +345,12 @@ class SpecialPrice implements \Magento\Catalog\Api\SpecialPriceInterface
             $update->setEndTime($price->getPriceTo());
             $this->updateRepository->save($update);
         }
+
         $priceTo = $update->getRollbackId() ?: VersionManager::MAX_VERSION;
         $price->setPriceFrom(date('Y-m-d H:i:s', $update->getId()));
         $price->setPriceTo(date('Y-m-d H:i:s', $priceTo));
 
         return $update;
-    }
-
-    /**
-     * Find product update id
-     *
-     * @param SpecialPriceInterface $price
-     * @return int|null
-     * @throws NoSuchEntityException
-     * @throws \Zend_Db_Select_Exception
-     */
-    private function findProductUpdateId(SpecialPriceInterface $price): ?int
-    {
-        $priceTo = $price->getPriceTo() ? strtotime($price->getPriceTo()) : VersionManager::MAX_VERSION;
-        $connection = $this->attributeResource->getConnection();
-        $select = $connection->select()
-            ->reset()
-            ->from(
-                ['s' => $this->attributeResource->getTable('staging_update')],
-                ['id']
-            )->join(
-                ['e' => $this->attributeResource->getTable('catalog_product_entity')],
-                'e.created_in = s.id',
-                []
-            )
-            ->where('e.sku = ?', $price->getSku())
-            ->where('s.start_time = ?', $price->getPriceFrom())
-            ->where('s.rollback_id = ?', $priceTo)
-            ->setPart('disable_staging_preview', true);
-        $updateId = (int) $connection->fetchOne($select);
-        if (!$updateId) {
-            throw new NoSuchEntityException();
-        }
-        return $updateId ?: null;
     }
 
     /**

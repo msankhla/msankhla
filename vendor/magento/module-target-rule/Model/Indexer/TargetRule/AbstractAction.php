@@ -1,7 +1,5 @@
 <?php
 /**
- * @category    Magento
- * @package     Magento_TargetRule
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
@@ -10,7 +8,6 @@ namespace Magento\TargetRule\Model\Indexer\TargetRule;
 
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
-use Magento\Framework\Stdlib\DateTime;
 use Magento\TargetRule\Model\Rule;
 
 /**
@@ -234,8 +231,8 @@ abstract class AbstractAction
         foreach ($websites as $website) {
             /* @var $website \Magento\Store\Model\Website */
             $store = $website->getDefaultStore();
-            $date = $this->_localeDate->scopeDate($store);
-            if ($date->diff(new \DateTime('1970-01-01 00:00:00'))->h === 0) {
+            $date = $this->_localeDate->scopeDate($store, null, true);
+            if ($date->format('H') === '00') {
                 $storeIds = $website->getStoreIds();
                 $this->_cleanIndex(null, $storeIds);
             }

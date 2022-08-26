@@ -1,0 +1,82 @@
+<?php
+/**
+ * FedEx Cross Border component
+ *
+ * @category    FedEx
+ * @package     FedEx_CrossBorder
+ * @author      Andrey Rapshtynsky <andrey.bh@gmail.com>
+ * @copyright   FedEx (https://crossborder.fedex.com/)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+?>
+<?php
+    $_product = $block->getProduct();
+    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+    /** @var FedEx\CrossBorder\Model\ProductValidator $productValidator */
+    $productValidator = $objectManager->get(\FedEx\CrossBorder\Model\ProductValidator::class);
+    $options = json_encode([
+        'isInternational'       => $productValidator->getHelper()->isInternational(),
+        'productsAvailability'  => $productValidator->getProductOptionsAvailability($_product),
+    ]);
+?>
+<?php if ($_product->isSaleable() && $block->hasOptions()) : ?>
+<div id="bundleSummary"
+     class="block-bundle-summary"
+     data-mage-init='{"sticky":{"container": ".product-add-form"}}'>
+    <div class="title">
+        <strong><?= $block->escapeHtml(__('Your Customization')) ?></strong>
+    </div>
+    <div class="content">
+        <div class="bundle-info">
+            <?= $block->getImage($_product, 'bundled_product_customization_page')->toHtml() ?>
+            <div class="product-details">
+                <strong class="product name"><?= $block->escapeHtml($_product->getName()) ?></strong>
+                <?php if ($_product->getIsSalable()) : ?>
+                    <p class="available stock" title="<?= $block->escapeHtmlAttr(__('Availability')) ?>">
+                        <span><?= $block->escapeHtml(__('In stock')) ?></span>
+                    </p>
+                <?php else : ?>
+                    <p class="unavailable stock" title="<?= $block->escapeHtmlAttr(__('Availability')) ?>">
+                        <span><?= $block->escapeHtml(__('Out of stock')) ?></span>
+                    </p>
+                <?php endif; ?>
+                <?= $block->getChildHtml('', true) ?>
+            </div>
+        </div>
+        <div class="bundle-summary">
+            <strong class="subtitle"><?= $block->escapeHtml(__('Summary')) ?></strong>
+            <div id="bundle-summary" data-container="product-summary">
+                <ul data-mage-init='{"productSummary": <?= $options ?>}' class="bundle items"></ul>
+                <script data-template="bundle-summary" type="text/x-magento-template">
+                    <li>
+                        <strong class="label"><%- data._label_ %>:</strong>
+                        <div data-container="options"></div>
+                    </li>
+                </script>
+                <script data-template="bundle-option" type="text/x-magento-template">
+                    <div><?= /* @noEscape */ __('%1 x %2', '<%- data._quantity_ %>', '<%- data._label_ %>') ?></div>
+                    <% if (!data._available_) { %>
+                    <div data-fdxcb-name="warning"><?= __($productValidator::ERROR_PRODUCT_NOT_AVAILABLE) ?></div>
+                    <% } %>
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/x-magento-init">
+    {
+        ".product-add-form": {
+            "slide": {
+                "slideSpeed": 1500,
+                "slideSelector": "#bundle-slide",
+                "slideBackSelector": ".action.customization.back",
+                "bundleProductSelector": "#bundleProduct",
+                "bundleOptionsContainer": ".product-add-form"
+                <?php if ($block->isStartCustomization()) : ?>
+                ,"autostart": true
+                <?php endif;?>
+            }
+        }
+    }
+</script>
+<?php endif; ?>

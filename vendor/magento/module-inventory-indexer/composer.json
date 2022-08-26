@@ -6,7 +6,7 @@
         "OSL-3.0",
         "AFL-3.0"
     ],
-    "version": "2.1.2",
+    "version": "2.2.0",
     "require": {
         "php": "~7.4.0||~8.1.0",
         "magento/framework": "*",
@@ -17,7 +17,7 @@
         "magento/module-inventory-catalog-api": "1.3.*",
         "magento/module-inventory-configuration-api": "1.2.*",
         "magento/module-inventory-sales-api": "1.2.*",
-        "magento/module-inventory-sales": "1.2.*"
+        "magento/module-inventory-sales": "1.3.*"
     },
     "suggest": {
         "magento/module-catalog": "*"

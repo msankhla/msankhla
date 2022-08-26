@@ -27,6 +27,7 @@ $updateFactory = $objectManager->get(UpdateFactory::class);
 $updateRepository = $objectManager->get(UpdateRepositoryInterface::class);
 $productStaging = $objectManager->get(ProductStagingInterface::class);
 $versionManager = $objectManager->get(VersionManager::class);
+$currentVersionId = $versionManager->getCurrentVersion()->getId();
 
 /** @var ProductRepositoryInterface $productRepository */
 $productRepository = $objectManager->get(ProductRepositoryInterface::class);
@@ -110,11 +111,11 @@ $updateData = [
     'is_campaign' => 0,
     'is_rollback' => null,
 ];
-
 $update = $updateFactory->create(['data' => $updateData]);
 $updateRepository->save($update);
 
-$versionManager->setCurrentVersionId($update->getId());
 $product = $productRepository->get('configurable');
 $product->setName('Updated Configurable Product Name');
+$versionManager->setCurrentVersionId($update->getId());
 $productStaging->schedule($product, $update->getId());
+$versionManager->setCurrentVersionId($currentVersionId);

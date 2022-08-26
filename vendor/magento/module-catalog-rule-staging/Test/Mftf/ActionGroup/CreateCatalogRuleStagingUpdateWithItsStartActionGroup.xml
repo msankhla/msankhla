@@ -45,6 +45,7 @@
         <wait time="$needWait2" stepKey="conditionalWait2"/>
         <wait time="60" stepKey="wait"/>
         <magentoCLI command="cron:run --group=staging" stepKey="runCronStaging"/>
-        <magentoCLI command="cron:run --group=index" stepKey="runCronIndexer"/>
+        <magentoCLI command="cron:run --group=staging" stepKey="runCronStagingTwice"/>
+        <magentoCLI command="indexer:reindex" stepKey="runCronIndexer"/>
     </actionGroup>
 </actionGroups>

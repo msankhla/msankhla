@@ -102,8 +102,8 @@
         <waitForText selector="{{StorefrontApplyGiftCardAccountSection.giftCardAccountCodeDiscount}}" userInput="-$5.00" stepKey="assertGiftCardCodeInSummerySection"/>
 
         <!--  Step 9: Select payment method and place order -->
-        <waitForElementVisible selector="{{CheckoutPaymentSection.placeOrder}}" stepKey="waitForPlaceOrderButton"/>
-        <click selector="{{CheckoutPaymentSection.placeOrder}}" stepKey="clickPlaceOrderButton"/>
+        <comment userInput="BIC workaround" stepKey="waitForPlaceOrderButton"/>
+        <actionGroup ref="ClickPlaceOrderActionGroup" stepKey="clickPlaceOrderButton"/>
         <seeElement selector="{{CheckoutSuccessMainSection.success}}" stepKey="orderIsSuccessfullyPlaced"/>
         <grabTextFrom selector="{{CheckoutSuccessMainSection.orderNumber}}" stepKey="grabOrderNumber"/>
         <actionGroup ref="OpenOrderByIdActionGroup" stepKey="openOrderById">

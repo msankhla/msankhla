@@ -21,9 +21,11 @@
         <before>
             <actionGroup ref="AdminLoginActionGroup" stepKey="loginAsAdmin"/>
             <actionGroup ref="AdminCreateStoreViewActionGroup" stepKey="createStoreView"/>
+            <magentoCron groups="index" stepKey="reindex"/>
         </before>
         <after>
             <actionGroup ref="AdminDeleteStoreViewActionGroup" stepKey="deleteStoreView"/>
+            <magentoCron groups="index" stepKey="reindex"/>
             <actionGroup ref="AdminDeleteGiftRegistryActionGroup" stepKey="deleteGiftRegistry"/>
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
         </after>

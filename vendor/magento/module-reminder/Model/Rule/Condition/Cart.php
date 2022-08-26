@@ -154,7 +154,7 @@ class Cart extends \Magento\Reminder\Model\Condition\Combine\AbstractCombine
 
         $table = $this->quoteResource->getTable('quote');
         $operator = $this->getResource()->getSqlOperator($this->getOperator());
-        $currentTime = $this->_dateModel->gmtDate('Y-m-d');
+        $currentTime = $this->_dateModel->gmtDate('Y-m-d H:i:s');
         $select = $this->getResource()->createSelect();
 
         $daysDiffSql = $this->_resourceHelper->getDateDiff(
@@ -185,7 +185,11 @@ class Cart extends \Magento\Reminder\Model\Condition\Combine\AbstractCombine
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
+     *
+     * @param int $websiteId
+     * @return array
+     * @throws LocalizedException
      */
     public function getSatisfiedIds($websiteId)
     {
@@ -212,7 +216,7 @@ class Cart extends \Magento\Reminder\Model\Condition\Combine\AbstractCombine
                     return [];
                 }
             } else {
-                $customerIds = array_merge($satisfiedCustomerIds, $customerIds);
+                array_push($customerIds, ...$satisfiedCustomerIds);
             }
         }
 

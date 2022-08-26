@@ -15,7 +15,7 @@
     switch ($accountType) {
         case \Magento\GoogleTagManager\Helper\Data::TYPE_TAG_MANAGER:
             if (!empty($gtmAccountId)) { ?>
-                <?php $escapedGtmAccountId = $block->escapeHtmlAttr($gtmAccountId) ?>; ?>
+                <?php $escapedGtmAccountId = $block->escapeHtmlAttr($gtmAccountId) ?>
                 <!-- GOOGLE TAG MANAGER -->
                 <noscript>
                     <iframe src="https://www.googletagmanager.com/ns.html?id=<?= /* @noEscape */$escapedGtmAccountId ?>"

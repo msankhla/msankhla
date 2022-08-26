@@ -5,7 +5,9 @@
  */
 namespace Magento\Rma\Model\Service;
 
+use Magento\Eav\Model\Config;
 use Magento\Framework\Api\SimpleDataObjectConverter;
+use Magento\Framework\App\ObjectManager;
 use Magento\Rma\Api\RmaAttributesManagementInterface;
 use Magento\Customer\Model\AttributeMetadataConverter;
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -13,7 +15,7 @@ use Magento\Customer\Model\AttributeMetadataDataProvider;
 use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
 
 /**
- * Class RmaAttributesManagement
+ * Rma attributes management service
  */
 class RmaAttributesManagement implements RmaAttributesManagementInterface
 {
@@ -39,17 +41,25 @@ class RmaAttributesManagement implements RmaAttributesManagementInterface
     protected $metadataConverter;
 
     /**
+     * @var Config
+     */
+    private $eavConfig;
+
+    /**
      * Constructor
      *
      * @param AttributeMetadataDataProvider $metadataDataProvider
      * @param AttributeMetadataConverter $metadataConverter
+     * @param Config|null $eavConfig
      */
     public function __construct(
         AttributeMetadataDataProvider $metadataDataProvider,
-        AttributeMetadataConverter $metadataConverter
+        AttributeMetadataConverter $metadataConverter,
+        ?Config $eavConfig = null
     ) {
         $this->metadataDataProvider = $metadataDataProvider;
         $this->metadataConverter = $metadataConverter;
+        $this->eavConfig = $eavConfig ?? ObjectManager::getInstance()->get(Config::class);
     }
 
     /**
@@ -107,10 +117,12 @@ class RmaAttributesManagement implements RmaAttributesManagementInterface
      */
     public function getAllAttributesMetadata()
     {
+        $attributeSetId = (int) $this->eavConfig->getEntityType(self::ENTITY_TYPE)
+            ->getDefaultAttributeSetId();
         /** @var AbstractAttribute[] $attribute */
         $attributeCodes = $this->metadataDataProvider->getAllAttributeCodes(
             self::ENTITY_TYPE,
-            self::ATTRIBUTE_SET_ID
+            $attributeSetId
         );
 
         $attributesMetadata = [];
@@ -118,7 +130,7 @@ class RmaAttributesManagement implements RmaAttributesManagementInterface
             try {
                 $attributesMetadata[] = $this->getAttributeMetadata($attributeCode);
             } catch (NoSuchEntityException $e) {
-                // If no such entity, skip
+                continue;
             }
         }
 

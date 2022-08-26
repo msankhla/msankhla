@@ -254,4 +254,9 @@
             <argument name="versionManager" xsi:type="object">Magento\Staging\Model\VersionManager\Proxy</argument>
         </arguments>
     </type>
+    <type name="Magento\Staging\Model\UpdateRepository">
+        <arguments>
+            <argument name="periodSyncScheduler" xsi:type="object">Magento\Staging\Model\Entity\PeriodSync\Scheduler\Proxy</argument>
+        </arguments>
+    </type>
 </config>

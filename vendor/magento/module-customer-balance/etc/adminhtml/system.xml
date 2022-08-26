@@ -14,6 +14,7 @@
                     <label>Enable Store Credit Functionality</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <backend_model>Magento\Config\Model\Config\Backend\Cache</backend_model>
+                    <comment>For Store Credit to be fully functional on checkout, "Zero Subtotal Checkout" payment method needs to be enabled as well.</comment>
                 </field>
                 <field id="show_history" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Show Store Credit History to Customers</label>

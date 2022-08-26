@@ -29,7 +29,7 @@
             <actionGroup ref="DeleteProductBySkuActionGroup" stepKey="deleteDownloadableProduct">
                 <argument name="sku" value="{{DownloadableProduct.sku}}"/>
             </actionGroup>
-            <actionGroup ref="ClearFiltersAdminDataGridActionGroup" stepKey="clearProductFilter"/>
+            <actionGroup ref="ResetAdminDataGridToDefaultViewActionGroup" stepKey="clearProductFilter"/>
             <amOnPage url="{{AdminStagingDashboardPage.url}}" stepKey="goToStagingDashboard"/>
             <waitForPageLoad stepKey="waitForPageLoad"/>
             <actionGroup ref="ClearFiltersAdminDataGridActionGroup" stepKey="clearFilter"/>
@@ -78,9 +78,9 @@
             <argument name="name" value="{{_defaultStaging.name}}"/>
         </actionGroup>
 
-        <!-- Check to make sure the update shows up and has all of the details-->
-        <seeElement selector="{{AdminStagingDashboardSection.nthStagingUpdateRow('1')}}" stepKey="seeUpdateRow"/>
-        <see selector="{{AdminStagingDashboardSection.nthStagingUpdateCell('1', '1')}}" userInput="Active" stepKey="seeUpcoming"/>
-        <see selector="{{AdminStagingDashboardSection.nthStagingUpdateCell('1', '2')}}" userInput="{{_defaultStaging.name}}" stepKey="seeUpdateTitle"/>
+        <!-- Active permanent updates are no longer shown on the staging dashboard -->
+        <comment userInput="BIC workaround" stepKey="seeUpdateRow"/>
+        <comment userInput="BIC workaround" stepKey="seeUpcoming"/>
+        <comment userInput="BIC workaround" stepKey="seeUpdateTitle"/>
     </test>
 </tests>

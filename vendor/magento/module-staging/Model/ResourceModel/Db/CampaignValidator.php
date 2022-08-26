@@ -14,9 +14,6 @@ use Magento\Staging\Api\Data\UpdateInterface;
 use Magento\Framework\EntityManager\TypeResolver;
 use Magento\Staging\Api\UpdateRepositoryInterface;
 
-/**
- * Class CampaignValidator
- */
 class CampaignValidator
 {
     /**
@@ -97,12 +94,13 @@ class CampaignValidator
                 ->from([$metadata->getEntityTable()], [$metadata->getIdentifierField()])
                 ->where('created_in = ?', $update->getId())
                 ->setPart('disable_staging_preview', true);
-            $selects[] = $connection->select()
+            $select = $connection->select()
                 ->from($metadata->getEntityTable(), ['COUNT(*) AS cnt'])
-                ->where('created_in > ?', $update->getRollbackId())
+                ->where('created_in > ?', $update->getRollbackId() ?: $update->getId())
                 ->where('created_in <= ?', $updateEndTime)
                 ->where($metadata->getIdentifierField() . ' IN(?)', $subSelect)
                 ->setPart('disable_staging_preview', true);
+            $selects[] = $select;
         }
 
         $derivedSelect = $connection->select()->union($selects, \Magento\Framework\DB\Select::SQL_UNION_ALL);
@@ -112,6 +110,8 @@ class CampaignValidator
     }
 
     /**
+     * Check if update can be scheduled
+     *
      * @param object $entity
      * @param string $version
      * @param string|null $previousVersion
@@ -209,6 +209,8 @@ class CampaignValidator
     }
 
     /**
+     * Verify is update matched
+     *
      * @param string $entityType
      * @param int $identifier
      * @param int|null $rowId
@@ -240,6 +242,8 @@ class CampaignValidator
     }
 
     /**
+     * Verify is update inherited
+     *
      * @param string $entityType
      * @param int $identifier
      * @param array $condition

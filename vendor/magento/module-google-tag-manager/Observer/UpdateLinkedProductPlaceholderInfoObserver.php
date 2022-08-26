@@ -5,7 +5,10 @@
  */
 namespace Magento\GoogleTagManager\Observer;
 
+use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
+use Magento\GoogleTagManager\Block\ListJson;
+use Magento\GoogleTagManager\Helper\Data;
 
 class UpdateLinkedProductPlaceholderInfoObserver implements ObserverInterface
 {
@@ -15,22 +18,22 @@ class UpdateLinkedProductPlaceholderInfoObserver implements ObserverInterface
     protected $fpcBlockPositions = [];
 
     /**
-     * @var null|\Magento\GoogleTagManager\Block\ListJson
+     * @var null|ListJson
      */
     protected $blockPromotions = null;
 
     /**
-     * @var \Magento\GoogleTagManager\Helper\Data
+     * @var Data
      */
     protected $helper;
 
     /**
-     * @param \Magento\GoogleTagManager\Helper\Data $helper
-     * @param \Magento\GoogleTagManager\Block\ListJson $blockPromotions
+     * @param Data $helper
+     * @param ListJson $blockPromotions
      */
     public function __construct(
-        \Magento\GoogleTagManager\Helper\Data $helper,
-        \Magento\GoogleTagManager\Block\ListJson $blockPromotions
+        Data $helper,
+        ListJson $blockPromotions
     ) {
         $this->helper = $helper;
         $this->blockPromotions = $blockPromotions;
@@ -39,10 +42,10 @@ class UpdateLinkedProductPlaceholderInfoObserver implements ObserverInterface
     /**
      * Processing Related and Up-Sell product Items rendering via FPC
      *
-     * @param \Magento\Framework\Event\Observer $observer
+     * @param Observer $observer
      * @return $this
      */
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    public function execute(Observer $observer)
     {
         if (!$this->helper->isTagManagerAvailable()) {
             return $this;
@@ -72,6 +75,8 @@ class UpdateLinkedProductPlaceholderInfoObserver implements ObserverInterface
     }
 
     /**
+     * Get Fpc block position
+     *
      * @param string $key
      * @return int
      */

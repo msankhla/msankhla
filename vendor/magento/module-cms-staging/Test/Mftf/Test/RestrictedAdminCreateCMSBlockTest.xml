@@ -26,6 +26,7 @@
             <actionGroup ref="AdminDeleteWebsiteActionGroup" stepKey="AdminDeleteWebsiteActionGroup">
                 <argument name="websiteName" value="{{testData.websiteName}}"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
             <!-- Delete Admin User -->
             <actionGroup ref="AdminDeleteCustomUserActionGroup" stepKey="deleteAdminUserActionGroup">
                 <argument name="user" value="newAdmin"/>
@@ -56,6 +57,7 @@
         <actionGroup ref="AdminCreateStoreViewActionGroup" stepKey="createStoreView">
             <argument name="StoreGroup" value="testData"/>
         </actionGroup>
+        <magentoCron groups="index" stepKey="reindex"/>
         <!--Create restricted roles for this user. Access to Shared Catalog only-->
         <actionGroup ref="AdminCreateRoleActionGroup" stepKey="createUserRole">
             <argument name="restrictedRole" value="Blocks"/>

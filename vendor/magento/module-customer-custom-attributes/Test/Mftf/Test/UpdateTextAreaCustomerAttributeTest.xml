@@ -24,6 +24,7 @@
             <actionGroup ref="AdminLoginActionGroup" stepKey="LoginAsAdmin"/>
         </before>
         <after>
+            <magentoCron groups="index" stepKey="reindex"/>
             <!-- Logout admin -->
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
         </after>

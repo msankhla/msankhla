@@ -10,6 +10,12 @@
         <referenceContainer name="notifications">
             <block class="Magento\GoogleTagManager\Block\Adminhtml\Ga" name="google_analyticsuniversal" as="google_analyticsuniversal"
                    template="Magento_GoogleTagManager::ga.phtml"/>
+            <block class="Magento\GoogleTagManager\Block\Adminhtml\GtagGa" name="google_gtag_analyticsgtm" as="google_gtag_analyticsgtm"
+                   template="Magento_GoogleTagManager::gtag_creditmemo.phtml">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Magento\GoogleTagManager\ViewModel\TagManagerConfig</argument>
+                </arguments>
+            </block>
         </referenceContainer>
     </body>
 </page>

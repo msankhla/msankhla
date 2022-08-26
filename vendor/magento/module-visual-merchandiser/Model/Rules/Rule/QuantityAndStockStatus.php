@@ -6,7 +6,10 @@
 
 namespace Magento\VisualMerchandiser\Model\Rules\Rule;
 
+use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
+use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\Exception\LocalizedException;
 
 /**
@@ -14,6 +17,22 @@ use Magento\Framework\Exception\LocalizedException;
  */
 class QuantityAndStockStatus extends \Magento\VisualMerchandiser\Model\Rules\Rule
 {
+    /**
+     * @var MetadataPool
+     */
+    private $metadataPool;
+
+    /**
+     * @param array $rule
+     * @param Attribute $attribute
+     * @param MetadataPool $metadataPool
+     */
+    public function __construct(array $rule, Attribute $attribute, MetadataPool $metadataPool)
+    {
+        parent::__construct($rule, $attribute);
+        $this->metadataPool = $metadataPool;
+    }
+
     /**
      * Applying the rules to the collection
      *
@@ -23,11 +42,13 @@ class QuantityAndStockStatus extends \Magento\VisualMerchandiser\Model\Rules\Rul
      */
     public function applyToCollection($collection)
     {
+        $productLinkField = $this->metadataPool->getMetadata(ProductInterface::class)->getLinkField();
+
         $collection->joinField(
             'child_id',
             $collection->getTable('catalog_product_relation'),
             'child_id',
-            'parent_id=entity_id',
+            'parent_id=' . $productLinkField,
             null,
             'left'
         );

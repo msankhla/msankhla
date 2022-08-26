@@ -1,0 +1,64 @@
+<?php
+/**
+ * FedEx Cross Border component
+ *
+ * @category    FedEx
+ * @package     FedEx_CrossBorder
+ * @author      Andrey Rapshtynsky <andrey.bh@gmail.com>
+ * @copyright   FedEx (https://crossborder.fedex.com/)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+/** @var $block \Magento\Catalog\Block\Product\View */
+?>
+<?php
+    $_product = $block->getProduct();
+    $buttonTitle = __('Add to Cart');
+    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+    /** @var FedEx\CrossBorder\Model\ProductValidator $productValidator */
+    $productValidator = $objectManager->get(\FedEx\CrossBorder\Model\ProductValidator::class);
+    $isAvailable = (
+        $productValidator->getHelper()->isInternational() ?
+        $_product->getTypeId() != 'configurable' && $productValidator->isProductAvailable($_product) :
+        true
+    );
+?>
+<?php if ($_product->isSaleable()) :?>
+<div data-fdxcb-name="addtocart-container-<?= $_product->getId() ?>" class="box-tocart<?php if (!$isAvailable): ?> hide<?php endif; ?>">
+    <div class="fieldset">
+        <?php if ($block->shouldRenderQuantity()) :?>
+        <div class="field qty">
+            <label class="label" for="qty"><span><?= $block->escapeHtml(__('Qty')) ?></span></label>
+            <div class="control">
+                <input type="number"
+                       name="qty"
+                       id="qty"
+                       min="0"
+                       value="<?= $block->getProductDefaultQty() * 1 ?>"
+                       title="<?= $block->escapeHtmlAttr(__('Qty')) ?>"
+                       class="input-text qty"
+                       data-validate="<?= $block->escapeHtmlAttr(json_encode($block->getQuantityValidators())) ?>"
+                       />
+            </div>
+        </div>
+        <?php endif; ?>
+        <div class="actions">
+            <button type="submit"
+                    title="<?= $block->escapeHtmlAttr($buttonTitle) ?>"
+                    class="action primary tocart"
+                    id="product-addtocart-button" disabled>
+                <span><?= $block->escapeHtml($buttonTitle) ?></span>
+            </button>
+            <?= $block->getChildHtml('', true) ?>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+<div data-fdxcb-name="warning" class="fdxcb_warning<?php if ($isAvailable || $_product->getTypeId() == 'configurable'): ?> hide<?php endif; ?>"><?= $block->escapeHtml(__(\FedEx\CrossBorder\Model\ProductValidator::ERROR_PRODUCT_NOT_AVAILABLE)) ?></div>
+<script type="text/x-magento-init">
+    {
+        "#product_addtocart_form": {
+            "Magento_Catalog/js/validate-product": {}
+        }
+    }
+</script>

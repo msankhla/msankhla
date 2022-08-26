@@ -16,6 +16,7 @@
         <data key="banner_name"/>
         <data key="visible_in"/>
         <data key="banner_is_enabled"/>
+        <data key="theme_id">4</data>
         <requiredEntity type="banner_widget_params">sampleBannerWidgetParams</requiredEntity>
         <requiredEntity type="banner_widget_ids">sampleBannerWidgetIds</requiredEntity>
     </entity>

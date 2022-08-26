@@ -115,7 +115,7 @@ class HistoryTest extends TestCase
     public function isSatisfiedByDataProvider()
     {
         return [
-            [1, '!=', true],
+            [1, '!=', false],
             [1, '==', true],
             [0, '!=', true],
             [0, '==', false],

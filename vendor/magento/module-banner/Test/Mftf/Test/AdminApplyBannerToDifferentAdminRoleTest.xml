@@ -33,6 +33,7 @@
             <actionGroup ref="DeleteCustomStoreActionGroup" stepKey="deleteCustomStoreGroup">
                 <argument name="storeGroupName" value="customStoreGroup.name" />
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logoutOfAdmin"/>
         </after>
 
@@ -40,6 +41,7 @@
         <actionGroup ref="AdminCreateStoreViewActionGroup" stepKey="createStoreView">
             <argument name="StoreGroup" value="customStoreGroup"/>
         </actionGroup>
+        <magentoCron groups="index" stepKey="reindex"/>
 
         <!--Create userRole 1-->
         <actionGroup ref="AdminCreateUserRoleActionGroup" stepKey="createNewAdminUserRole">

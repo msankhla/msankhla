@@ -21,6 +21,7 @@ $updateRepository = $objectManager->get(UpdateRepositoryInterface::class);
 $productStaging = $objectManager->get(ProductStagingInterface::class);
 $versionManager = $objectManager->get(VersionManager::class);
 $productRepository = $objectManager->get(ProductRepositoryInterface::class);
+$currentVersionId = $versionManager->getCurrentVersion()->getId();
 
 //create product
 /** @var Product $product */
@@ -51,11 +52,11 @@ $updateData = [
     'is_campaign' => 0,
     'is_rollback' => null,
 ];
-
 $update = $updateFactory->create(['data' => $updateData]);
 $updateRepository->save($update);
-$product = $productRepository->get('simple');
 
+$product = $productRepository->get('simple');
 $versionManager->setCurrentVersionId($update->getId());
 $product->setName('Updated Product')->setPrice(5.99);
 $productStaging->schedule($product, $update->getId());
+$versionManager->setCurrentVersionId($currentVersionId);

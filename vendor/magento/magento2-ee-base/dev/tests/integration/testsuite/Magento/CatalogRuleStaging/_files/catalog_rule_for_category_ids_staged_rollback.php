@@ -26,7 +26,6 @@ $connection->delete($ruleResource->getMainTable());
 
 $update = $updateFactory->create();
 $updateResourceModel->load($update, 'Test CatalogRule Update for Cat 8', 'name');
-$versionManager->setCurrentVersionId($update->getId());
 $updateResourceModel->delete($update);
 
 /** @var \Magento\CatalogRule\Model\Indexer\IndexBuilder $indexBuilder */

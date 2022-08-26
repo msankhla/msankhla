@@ -5,6 +5,8 @@
  */
 namespace Magento\ScheduledImportExport\Controller\Adminhtml\Scheduled\Operation;
 
+use Magento\Framework\App\Action\HttpPostActionInterface;
+use Magento\Framework\Locale\ResolverInterface;
 use Magento\ScheduledImportExport\Controller\Adminhtml\Scheduled\Operation as OperationController;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Registry;
@@ -14,7 +16,7 @@ use Psr\Log\LoggerInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Exception\LocalizedException;
 
-class Save extends OperationController
+class Save extends OperationController implements HttpPostActionInterface
 {
     /**
      * @var \Magento\ScheduledImportExport\Model\Scheduled\OperationFactory
@@ -32,22 +34,31 @@ class Save extends OperationController
     protected $logger;
 
     /**
+     * @var ResolverInterface
+     */
+    private $localeResolver;
+
+    /**
      * @param \Magento\Backend\App\Action\Context $context
      * @param \Magento\Framework\Registry $coreRegistry
      * @param \Magento\ScheduledImportExport\Model\Scheduled\OperationFactory $operationFactory
      * @param \Magento\ScheduledImportExport\Helper\Data $dataHelper
      * @param \Psr\Log\LoggerInterface $logger
+     * @param ResolverInterface $localeResolver
      */
     public function __construct(
         Context $context,
         Registry $coreRegistry,
         OperationFactory $operationFactory,
         DataHelper $dataHelper,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        ResolverInterface $localeResolver
     ) {
         $this->operationFactory = $operationFactory;
         $this->dataHelper = $dataHelper;
         $this->logger = $logger;
+        $this->localeResolver = $localeResolver;
+
         parent::__construct($context, $coreRegistry);
     }
 
@@ -80,6 +91,7 @@ class Save extends OperationController
                     $data['entity_attributes']['skip_attr'] = array_filter($data['skip_attr'], 'intval');
                 }
             }
+            $data['file_info']['locale'] = $this->localeResolver->getLocale();
 
             try {
                 /** @var \Magento\ScheduledImportExport\Model\Scheduled\Operation $operation */

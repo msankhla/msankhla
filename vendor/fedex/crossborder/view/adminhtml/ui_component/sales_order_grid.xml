@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * FedEx Cross Border component
+ *
+ * @category    FedEx
+ * @package     FedEx_CrossBorder
+ * @author      Andrey Rapshtynsky <andrey.bh@gmail.com>
+ * @copyright   FedEx (https://crossborder.fedex.com/)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <columns name="sales_order_columns">
+        <column name="fxcb_order_number">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">FedEx Order Number</label>
+            </settings>
+        </column>
+        <column name="fxcb_status" component="Magento_Ui/js/grid/columns/select">
+            <settings>
+                <filter>select</filter>
+                <options class="FedEx\CrossBorder\Ui\Component\Order\Listing\Column\Status\Options"/>
+                <dataType>select</dataType>
+                <label translate="true">FedEx Status</label>
+            </settings>
+        </column>
+    </columns>
+</listing>

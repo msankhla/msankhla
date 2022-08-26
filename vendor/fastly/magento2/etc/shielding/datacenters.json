@@ -93,6 +93,17 @@
     "shield": "auckland-akl"
   },
   {
+    "code": "BKK",
+    "name": "Bangkok",
+    "group": "Asia/Pacific",
+    "coordinates": {
+      "x": 0,
+      "y": 0,
+      "latitude": 13.756,
+      "longitude": 100.501
+    }
+  },
+  {
     "code": "BOG",
     "name": "Bogota",
     "group": "South America",
@@ -137,7 +148,8 @@
       "y": 0,
       "latitude": 50.871,
       "longitude": 4.476
-    }
+    },
+    "shield": "bru-brussels-be"
   },
   {
     "code": "EZE",
@@ -186,18 +198,6 @@
     "shield": "maa-chennai-in"
   },
   {
-    "code": "MDW",
-    "name": "Chicago",
-    "group": "United States",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 41.7867799,
-      "longitude": -87.7543771
-    },
-    "shield": "mdw-il-us"
-  },
-  {
     "code": "ORD",
     "name": "Chicago",
     "group": "United States",
@@ -207,18 +207,6 @@
       "latitude": 41.978603,
       "longitude": -87.904842
     }
-  },
-  {
-    "code": "PWK",
-    "name": "Chicago",
-    "group": "United States",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": 42.1171,
-      "longitude": -87.9011
-    },
-    "shield": "pwk-il-us"
   },
   {
     "code": "CHI",
@@ -956,18 +944,6 @@
       "longitude": -46.815
     },
     "shield": "cgh-saopaulo-br"
-  },
-  {
-    "code": "GRU",
-    "name": "Sao Paulo",
-    "group": "South America",
-    "coordinates": {
-      "x": 0,
-      "y": 0,
-      "latitude": -23.432075,
-      "longitude": -46.469511
-    },
-    "shield": "gru-br-sa"
   },
   {
     "code": "SEA",

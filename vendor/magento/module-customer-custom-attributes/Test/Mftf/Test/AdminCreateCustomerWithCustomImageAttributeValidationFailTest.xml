@@ -98,6 +98,10 @@
             <argument name="attributeValue" value="http://google.com"/>
         </actionGroup>
         <actionGroup ref="AdminSaveCustomerAndAssertSuccessMessage" stepKey="saveCustomerWithCorrectData"/>
+        <actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindex">
+            <argument name="indices" value="customer_grid"/>
+        </actionGroup>
+        <actionGroup ref="ReloadPageActionGroup" stepKey="reloadPage"/>
         <!--Verify customer form after customer successfully saved.-->
         <actionGroup ref="AdminFilterCustomerGridByEmail" stepKey="filterCustomer">
             <argument name="email" value="{{Simple_US_Customer.email}}"/>

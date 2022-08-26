@@ -23,65 +23,48 @@
         </annotations>
 
         <before>
-            <!-- Locally Copy Import Files to Unique Media Import Directory -->
-            <helper class="Magento\Catalog\Test\Mftf\Helper\LocalFileAssertions" method="createDirectory" stepKey="createDirectoryForImportFiles" after="createCustomer">
-                <argument name="path">pub/media/import/{{ImportProduct_GiftCard.name}}</argument>
-            </helper>
-            <helper class="Magento\Catalog\Test\Mftf\Helper\LocalFileAssertions" method="copy" stepKey="copyImportFile" after="createDirectoryForImportFiles">
-                <argument name="source">dev/tests/acceptance/tests/_data/{{ImportProduct_GiftCard.fileName}}</argument>
-                <argument name="destination">pub/media/import/{{ImportProduct_GiftCard.name}}/{{ImportProduct_GiftCard.fileName}}</argument>
-            </helper>
+            <comment userInput="BIC workaround" stepKey="createDirectoryForImportFiles" after="createCustomer"/>
+            <comment userInput="BIC workaround" stepKey="copyImportFile" after="createDirectoryForImportFiles"/>
             <remove keyForRemoval="createDirectoryForImportImages"/>
-            <helper class="Magento\Catalog\Test\Mftf\Helper\LocalFileAssertions" method="copy" stepKey="copyProductBaseImage">
+            <helper class="Magento\AwsS3\Test\Mftf\Helper\S3FileAssertions" method="createDirectory" stepKey="createDirectoryForImportImagesInS3">
+                <argument name="path">var/import/images/{{ImportProduct_GiftCard.name}}</argument>
+            </helper>
+            <helper class="Magento\AwsS3\Test\Mftf\Helper\S3FileAssertions" method="copyFromLocal" stepKey="copyProductBaseImage">
                 <argument name="source">dev/tests/acceptance/tests/_data/{{ImportProduct_GiftCard.baseImage}}</argument>
-                <argument name="destination">pub/media/import/{{ImportProduct_GiftCard.name}}/{{ImportProduct_GiftCard.baseImage}}</argument>
+                <argument name="destination">var/import/images/{{ImportProduct_GiftCard.name}}/{{ImportProduct_GiftCard.baseImage}}</argument>
             </helper>
-            <helper class="Magento\Catalog\Test\Mftf\Helper\LocalFileAssertions" method="copy" stepKey="copyProductSmallImage">
+            <helper class="Magento\AwsS3\Test\Mftf\Helper\S3FileAssertions" method="copyFromLocal" stepKey="copyProductSmallImage">
                 <argument name="source">dev/tests/acceptance/tests/_data/{{ImportProduct_GiftCard.smallImage}}</argument>
-                <argument name="destination">pub/media/import/{{ImportProduct_GiftCard.name}}/{{ImportProduct_GiftCard.smallImage}}</argument>
+                <argument name="destination">var/import/images/{{ImportProduct_GiftCard.name}}/{{ImportProduct_GiftCard.smallImage}}</argument>
             </helper>
-            <helper class="Magento\Catalog\Test\Mftf\Helper\LocalFileAssertions" method="copy" stepKey="copyProductThumbnailImage">
+            <helper class="Magento\AwsS3\Test\Mftf\Helper\S3FileAssertions" method="copyFromLocal" stepKey="copyProductThumbnailImage">
                 <argument name="source">dev/tests/acceptance/tests/_data/{{ImportProduct_GiftCard.thumbnailImage}}</argument>
-                <argument name="destination">pub/media/import/{{ImportProduct_GiftCard.name}}/{{ImportProduct_GiftCard.thumbnailImage}}</argument>
+                <argument name="destination">var/import/images/{{ImportProduct_GiftCard.name}}/{{ImportProduct_GiftCard.thumbnailImage}}</argument>
             </helper>
 
-            <!-- Enable AWS S3 Remote Storage & Sync -->
             <magentoCLI command="setup:config:set {{RemoteStorageAwsS3ConfigData.enable_options}}" stepKey="enableRemoteStorage" after="copyProductThumbnailImage"/>
             <magentoCLI command="remote-storage:sync" timeout="120" stepKey="syncRemoteStorage" after="enableRemoteStorage"/>
 
-            <!-- Copy to Import Directory in AWS S3 -->
-            <helper class="Magento\AwsS3\Test\Mftf\Helper\S3FileAssertions" method="createDirectory" stepKey="createDirectoryForImportFilesInS3" after="syncRemoteStorage">
-                <argument name="path">var/import/images/{{ImportProduct_GiftCard.name}}</argument>
-            </helper>
-            <helper class="Magento\AwsS3\Test\Mftf\Helper\S3FileAssertions" method="copy" stepKey="copyProductBaseImageInS3" after="createDirectoryForImportFilesInS3">
-                <argument name="source">media/import/{{ImportProduct_GiftCard.name}}/{{ImportProduct_GiftCard.baseImage}}</argument>
-                <argument name="destination">var/import/images/{{ImportProduct_GiftCard.name}}/{{ImportProduct_GiftCard.baseImage}}</argument>
-            </helper>
-            <helper class="Magento\AwsS3\Test\Mftf\Helper\S3FileAssertions" method="copy" stepKey="copyProductSmallImageInS3" after="copyProductBaseImageInS3">
-                <argument name="source">media/import/{{ImportProduct_GiftCard.name}}/{{ImportProduct_GiftCard.smallImage}}</argument>
-                <argument name="destination">var/import/images/{{ImportProduct_GiftCard.name}}/{{ImportProduct_GiftCard.smallImage}}</argument>
-            </helper>
-            <helper class="Magento\AwsS3\Test\Mftf\Helper\S3FileAssertions" method="copy" stepKey="copyProductThumbnailImageInS3" after="copyProductSmallImageInS3">
-                <argument name="source">media/import/{{ImportProduct_GiftCard.name}}/{{ImportProduct_GiftCard.thumbnailImage}}</argument>
-                <argument name="destination">var/import/images/{{ImportProduct_GiftCard.name}}/{{ImportProduct_GiftCard.thumbnailImage}}</argument>
-            </helper>
+            <comment userInput="BIC workaround" stepKey="createDirectoryForImportFilesInS3" after="syncRemoteStorage"/>
+            <comment userInput="BIC workaround" stepKey="copyProductBaseImageInS3" after="createDirectoryForImportFilesInS3"/>
+            <comment userInput="BIC workaround" stepKey="copyProductSmallImageInS3" after="copyProductBaseImageInS3"/>
+            <comment userInput="BIC workaround" stepKey="copyProductThumbnailImageInS3" after="copyProductSmallImageInS3"/>
         </before>
 
         <after>
             <!-- Delete S3 Data -->
             <remove keyForRemoval="deleteProductImageDirectory"/>
-            <helper class="Magento\AwsS3\Test\Mftf\Helper\S3FileAssertions" method="deleteDirectory" stepKey="deleteImportFilesDirectoryS3" after="deleteCustomer">
-                <argument name="path">media/import/{{ImportProduct_GiftCard.name}}</argument>
-            </helper>
+            <comment userInput="BIC workaround" stepKey="deleteImportFilesDirectoryS3" after="deleteCustomer"/>
             <helper class="Magento\AwsS3\Test\Mftf\Helper\S3FileAssertions" method="deleteDirectory" stepKey="deleteImportImagesFilesDirectoryS3" after="deleteImportFilesDirectoryS3">
                 <argument name="path">var/import/images/{{ImportProduct_GiftCard.name}}</argument>
             </helper>
+            <actionGroup ref="CliCacheFlushActionGroup" stepKey="flushCache" after="deleteImportImagesFilesDirectoryS3">
+                <argument name="tags" value=""/>
+            </actionGroup>
 
             <!-- Disable AWS S3 Remote Storage & Delete Local Data -->
             <magentoCLI command="setup:config:set {{RemoteStorageAwsS3ConfigData.disable_options}}" stepKey="disableRemoteStorage" after="logoutFromAdmin"/>
-            <helper class="Magento\Catalog\Test\Mftf\Helper\LocalFileAssertions" method="deleteDirectory" stepKey="deleteImportFilesDirectoryLocal" after="disableRemoteStorage">
-                <argument name="path">pub/media/import/{{ImportProduct_GiftCard.name}}</argument>
-            </helper>
+            <comment userInput="BIC workaround" stepKey="deleteImportFilesDirectoryLocal" after="disableRemoteStorage"/>
         </after>
 
         <!-- Import Gift Card -->

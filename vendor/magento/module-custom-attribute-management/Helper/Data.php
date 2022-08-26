@@ -468,7 +468,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getDateFormat()
     {
-        return $this->_localeDate->getDateFormat(\IntlDateFormatter::SHORT);
+        return $this->_localeDate->getDateFormatWithLongYear();
     }
 
     /**

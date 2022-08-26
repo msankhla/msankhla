@@ -1,0 +1,24 @@
+{
+    "name": "corra/log-cloud-support",
+    "description": "",
+    "type": "magento2-module",
+    "license": "OSL-3.0",
+    "authors": [
+        {
+            "name": "Corra",
+            "email": "support@corra.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "magento/magento-cloud-metapackage": ">=2.3.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Corra\\LogCloudSupport\\": ""
+        },
+        "files": [
+            "registration.php"
+        ]
+    }
+}

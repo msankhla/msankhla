@@ -391,7 +391,7 @@ define([
             // sku form rows
             requestParams = {};
             sku = '';
-            // eslint-disable-next-line jquery-no-click-event-shorthand
+            // eslint-disable-next-line jquery-no-input-event-shorthand
             $('sku_table').select('input[type=text]').each(function (elem) {
                 var qty = 0,
                     paramKey;
@@ -451,7 +451,7 @@ define([
 
             // For IE we must make the form part of the DOM, otherwise browser refuses to submit it
             Element.select(document, 'body')[0].insert($form);
-            $form.submit(); //eslint-disable-line jquery-no-click-event-shorthand
+            $form.submit(); //eslint-disable-line jquery-no-input-event-shorthand
 
             // Show loader
             jQuery($form).trigger('processStart');
@@ -465,7 +465,7 @@ define([
          * @param {*} id - Product ID
          */
         configure: function (id, sku) {
-            // eslint-disable-next-line jquery-no-click-event-shorthand
+            // eslint-disable-next-line jquery-no-input-event-shorthand
             var productRow = $('sku_errors_table').select('div[id=sku_' + sku + ']')[0],
                 noticeElement = productRow.select('.message-notice'),
                 productQtyElement = productRow.up('tr').select('input[name=qty]')[0],
@@ -489,7 +489,7 @@ define([
                 }
                 $qty = productConfigure.getCurrentConfirmedQtyElement();
                 optionPrice = productConfigure.getCurrentConfirmedSelectElement();
-                // eslint-disable-next-line jquery-no-click-event-shorthand
+                // eslint-disable-next-line jquery-no-input-event-shorthand
                 $qtyElements = $('super-product-table') ? $('super-product-table').select('input.qty') : [];
 
                 if (optionPrice.length !== undefined &&
@@ -542,7 +542,7 @@ define([
             var that = this;
 
             this.addToCartButtonEvents = [];
-            // eslint-disable-next-line jquery-no-click-event-shorthand
+            // eslint-disable-next-line jquery-no-input-event-shorthand
             $('products_search').select('button.button-to-cart').each(function (button) {
                 var originalOnclick;
 
@@ -564,7 +564,7 @@ define([
          * Return add form to untouched state
          */
         clearAddForm: function () {
-            // eslint-disable-next-line jquery-no-click-event-shorthand
+            // eslint-disable-next-line jquery-no-input-event-shorthand
             var $rows = $(this.dataContainerId).select('tr'),
                 rowNum = $rows.length,
                 i;
@@ -574,9 +574,9 @@ define([
                 $rows[i].remove();
             }
             // First row input fields: set empty SKU and qty
-            // eslint-disable-next-line jquery-no-click-event-shorthand
+            // eslint-disable-next-line jquery-no-input-event-shorthand
             $rows[0].select('input[name="sku"]')[0].value = '';
-            // eslint-disable-next-line jquery-no-click-event-shorthand
+            // eslint-disable-next-line jquery-no-input-event-shorthand
             $rows[0].select('input[name="qty"]')[0].value = '';
         },
 

@@ -35,6 +35,7 @@
 
             <!-- Logout admin -->
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
+            <magentoCron groups="index" stepKey="reindex"/>
         </after>
 
         <!-- Go to Stores > Customer -->

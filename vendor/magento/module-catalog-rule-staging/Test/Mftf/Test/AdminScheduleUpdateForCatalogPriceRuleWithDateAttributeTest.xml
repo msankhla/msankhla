@@ -70,7 +70,9 @@
             </actionGroup>
 
             <!-- Reindex invalidated indices after product attribute has been created/deleted -->
-           <magentoCron groups="index" stepKey="reindexInvalidatedIndices"/>
+            <actionGroup ref="CliIndexerReindexActionGroup" stepKey="reindexInvalidatedIndices">
+                <argument name="indices" value=""/>
+            </actionGroup>
         </after>
         <!--Create catalog price rule with condition-->
         <comment userInput="Create catalog price rule with condition" stepKey="createCatalogRuleWithCondition"/>

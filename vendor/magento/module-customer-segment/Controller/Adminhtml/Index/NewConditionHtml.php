@@ -6,6 +6,8 @@
  */
 namespace Magento\CustomerSegment\Controller\Adminhtml\Index;
 
+use Magento\Rule\Model\Condition\ConditionInterface;
+
 class NewConditionHtml extends \Magento\CustomerSegment\Controller\Adminhtml\Index
 {
     /**
@@ -17,6 +19,13 @@ class NewConditionHtml extends \Magento\CustomerSegment\Controller\Adminhtml\Ind
     {
         $typeArr = explode('|', str_replace('-', '/', $this->getRequest()->getParam('type')));
         $type = $typeArr[0];
+
+        if (class_exists($type) && !in_array(ConditionInterface::class, class_implements($type))) {
+            $html = '';
+            $this->getResponse()->setBody($html);
+            return;
+        }
+
         $id = $this->getRequest()->getParam('id');
 
         $segment = $this->_objectManager->create(\Magento\CustomerSegment\Model\Segment::class);

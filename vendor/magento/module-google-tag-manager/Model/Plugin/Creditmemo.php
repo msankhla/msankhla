@@ -5,39 +5,47 @@
  */
 namespace Magento\GoogleTagManager\Model\Plugin;
 
-use \Magento\Sales\Model\Order\Creditmemo as OrderCreditmemo;
+use Magento\Backend\Model\Session;
+use Magento\GoogleTagManager\Helper\Data;
+use Magento\Sales\Api\CreditmemoRepositoryInterface;
+use Magento\Sales\Api\Data\CreditmemoInterface;
 
+/**
+ * @SuppressWarnings(PHPMD.CookieAndSessionMisuse)
+ */
 class Creditmemo
 {
     /**
-     * @var \Magento\GoogleTagManager\Helper\Data
+     * @var Data
      */
     protected $helper;
 
     /**
-     * @var \Magento\Backend\Model\Session
+     * @var Session
      */
     protected $backendSession;
 
     /**
-     * @param \Magento\GoogleTagManager\Helper\Data $helper
-     * @param \Magento\Backend\Model\Session $backendSession
+     * @param Data $helper
+     * @param Session $backendSession
      */
     public function __construct(
-        \Magento\GoogleTagManager\Helper\Data $helper,
-        \Magento\Backend\Model\Session $backendSession
+        Data $helper,
+        Session $backendSession
     ) {
         $this->helper = $helper;
         $this->backendSession = $backendSession;
     }
 
     /**
-     * @param OrderCreditmemo $subject
-     * @param OrderCreditmemo $result
-     * @return OrderCreditmemo
+     * After save plugin
+     *
+     * @param CreditmemoRepositoryInterface $subject
+     * @param CreditmemoInterface $result
+     * @return CreditmemoInterface
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function afterSave(OrderCreditmemo $subject, $result)
+    public function afterSave(CreditmemoRepositoryInterface $subject, $result)
     {
         if (!$this->helper->isTagManagerAvailable()) {
             return $result;

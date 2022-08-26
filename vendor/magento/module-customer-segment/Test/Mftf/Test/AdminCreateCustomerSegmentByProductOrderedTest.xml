@@ -62,6 +62,7 @@
             <actionGroup ref="FindAndDeleteCustomerSegmentActionGroup" stepKey="deleteSegment">
                 <argument name="segmentName" value="{{CustomerSegmentForRegistered.name}}"/>
             </actionGroup>
+            <magentoCron groups="index" stepKey="reindex"/>
             <!-- Logout from backend -->
             <actionGroup ref="AdminLogoutActionGroup" stepKey="logout"/>
         </after>

@@ -27,23 +27,23 @@ define([
             selectBillingAddressProvider: '',
             isNewAddressAdded: false,
             newCustomerBillingAddress: null,
+            popUpButtons: {
+                save: {
+                    text: $t('Save Address'),
+                    class: 'action primary action-save-address'
+                },
+                cancel: {
+                    text: $t('Cancel'),
+                    class: 'action secondary action-hide-popup'
+                }
+            },
             popUpForm: {
                 element: '.new-billing-address-form',
                 options: {
                     type: 'popup',
                     responsive: true,
                     innerScroll: true,
-                    title: $t('Billing Address'),
-                    buttons: {
-                        save: {
-                            text: $t('Save Address'),
-                            class: 'action primary action-save-address'
-                        },
-                        cancel: {
-                            text: $t('Cancel'),
-                            class: 'action secondary action-hide-popup'
-                        }
-                    }
+                    title: $t('Billing Address')
                 }
             },
             modules: {
@@ -131,12 +131,10 @@ define([
          * @param {HTMLElement} element
          */
         initPopup: function (element) {
-            var buttons = this.popUpForm.options.buttons;
-
             this.popUpForm.options.buttons = [
                 {
-                    text: buttons.save.text,
-                    class: buttons.save.class,
+                    text: this.popUpButtons.save.text,
+                    class: this.popUpButtons.save.class,
                     click: function () {
                         this.updateAddress();
 
@@ -147,8 +145,8 @@ define([
                     }.bind(this)
                 },
                 {
-                    text: buttons.cancel.text,
-                    class: buttons.cancel.class,
+                    text: this.popUpButtons.cancel.text,
+                    class: this.popUpButtons.cancel.class,
                     click: this.cancelAddressEdit.bind(this)
                 }
             ];

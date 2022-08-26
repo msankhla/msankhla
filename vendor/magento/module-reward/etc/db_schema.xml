@@ -93,6 +93,9 @@
         <index referenceId="MAGENTO_REWARD_HISTORY_STORE_ID" indexType="btree">
             <column name="store_id"/>
         </index>
+        <index referenceId="MAGENTO_REWARD_HISTORY_ENTITY" indexType="btree">
+            <column name="entity"/>
+        </index>
     </table>
     <table name="magento_reward_rate" resource="default" engine="innodb" comment="Enterprise Reward Rate">
         <column xsi:type="int" name="rate_id" unsigned="true" nullable="false" identity="true"
